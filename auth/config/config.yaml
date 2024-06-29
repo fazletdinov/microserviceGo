@@ -1,0 +1,30 @@
+# Окружение - local, dev или prod
+env: "local"
+
+# конфигурация auth service
+auth_server: 
+  auth_port: 8080
+
+# конфигурация JWT
+jwt_config:
+	path_private_key: ""
+	path_public_key: ""
+	access_token_exp: 60
+	refresh_token_exp: 60 
+  
+# конфигурация PostgresDB
+postgres_auth_db: 
+  user: ""
+  password: ""
+  host: "localhost"
+  port: 5432
+  name: "postgres"
+  ssl_mode: "disable"
+
+# конфигурация MongoDB
+mongo_auth_db:
+  user: ""     
+	password: "" 
+	port: 27017
+	host: "localhost"     
+	ctxExp: 10

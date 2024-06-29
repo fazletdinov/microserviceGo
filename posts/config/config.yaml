@@ -1,0 +1,21 @@
+# Окружение - local, dev или prod
+env: "local"
+
+# конфигурация нашего posts-сервера
+posts_server: 
+  posts_port: 8081
+  
+# конфигурация PostgresDB
+postgres_posts_db: 
+  user: ""
+  password: ""
+  host: "localhost"
+  port: 5433
+  name: "postgres"
+  ssl_mode: "disable"
+
+# конфигурация RedisDB
+redis_posts_db:
+  host: "localhost"
+  port: 6379
+  exp: 60

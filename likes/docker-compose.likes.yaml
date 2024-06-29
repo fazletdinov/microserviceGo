@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+
+  postgres_likes_db:
+    container_name: postgres_likes_db
+    image: postgres:15-alpine
+    volumes:
+      - pg-likes-data:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - dev-network
+    env_file:
+      - .env
+
+volumes:
+  pg-likes-data:
+
+networks:
+  dev-network:
+    name: auth_dev-network
+    external: true

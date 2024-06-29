@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  mongo_auth_db:
+    image: mongo:latest
+    container_name: mongo_auth_db
+    command: mongod --port ${MONGO_PORT}
+    ports:
+      - ${MONGO_PORT}:${MONGO_PORT}
+    volumes:
+      - mongo-auth-data:/data/db
+    networks:
+      - dev-network
+    env_file:
+      - .env
+    
+  postgres_auth_db:
+    container_name: postgres_auth_db
+    image: postgres:15-alpine
+    volumes:
+      - pg-auth-data:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - dev-network
+    env_file:
+      - .env
+
+
+volumes:
+  mongo-auth-data:
+  pg-auth-data:
+
+networks:
+  dev-network:
+    driver: bridge
