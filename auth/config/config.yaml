@@ -3,14 +3,15 @@ env: "local"
 
 # конфигурация auth service
 auth_server: 
-  auth_port: 8080
+  auth_port: "8080"
 
 # конфигурация JWT
 jwt_config:
-	path_private_key: ""
-	path_public_key: ""
-	access_token_exp: 60
-	refresh_token_exp: 60 
+  path_private_key: ""
+  path_public_key: ""
+  access_token_exp: 60
+  refresh_token_exp: 60
+  session_cookie_name: ""
   
 # конфигурация PostgresDB
 postgres_auth_db: 
@@ -24,7 +25,7 @@ postgres_auth_db:
 # конфигурация MongoDB
 mongo_auth_db:
   user: ""     
-	password: "" 
-	port: 27017
-	host: "localhost"     
-	ctxExp: 10
+  password: "" 
+  port: 27017
+  host: "localhost"     
+  ctxExp: 10
