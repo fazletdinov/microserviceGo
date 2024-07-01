@@ -4,13 +4,14 @@ import (
 	"net/http"
 
 	"auth/config"
+	"auth/internal/domain/service"
 	"auth/internal/schemas"
 
 	"github.com/gin-gonic/gin"
 )
 
 type RefreshTokenController struct {
-	RefreshTokenService schemas.RefreshTokenService
+	RefreshTokenService service.RefreshTokenService
 	Env                 *config.Config
 }
 
@@ -42,13 +43,13 @@ func (rtc *RefreshTokenController) RefreshToken(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := rtc.RefreshTokenService.CreateAccessToken(&user, rtc.Env.JWTConfig.PathPrivateKey, int(rtc.Env.JWTConfig.AccessTokenExp))
+	accessToken, err := rtc.RefreshTokenService.CreateAccessToken(user, rtc.Env.JWTConfig.PathPrivateKey, int(rtc.Env.JWTConfig.AccessTokenExp))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	refreshToken, err := rtc.RefreshTokenService.CreateRefreshToken(&user, rtc.Env.JWTConfig.PathPrivateKey, int(rtc.Env.JWTConfig.RefreshTokenExp))
+	refreshToken, err := rtc.RefreshTokenService.CreateRefreshToken(user, rtc.Env.JWTConfig.PathPrivateKey, int(rtc.Env.JWTConfig.RefreshTokenExp))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return

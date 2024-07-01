@@ -1,10 +1,5 @@
 package schemas
 
-import (
-	"auth/internal/models"
-	"context"
-)
-
 type SignupRequest struct {
 	Email    string `form:"email" binding:"required,email"`
 	Password string `form:"password" binding:"required,min=8"`
@@ -13,11 +8,4 @@ type SignupRequest struct {
 type SignupResponse struct {
 	AccessToken  string `json:"accessToken"`
 	RefreshToken string `json:"refreshToken"`
-}
-
-type SignupService interface {
-	Create(ctx context.Context, user *models.Users) error
-	GetUserByEmail(ctx context.Context, email string) (models.Users, error)
-	CreateAccessToken(user *models.Users, secret string, expiry int) (accessToken string, err error)
-	CreateRefreshToken(user *models.Users, secret string, expiry int) (refreshToken string, err error)
 }

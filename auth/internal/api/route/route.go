@@ -16,4 +16,6 @@ func SetupRouter(env *config.Config, db *gorm.DB, gin *gin.Engine) {
 	protectedRouter := gin.Group("/api/v1")
 	protectedRouter.Use(middleware.JwtAuthMiddleware(env.JWTConfig.PathPublicKey))
 	NewProfileRouter(env, db, protectedRouter)
+	NewUpdateRouter(env, db, protectedRouter)
+	NewDeleteRouter(env, db, protectedRouter)
 }

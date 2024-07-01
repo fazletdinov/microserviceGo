@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"auth/internal/domain/service"
 	"auth/internal/schemas"
 
 	"github.com/gin-gonic/gin"
@@ -10,7 +11,7 @@ import (
 )
 
 type ProfileController struct {
-	ProfileService schemas.ProfileService
+	ProfileService service.ProfileService
 }
 
 // GetUser		godoc

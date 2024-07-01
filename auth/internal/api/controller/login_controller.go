@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"auth/config"
+	"auth/internal/domain/service"
 	"auth/internal/schemas"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +13,7 @@ import (
 )
 
 type LoginController struct {
-	LoginService schemas.LoginService
+	LoginService service.LoginService
 	Env          *config.Config
 }
 
@@ -48,13 +49,13 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 		return
 	}
 
-	accessToken, err := lc.LoginService.CreateAccessToken(&user, lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.AccessTokenExp))
+	accessToken, err := lc.LoginService.CreateAccessToken(user, lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.AccessTokenExp))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	refreshToken, err := lc.LoginService.CreateRefreshToken(&user, lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.RefreshTokenExp))
+	refreshToken, err := lc.LoginService.CreateRefreshToken(user, lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.RefreshTokenExp))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return

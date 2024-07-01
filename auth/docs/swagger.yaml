@@ -48,6 +48,18 @@ definitions:
       refreshToken:
         type: string
     type: object
+  schemas.SuccessResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  schemas.UpdateUser:
+    properties:
+      first_name:
+        type: string
+      last_name:
+        type: string
+    type: object
   schemas.UserResponse:
     properties:
       create_at:
@@ -76,6 +88,28 @@ info:
   title: Gin Auth Service
   version: "1.0"
 paths:
+  /delete:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/schemas.SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+      summary: Удаление пользователя
+      tags:
+      - Auth
   /login:
     post:
       consumes:
@@ -188,6 +222,39 @@ paths:
           schema:
             $ref: '#/definitions/schemas.ErrorResponse'
       summary: Регистрация пользователя и получение токенов
+      tags:
+      - Auth
+  /update:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Для получения обновления пользователя
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/schemas.UpdateUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+      summary: Обновление пользователя
       tags:
       - Auth
 swagger: "2.0"

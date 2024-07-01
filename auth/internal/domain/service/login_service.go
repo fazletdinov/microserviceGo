@@ -1,22 +1,22 @@
 package service
 
 import (
+	"auth/internal/domain/repository"
 	"auth/internal/models"
-	"auth/internal/schemas"
 	"context"
 )
 
 type loginService struct {
-	userRepository schemas.UserRepository
+	userRepository repository.UserRepository
 }
 
-func NewLoginService(userRepository schemas.UserRepository) schemas.LoginService {
+func NewLoginService(userRepository repository.UserRepository) LoginService {
 	return &loginService{
 		userRepository: userRepository,
 	}
 }
 
-func (lc *loginService) GetUserByEmail(ctx context.Context, email string) (models.Users, error) {
+func (lc *loginService) GetUserByEmail(ctx context.Context, email string) (*models.Users, error) {
 	return lc.userRepository.GetByEmail(ctx, email)
 }
 

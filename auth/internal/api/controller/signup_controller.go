@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"auth/config"
+	"auth/internal/domain/service"
 	"auth/internal/models"
 	"auth/internal/schemas"
 
@@ -13,7 +14,7 @@ import (
 )
 
 type SignupController struct {
-	SignupService schemas.SignupService
+	SignupService service.SignupService
 	Env           *config.Config
 }
 
@@ -38,7 +39,7 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 	}
 
 	_, err = sc.SignupService.GetUserByEmail(ctx, request.Email)
-	if err == nil {
+	if err != nil {
 		ctx.JSON(http.StatusConflict, schemas.ErrorResponse{Message: "Пользователь с указанным email уже существует"})
 		return
 	}
@@ -77,6 +78,14 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
+
+	ctx.SetCookie(sc.Env.JWTConfig.SessionCookieName,
+		refreshToken,
+		int(sc.Env.JWTConfig.RefreshTokenExp),
+		"",
+		"",
+		false,
+		true)
 
 	signupResponse := schemas.SignupResponse{
 		AccessToken:  accessToken,

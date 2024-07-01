@@ -1,7 +1,6 @@
 package schemas
 
 import (
-	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,8 +14,4 @@ type Profile struct {
 	LastName  string    `json:"last_name,omitempty"`
 	CreatedAt time.Time `json:"create_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
-}
-
-type ProfileService interface {
-	GetProfileByID(c context.Context, userID uuid.UUID) (*UserResponse, error)
 }

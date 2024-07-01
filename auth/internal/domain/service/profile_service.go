@@ -1,6 +1,7 @@
 package service
 
 import (
+	"auth/internal/domain/repository"
 	"auth/internal/schemas"
 	"context"
 
@@ -8,10 +9,10 @@ import (
 )
 
 type profileService struct {
-	userRepository schemas.UserRepository
+	userRepository repository.UserRepository
 }
 
-func NewProfileService(userRepository schemas.UserRepository) schemas.ProfileService {
+func NewProfileService(userRepository repository.UserRepository) ProfileService {
 	return &profileService{
 		userRepository: userRepository,
 	}
