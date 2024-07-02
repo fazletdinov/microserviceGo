@@ -2,14 +2,15 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"gorm.io/gorm"
+	"time"
 )
 
 type Post struct {
-	gorm.Model
-	ID       uuid.UUID `gorm:"primarykey; type:uuid;default:uuid_generate_v4()"`
-	Title    string    `gorm:"not null; size:256"`
-	Content  string    `gorm:"not null"`
-	AuthorID uuid.UUID
-	Comment  []Comment `gorm:"foreignKey:PostID; constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	ID        uuid.UUID `gorm:"primarykey; type:uuid;default:uuid_generate_v4()" json:"id"`
+	Title     string    `gorm:"not null; size:256" json:"title"`
+	Content   string    `gorm:"not null" json:"content"`
+	AuthorID  uuid.UUID `json:"author_id"`
+	Comments  []Comment `gorm:"foreignKey:PostID; constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"comments,omitempty"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"-"`
 }

@@ -3,7 +3,7 @@ env: "local"
 
 # конфигурация нашего posts-сервера
 posts_server: 
-  posts_port: 8081
+  posts_port: "8081"
   
 # конфигурация PostgresDB
 postgres_posts_db: 

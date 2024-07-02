@@ -17,7 +17,7 @@ type Config struct {
 }
 
 type PostsServer struct {
-	PostsPort uint `yaml:"posts_port" env:"POSTS_PORT"`
+	PostsPort string `yaml:"posts_port" env:"POSTS_PORT"`
 }
 
 type PostgresDB struct {
@@ -37,17 +37,18 @@ type RedisDB struct {
 
 var ConfigEnvs Config
 
-func InitConfig() error {
-	errEnv := godotenv.Load("")
+func InitConfig() (*Config, error) {
+	var env Config
+	errEnv := godotenv.Load()
 	if errEnv != nil {
-		return fmt.Errorf("ошибка при загрузки ENV %v", errEnv)
+		return nil, fmt.Errorf("ошибка при загрузки ENV %v", errEnv)
 	}
 	path := parseCommand()
-	err := cleanenv.ReadConfig(path, &ConfigEnvs)
+	err := cleanenv.ReadConfig(path, &env)
 	if err != nil {
-		return fmt.Errorf("ошибка при чтении config.yaml %v", err)
+		return nil, fmt.Errorf("ошибка при чтении config.yaml %v", err)
 	}
-	return nil
+	return &env, nil
 }
 
 func parseCommand() string {
