@@ -15,5 +15,5 @@ func NewDeleteRouter(env *config.Config, db *gorm.DB, group *gin.RouterGroup) {
 	deleteController := controller.DeleteController{
 		DeleteService: service.NewDeleteService(userRepository),
 	}
-	group.DELETE("/delete", deleteController.Delete)
+	group.DELETE("/user/delete", deleteController.Delete)
 }

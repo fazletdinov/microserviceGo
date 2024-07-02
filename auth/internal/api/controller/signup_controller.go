@@ -28,7 +28,7 @@ type SignupController struct {
 // @Failure		400			{object}	schemas.ErrorResponse
 // @Failure		409			{object}	schemas.ErrorResponse
 // @Failure		500			{object}	schemas.ErrorResponse
-// @Router      /signup 	[post]
+// @Router      /user/signup [post]
 func (sc *SignupController) Signup(ctx *gin.Context) {
 	var request schemas.SignupRequest
 

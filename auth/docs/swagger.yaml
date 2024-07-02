@@ -88,28 +88,6 @@ info:
   title: Gin Auth Service
   version: "1.0"
 paths:
-  /delete:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-          schema:
-            $ref: '#/definitions/schemas.SuccessResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/schemas.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/schemas.ErrorResponse'
-      summary: Удаление пользователя
-      tags:
-      - Auth
   /login:
     post:
       consumes:
@@ -147,28 +125,6 @@ paths:
       summary: Получение access и refresh токена в формате JSON
       tags:
       - Auth
-  /me:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/schemas.UserResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/schemas.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/schemas.ErrorResponse'
-      summary: Получение пользователя
-      tags:
-      - Auth
   /refresh:
     get:
       consumes:
@@ -191,7 +147,51 @@ paths:
       summary: Обновление токенов
       tags:
       - Auth
-  /signup:
+  /user/delete:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/schemas.SuccessResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+      summary: Удаление пользователя
+      tags:
+      - Auth
+  /user/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schemas.UserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schemas.ErrorResponse'
+      summary: Получение пользователя
+      tags:
+      - Auth
+  /user/signup:
     post:
       consumes:
       - application/json
@@ -224,7 +224,7 @@ paths:
       summary: Регистрация пользователя и получение токенов
       tags:
       - Auth
-  /update:
+  /user/update:
     put:
       consumes:
       - application/json
@@ -241,7 +241,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/schemas.UserResponse'
+            $ref: '#/definitions/schemas.SuccessResponse'
         "400":
           description: Bad Request
           schema:

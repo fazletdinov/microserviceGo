@@ -15,5 +15,5 @@ func NewUpdateRouter(env *config.Config, db *gorm.DB, group *gin.RouterGroup) {
 	updateController := controller.UpdateController{
 		UpdateService: service.NewUpdateService(userRepository),
 	}
-	group.PUT("/update", updateController.Update)
+	group.PUT("/user/update", updateController.Update)
 }

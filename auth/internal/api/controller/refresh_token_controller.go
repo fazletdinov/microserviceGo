@@ -27,19 +27,19 @@ type RefreshTokenController struct {
 func (rtc *RefreshTokenController) RefreshToken(ctx *gin.Context) {
 	token, errCookie := ctx.Cookie(rtc.Env.JWTConfig.SessionCookieName)
 	if errCookie != nil {
-		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не найден"})
+		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
 
 	id, err := rtc.RefreshTokenService.ExtractIDFromToken(token, rtc.Env.JWTConfig.PathPublicKey)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не найден"})
+		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
 
 	user, err := rtc.RefreshTokenService.GetUserByID(ctx, id)
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не найден"})
+		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
 

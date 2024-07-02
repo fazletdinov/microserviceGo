@@ -21,14 +21,14 @@ type ProfileController struct {
 // @Produce     json
 // @Success     200  		{object}  	schemas.UserResponse
 // @Failure		401			{object}	schemas.ErrorResponse
-// @Failure		500			{object}	schemas.ErrorResponse
-// @Router      /me     	[get]
+// @Failure		404			{object}	schemas.ErrorResponse
+// @Router      /user/me     [get]
 func (pc *ProfileController) Fetch(ctx *gin.Context) {
 	userID := ctx.GetString("x-user-id")
 
 	profile, err := pc.ProfileService.GetProfileByID(ctx, uuid.MustParse(userID))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Пользователь не найден"})
 		return
 	}
 

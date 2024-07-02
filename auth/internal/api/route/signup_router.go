@@ -16,5 +16,5 @@ func NewSignupRouter(env *config.Config, db *gorm.DB, group *gin.RouterGroup) {
 		SignupService: service.NewSignupService(userRepository),
 		Env:           env,
 	}
-	group.POST("/signup", userControler.Signup)
+	group.POST("/user/signup", userControler.Signup)
 }

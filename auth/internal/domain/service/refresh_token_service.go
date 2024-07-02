@@ -18,8 +18,8 @@ func NewRefreshTokenService(userRepository repository.UserRepository) RefreshTok
 	}
 }
 
-func (rtu *refreshTokenService) GetUserByID(ctx context.Context, id uuid.UUID) (*models.Users, error) {
-	return rtu.userRepository.GetByID(ctx, id)
+func (rtu *refreshTokenService) GetUserByID(ctx context.Context, userID uuid.UUID) (*models.Users, error) {
+	return rtu.userRepository.GetByID(ctx, userID)
 }
 
 func (rtu *refreshTokenService) CreateAccessToken(user *models.Users, pathSecret string, expiry int) (accessToken string, err error) {

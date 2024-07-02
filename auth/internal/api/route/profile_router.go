@@ -15,5 +15,5 @@ func NewProfileRouter(env *config.Config, db *gorm.DB, group *gin.RouterGroup) {
 	profileController := &controller.ProfileController{
 		ProfileService: service.NewProfileService(userRepository),
 	}
-	group.GET("/me", profileController.Fetch)
+	group.GET("/user/me", profileController.Fetch)
 }

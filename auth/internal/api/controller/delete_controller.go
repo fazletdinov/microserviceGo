@@ -24,13 +24,13 @@ type DeleteController struct {
 // @Success     204  		{object}  	schemas.SuccessResponse
 // @Failure		401			{object}	schemas.ErrorResponse
 // @Failure		500			{object}	schemas.ErrorResponse
-// @Router      /delete 	[delete]
+// @Router      /user/delete [delete]
 func (dc *DeleteController) Delete(ctx *gin.Context) {
 	userID := ctx.GetString("x-user-id")
 
 	user, err := dc.DeleteService.GetUserByID(ctx, uuid.MustParse(userID))
 	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
 

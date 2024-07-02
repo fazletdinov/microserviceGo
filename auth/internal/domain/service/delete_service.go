@@ -19,10 +19,10 @@ func NewDeleteService(userRepository repository.UserRepository) DeleteService {
 	}
 }
 
-func (ds *deleteService) GetUserByID(ctx context.Context, id uuid.UUID) (*models.Users, error) {
-	return ds.userRepository.GetByID(ctx, id)
+func (ds *deleteService) GetUserByID(ctx context.Context, userID uuid.UUID) (*models.Users, error) {
+	return ds.userRepository.GetByID(ctx, userID)
 }
 
-func (ds *deleteService) DeleteUser(ctx context.Context, id uuid.UUID) error {
-	return ds.userRepository.Delete(ctx, id)
+func (ds *deleteService) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+	return ds.userRepository.Delete(ctx, userID)
 }

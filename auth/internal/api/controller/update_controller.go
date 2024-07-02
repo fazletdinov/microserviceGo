@@ -19,15 +19,15 @@ type UpdateController struct {
 // @Tags        Auth
 // @Accept		json
 // @Produce     json
-// @Param		body		body		schemas.UpdateUser	true	"Для получения обновления пользователя"
-// @Success     200  		{object}  	schemas.UserResponse
+// @Param		body		body		schemas.UpdateUser			true	"Для получения обновления пользователя"
+// @Success     200  		{object}  	schemas.SuccessResponse
 // @Failure	  	400			{object}	schemas.ErrorResponse
 // @Failure	  	401			{object}	schemas.ErrorResponse
 // @Failure	  	500			{object}	schemas.ErrorResponse
-// @Router      /update 	[put]
+// @Router      /user/update [put]
 func (uc *UpdateController) Update(ctx *gin.Context) {
 	userID := ctx.GetString("x-user-id")
-	userExists, err := uc.UpdateService.GetUserByID(ctx, uuid.MustParse(userID))
+	_, err := uc.UpdateService.GetUserByID(ctx, uuid.MustParse(userID))
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
@@ -39,13 +39,11 @@ func (uc *UpdateController) Update(ctx *gin.Context) {
 		return
 	}
 
-	userUpdate.ID = userExists.ID
-
-	userUpdated, err := uc.UpdateService.UpdateUser(ctx, &userUpdate)
+	err = uc.UpdateService.UpdateUser(ctx, uuid.MustParse(userID), &userUpdate)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, userUpdated)
+	ctx.JSON(http.StatusOK, schemas.SuccessResponse{Message: "Обновление прошло успешно"})
 }

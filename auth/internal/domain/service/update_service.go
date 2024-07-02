@@ -20,23 +20,14 @@ func NewUpdateService(userRepository repository.UserRepository) UpdateService {
 	}
 }
 
-func (up *updateService) GetUserByID(ctx context.Context, id uuid.UUID) (*models.Users, error) {
-	return up.userRepository.GetByID(ctx, id)
+func (up *updateService) GetUserByID(ctx context.Context, userID uuid.UUID) (*models.Users, error) {
+	return up.userRepository.GetByID(ctx, userID)
 }
 
-func (up *updateService) UpdateUser(ctx context.Context, userUpdate *schemas.UpdateUser) (*schemas.UserResponse, error) {
-	user, err := up.userRepository.Update(ctx, userUpdate)
+func (up *updateService) UpdateUser(ctx context.Context, userID uuid.UUID, userUpdate *schemas.UpdateUser) error {
+	err := up.userRepository.Update(ctx, userID, userUpdate)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	updatedUser := schemas.UserResponse{
-		ID:        user.ID,
-		Email:     user.Email,
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
-	}
-
-	return &updatedUser, nil
+	return nil
 }
