@@ -7,3 +7,14 @@ type CommentResponse struct {
 	Text     string    `json:"text"`
 	AuthorID uuid.UUID `json:"author_id"`
 }
+
+type CommentCreateRequest struct {
+	Text     string    `json:"text"`
+	AuthorID uuid.UUID `json:"-"`
+	PostID   uuid.UUID `json:"-"`
+}
+
+type CommentUpdateRequest struct {
+	Text     string    `json:"text"`
+	AuthorID uuid.UUID `json:"-"`
+}

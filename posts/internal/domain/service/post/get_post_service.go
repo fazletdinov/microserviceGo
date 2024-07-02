@@ -1,18 +1,18 @@
-package service
+package post
 
 import (
 	"context"
-	"posts/internal/domain/repository"
+	"posts/internal/domain/repository/post"
 	"posts/internal/models"
 
 	"github.com/google/uuid"
 )
 
 type getPostService struct {
-	postRepository repository.PostRepository
+	postRepository post.PostRepository
 }
 
-func NewGetPostService(postRepository repository.PostRepository) GetPostServcie {
+func NewGetPostService(postRepository post.PostRepository) GetPostServcie {
 	return &getPostService{
 		postRepository: postRepository,
 	}

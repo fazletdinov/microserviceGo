@@ -1,8 +1,8 @@
-package service
+package post
 
 import (
 	"context"
-	"posts/internal/domain/repository"
+	"posts/internal/domain/repository/post"
 	"posts/internal/models"
 	"posts/internal/schemas"
 
@@ -10,10 +10,10 @@ import (
 )
 
 type updatePostService struct {
-	postRepository repository.PostRepository
+	postRepository post.PostRepository
 }
 
-func NewUpdatePostService(postRepository repository.PostRepository) UpdatePostServcie {
+func NewUpdatePostService(postRepository post.PostRepository) UpdatePostServcie {
 	return &updatePostService{
 		postRepository: postRepository,
 	}

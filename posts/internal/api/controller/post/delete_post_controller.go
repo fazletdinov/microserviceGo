@@ -1,9 +1,9 @@
-package controller
+package post
 
 import (
 	"net/http"
 	"posts/config"
-	"posts/internal/domain/service"
+	"posts/internal/domain/service/post"
 	"posts/internal/schemas"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 )
 
 type DeletePostController struct {
-	DeletePostService service.DeletePostServcie
+	DeletePostService post.DeletePostServcie
 	Env               *config.Config
 }
 
@@ -20,13 +20,13 @@ type DeletePostController struct {
 // @Tags        Posts
 // @Accept		json
 // @Produce     json
-// @Param	    id			    path		string		          true		"Post ID"
+// @Param	    post_id			path		string		          true		"Post ID"
 // @Success     204  		    {object}  	schemas.SuccessResponse
 // @Failure		401			    {object}	schemas.ErrorResponse
 // @Failure		500			    {object}	schemas.ErrorResponse
-// @Router      /delete/{id} 	[delete]
+// @Router      /post/{post_id} [delete]
 func (dpc *DeletePostController) Delete(ctx *gin.Context) {
-	postID := ctx.Param("id")
+	postID := ctx.Param("post_id")
 
 	_, err := dpc.DeletePostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {

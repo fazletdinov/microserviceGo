@@ -1,9 +1,9 @@
-package controller
+package post
 
 import (
 	"net/http"
 	"posts/config"
-	"posts/internal/domain/service"
+	"posts/internal/domain/service/post"
 	"posts/internal/models"
 	"posts/internal/schemas"
 
@@ -12,7 +12,7 @@ import (
 )
 
 type CreatePostController struct {
-	CreatePosteService service.CreatePostServcie
+	CreatePosteService post.CreatePostServcie
 	Env                *config.Config
 }
 
@@ -25,7 +25,7 @@ type CreatePostController struct {
 // @Success     201  		{object}  	schemas.SuccessResponse
 // @Failure		400			{object}	schemas.ErrorResponse
 // @Failure		500			{object}	schemas.ErrorResponse
-// @Router      /create 	[post]
+// @Router      /post 	[post]
 func (pc *CreatePostController) Create(ctx *gin.Context) {
 	var postRequest schemas.PostCreateRequest
 

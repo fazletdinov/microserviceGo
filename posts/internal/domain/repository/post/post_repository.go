@@ -1,4 +1,4 @@
-package repository
+package post
 
 import (
 	"context"
@@ -29,7 +29,7 @@ func (pr *postRepository) Create(ctx context.Context, post *models.Post) error {
 
 func (pr *postRepository) GetByIDPost(ctx context.Context, postID uuid.UUID) (*models.Post, error) {
 	var post models.Post
-	result := pr.database.First(&post, "id = ?", postID)
+	result := pr.database.Preload("Comments").First(&post, "id = ?", postID)
 	if result.Error != nil {
 		return nil, result.Error
 	}

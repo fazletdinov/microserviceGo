@@ -1,18 +1,18 @@
-package service
+package post
 
 import (
 	"context"
-	"posts/internal/domain/repository"
+	"posts/internal/domain/repository/post"
 	"posts/internal/models"
 
 	"github.com/google/uuid"
 )
 
 type deletePostService struct {
-	postRepository repository.PostRepository
+	postRepository post.PostRepository
 }
 
-func NewDeletePostService(postRepository repository.PostRepository) DeletePostServcie {
+func NewDeletePostService(postRepository post.PostRepository) DeletePostServcie {
 	return &deletePostService{
 		postRepository: postRepository,
 	}

@@ -1,16 +1,16 @@
-package service
+package post
 
 import (
 	"context"
-	"posts/internal/domain/repository"
+	"posts/internal/domain/repository/post"
 	"posts/internal/models"
 )
 
 type postCreateService struct {
-	postRepository repository.PostRepository
+	postRepository post.PostRepository
 }
 
-func NewCreatePostService(postRepository repository.PostRepository) CreatePostServcie {
+func NewCreatePostService(postRepository post.PostRepository) CreatePostServcie {
 	return &postCreateService{
 		postRepository: postRepository,
 	}

@@ -1,9 +1,9 @@
-package controller
+package post
 
 import (
 	"net/http"
 	"posts/config"
-	"posts/internal/domain/service"
+	"posts/internal/domain/service/post"
 	"posts/internal/schemas"
 
 	"github.com/gin-gonic/gin"
@@ -11,7 +11,7 @@ import (
 )
 
 type UpdatePostController struct {
-	UpdatePostService service.UpdatePostServcie
+	UpdatePostService post.UpdatePostServcie
 	Env               *config.Config
 }
 
@@ -20,15 +20,15 @@ type UpdatePostController struct {
 // @Tags        Posts
 // @Accept		json
 // @Produce     json
-// @Param	    id			    path		string					    true    "Post ID"
+// @Param	    post_id			path		string					    true    "Post ID"
 // @Param		body		    body		schemas.PostUpdateRequest			true	"Для обновления Post"
 // @Success     200  		    {object}  	schemas.PostUpdatedResponse
 // @Failure	  	400			    {object}	schemas.ErrorResponse
 // @Failure	  	401			    {object}	schemas.ErrorResponse
 // @Failure	  	500			    {object}	schemas.ErrorResponse
-// @Router      /update/{id} 	[put]
+// @Router      /post/{post_id} [put]
 func (upc *UpdatePostController) Update(ctx *gin.Context) {
-	postID := ctx.Param("id")
+	postID := ctx.Param("post_id")
 
 	post, err := upc.UpdatePostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
