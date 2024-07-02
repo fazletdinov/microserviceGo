@@ -34,7 +34,7 @@ func (ccc *CreateCommentController) Create(ctx *gin.Context) {
 
 	_, err := ccc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
 	}
 

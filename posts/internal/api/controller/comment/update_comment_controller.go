@@ -36,13 +36,13 @@ func (upc *UpdateCommentController) Update(ctx *gin.Context) {
 
 	_, err := upc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
 	}
 
 	_, err = upc.UpdateCommentService.GetByID(ctx, uuid.MustParse(postID), uuid.MustParse(commentID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Comment не найден"})
 		return
 	}
 

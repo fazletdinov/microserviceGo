@@ -33,13 +33,13 @@ func (gcc *GetCommentController) Fetch(ctx *gin.Context) {
 	commentID := ctx.Param("comment_id")
 	_, err := gcc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
 	}
 
 	comment, err := gcc.GetCommentService.GetByID(ctx, uuid.MustParse(postID), uuid.MustParse(commentID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Comment не найден"})
 		return
 	}
 
@@ -64,7 +64,7 @@ func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
 	_, err := gcc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
 	}
 	limit, err := strconv.Atoi(ctx.Query("limit"))
