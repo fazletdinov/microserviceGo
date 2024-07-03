@@ -7,7 +7,7 @@ import (
 
 type Reaction struct {
 	gorm.Model
-	ID       uuid.UUID `gorm:"primarykey; type:uuid;default:uuid_generate_v4()"`
-	AuthorID uuid.UUID `gorm:"not null; unique:author_post"`
-	PostID   uuid.UUID `gorm:"not null; unique:author_post"`
+	ID       uuid.UUID `gorm:"primarykey; type:uuid;default:uuid_generate_v4()" json:"id"`
+	AuthorID uuid.UUID `gorm:"not null; unique:author_post" json:"author_id"`
+	PostID   uuid.UUID `gorm:"not null; unique:author_post" json:"post_id"`
 }

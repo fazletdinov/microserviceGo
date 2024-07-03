@@ -30,12 +30,12 @@ func (dpc *DeletePostController) Delete(ctx *gin.Context) {
 
 	_, err := dpc.DeletePostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
 	}
 
 	if err = dpc.DeletePostService.DeletePost(ctx, uuid.MustParse(postID)); err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
 

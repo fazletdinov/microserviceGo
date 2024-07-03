@@ -3,7 +3,7 @@ env: "local"
 
 # конфигурация нашего posts-сервера
 likes_server: 
-  posts_port: 8082
+  posts_port: "8082"
   
 # конфигурация PostgresDB
 postgres_likes_db: 
