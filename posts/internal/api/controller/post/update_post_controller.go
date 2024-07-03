@@ -32,7 +32,7 @@ func (upc *UpdatePostController) Update(ctx *gin.Context) {
 
 	post, err := upc.UpdatePostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
 	}
 
