@@ -4,7 +4,6 @@ import (
 	_ "auth/docs"
 	route "auth/internal/api/route"
 	"auth/internal/app"
-	"fmt"
 	"os"
 	"os/signal"
 
