@@ -39,8 +39,7 @@ type PostResponse struct {
 }
 
 type PostUpdateRequest struct {
-	ID       uuid.UUID `json:"-"`
-	Title    string    `json:"title"`
-	Content  string    `json:"content"`
-	AuthorID uuid.UUID `json:"-"`
+	ID      uuid.UUID `json:"-"`
+	Title   string    `json:"title"`
+	Content string    `json:"content"`
 }

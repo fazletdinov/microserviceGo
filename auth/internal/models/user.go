@@ -12,4 +12,5 @@ type Users struct {
 	FirstName *string   `gorm:"size:256"`
 	LastName  *string   `gorm:"size:256"`
 	Password  string    `gorm:"not null"`
+	IsActive  bool
 }

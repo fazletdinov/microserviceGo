@@ -20,6 +20,5 @@ func NewGetCommentRouter(env *config.Config, db *gorm.DB, gin *gin.RouterGroup) 
 		GetPostService:    postService.NewGetPostService(postRepository),
 		Env:               env,
 	}
-	gin.GET("/post/:post_id/comment/:comment_id", GetCommentController.Fetch)
 	gin.GET("/post/:post_id/comments", GetCommentController.Fetchs)
 }

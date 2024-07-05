@@ -41,3 +41,7 @@ type DeleteService interface {
 	GetUserByID(ctx context.Context, userID uuid.UUID) (*models.Users, error)
 	DeleteUser(ctx context.Context, userID uuid.UUID) error
 }
+
+type GRPCService interface {
+	ExtractUserIDFromToken(ctx context.Context, accessToken string, pathSecret string) (uuid.UUID, error)
+}

@@ -27,6 +27,7 @@ type DeletePostController struct {
 // @Router      /post/{post_id} [delete]
 func (dpc *DeletePostController) Delete(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
+	authorID := ctx.GetString("x-user-id")
 
 	_, err := dpc.DeletePostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
@@ -34,7 +35,7 @@ func (dpc *DeletePostController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	if err = dpc.DeletePostService.DeletePost(ctx, uuid.MustParse(postID)); err != nil {
+	if err = dpc.DeletePostService.DeletePost(ctx, uuid.MustParse(postID), uuid.MustParse(authorID)); err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}

@@ -7,6 +7,7 @@ import (
 	_ "posts/docs"
 	route "posts/internal/api/router"
 	"posts/internal/app"
+	autgrpc "posts/internal/clients/auth/grpc"
 )
 
 // @title           Gin Posts Service
@@ -32,7 +33,11 @@ func main() {
 
 	gin := gin.Default()
 	gin.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	route.SetupRouter(env, db, gin)
+	authClient, err := autgrpc.NewGRPCClient(env.Clients.Address)
+	if err != nil {
+		panic("Ошибка подключения к gRPC")
+	}
+	route.SetupRouter(env, db, gin, authClient)
 
 	gin.Run(":" + env.PostsServer.PostsPort)
 }

@@ -29,3 +29,7 @@ mongo_auth_db:
   port: 27017
   host: "localhost"     
   ctxExp: 10
+
+grpc:
+  port: 13713
+  timeout: 10h

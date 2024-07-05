@@ -14,6 +14,7 @@ type Config struct {
 	PostsServer PostsServer `yaml:"posts_server"`
 	PostgresDB  PostgresDB  `yaml:"postgres_posts_db"`
 	RedisDB     RedisDB     `yaml:"redis_posts_db"`
+	Clients     GRPCClient  `yaml:"clients"`
 }
 
 type PostsServer struct {
@@ -35,7 +36,9 @@ type RedisDB struct {
 	Exp  uint   `yaml:"exp" env:"REDIS_EXPIRATION"`
 }
 
-var ConfigEnvs Config
+type GRPCClient struct {
+	Address string `yaml:"address"`
+}
 
 func InitConfig() (*Config, error) {
 	var env Config

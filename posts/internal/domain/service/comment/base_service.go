@@ -13,16 +13,16 @@ type CreateCommentServcie interface {
 }
 
 type GetCommentServcie interface {
-	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) (*models.Comment, error)
+	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)
 	GetComments(ctx context.Context, postID uuid.UUID, limit int, offset int) (*[]models.Comment, error)
 }
 
 type UpdateCommentService interface {
-	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) (*models.Comment, error)
-	UpdateComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, comment *schemas.CommentUpdateRequest) error
+	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)
+	UpdateComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID, comment *schemas.CommentUpdateRequest) error
 }
 
 type DeleteCommentService interface {
-	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) (*models.Comment, error)
-	DeleteComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) error
+	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)
+	DeleteComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) error
 }

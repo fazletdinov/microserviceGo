@@ -19,3 +19,6 @@ redis_posts_db:
   host: "localhost"
   port: 6379
   exp: 60
+
+clients:
+  address: "localhost:13713"

@@ -15,6 +15,5 @@ type CommentCreateRequest struct {
 }
 
 type CommentUpdateRequest struct {
-	Text     string    `json:"text"`
-	AuthorID uuid.UUID `json:"-"`
+	Text string `json:"text"`
 }

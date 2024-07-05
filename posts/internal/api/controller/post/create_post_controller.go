@@ -28,15 +28,16 @@ type CreatePostController struct {
 // @Router      /post 	[post]
 func (pc *CreatePostController) Create(ctx *gin.Context) {
 	var postRequest schemas.PostCreateRequest
+	authorID := ctx.GetString("x-user-id")
 
 	if err := ctx.ShouldBindJSON(&postRequest); err != nil {
-		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Невалидные данные"})
 		return
 	}
 	post := models.Post{
 		Title:    postRequest.Title,
 		Content:  postRequest.Content,
-		AuthorID: uuid.New(),
+		AuthorID: uuid.MustParse(authorID),
 	}
 	if err := pc.CreatePosteService.CreatePost(ctx, &post); err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})

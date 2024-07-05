@@ -22,6 +22,6 @@ func (dps *deletePostService) GetByID(ctx context.Context, postID uuid.UUID) (*m
 	return dps.postRepository.GetByIDPost(ctx, postID)
 }
 
-func (dps *deletePostService) DeletePost(ctx context.Context, postID uuid.UUID) error {
-	return dps.postRepository.DeletePost(ctx, postID)
+func (dps *deletePostService) DeletePost(ctx context.Context, postID uuid.UUID, authorID uuid.UUID) error {
+	return dps.postRepository.DeletePost(ctx, postID, authorID)
 }

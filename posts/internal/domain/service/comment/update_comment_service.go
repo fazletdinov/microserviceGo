@@ -19,10 +19,10 @@ func NewUpdateCommentService(commentRepository comment.CommentRepository) Update
 	}
 }
 
-func (ucs *updateCommentService) GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) (*models.Comment, error) {
-	return ucs.commentRepository.GetByIDComment(ctx, postID, commentID)
+func (ucs *updateCommentService) GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error) {
+	return ucs.commentRepository.GetByIDComment(ctx, postID, commentID, authorID)
 }
 
-func (ucs *updateCommentService) UpdateComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, comment *schemas.CommentUpdateRequest) error {
-	return ucs.commentRepository.UpdateComment(ctx, postID, commentID, comment)
+func (ucs *updateCommentService) UpdateComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID, comment *schemas.CommentUpdateRequest) error {
+	return ucs.commentRepository.UpdateComment(ctx, postID, commentID, authorID, comment)
 }

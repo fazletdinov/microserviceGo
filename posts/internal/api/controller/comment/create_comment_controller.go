@@ -31,6 +31,7 @@ type CreateCommentController struct {
 // @Router      /post/{post_id}/comment [post]
 func (ccc *CreateCommentController) Create(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
+	authorID := ctx.GetString("x-user-id")
 
 	_, err := ccc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
@@ -41,13 +42,13 @@ func (ccc *CreateCommentController) Create(ctx *gin.Context) {
 	var commentRequest schemas.CommentCreateRequest
 
 	if err := ctx.ShouldBindJSON(&commentRequest); err != nil {
-		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: err.Error()})
+		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Не валидные данные"})
 		return
 	}
 
 	comment := models.Comment{
 		Text:     commentRequest.Text,
-		AuthorID: uuid.New(),
+		AuthorID: uuid.MustParse(authorID),
 		PostID:   uuid.MustParse(postID),
 	}
 

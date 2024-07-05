@@ -9,7 +9,6 @@ import (
 	"auth/internal/schemas"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -39,7 +38,7 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 	}
 
 	_, err = sc.SignupService.GetUserByEmail(ctx, request.Email)
-	if err != nil {
+	if err == nil {
 		ctx.JSON(http.StatusConflict, schemas.ErrorResponse{Message: "Пользователь с указанным email уже существует"})
 		return
 	}
@@ -56,9 +55,9 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 	request.Password = string(encryptedPassword)
 
 	user := models.Users{
-		ID:       uuid.New(),
 		Email:    request.Email,
 		Password: request.Password,
+		IsActive: true,
 	}
 
 	err = sc.SignupService.Create(ctx, &user)

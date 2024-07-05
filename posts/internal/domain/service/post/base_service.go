@@ -19,10 +19,10 @@ type GetPostServcie interface {
 
 type UpdatePostServcie interface {
 	GetByID(ctx context.Context, postID uuid.UUID) (*models.Post, error)
-	UpdatePost(ctx context.Context, post *schemas.PostUpdateRequest) error
+	UpdatePost(ctx context.Context, post *schemas.PostUpdateRequest, authorID uuid.UUID) error
 }
 
 type DeletePostServcie interface {
 	GetByID(ctx context.Context, postID uuid.UUID) (*models.Post, error)
-	DeletePost(ctx context.Context, postID uuid.UUID) error
+	DeletePost(ctx context.Context, postID uuid.UUID, authorID uuid.UUID) error
 }

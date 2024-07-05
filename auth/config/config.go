@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
@@ -15,6 +16,7 @@ type Config struct {
 	MongoDB    MongoDB    `yaml:"mongo_auth_db"`
 	PostgresDB PostgresDB `yaml:"postgres_auth_db"`
 	JWTConfig  JWTConfig  `yaml:"jwt_config"`
+	GRPC       GRPC       `yaml:"grpc"`
 }
 
 type AuthServer struct {
@@ -46,6 +48,11 @@ type PostgresDB struct {
 	SSLMode  string `yaml:"ssl_mode" env:"POSTGRES_USE_SSL"`
 }
 
+type GRPC struct {
+	Port    int           `yaml:"port"`
+	Timeout time.Duration `yaml:"timeout"`
+}
+
 func InitConfig() (*Config, error) {
 	var env Config
 	errEnv := godotenv.Load()
@@ -62,8 +69,10 @@ func InitConfig() (*Config, error) {
 
 func parseCommand() string {
 	var cfgPath string
-	fset := flag.NewFlagSet("Auth", flag.ContinueOnError)
-	fset.StringVar(&cfgPath, "path", os.Getenv("PATH_CONFIG"), "path to config file")
-	fset.Parse(os.Args[1:])
+	flag.StringVar(&cfgPath, "path", "", "path to config file")
+	flag.Parse()
+	if cfgPath == "" {
+		cfgPath = os.Getenv("PATH_CONFIG")
+	}
 	return cfgPath
 }

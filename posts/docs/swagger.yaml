@@ -270,34 +270,6 @@ paths:
       summary: Удаление Comment
       tags:
       - Comment
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: Post ID
-        in: path
-        name: post_id
-        required: true
-        type: string
-      - description: Comment ID
-        in: path
-        name: comment_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/schemas.CommentResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/schemas.ErrorResponse'
-      summary: Получение Comment
-      tags:
-      - Comment
     put:
       consumes:
       - application/json

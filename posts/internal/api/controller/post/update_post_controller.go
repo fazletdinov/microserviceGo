@@ -29,6 +29,7 @@ type UpdatePostController struct {
 // @Router      /post/{post_id} [put]
 func (upc *UpdatePostController) Update(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
+	authorID := ctx.GetString("x-user-id")
 
 	post, err := upc.UpdatePostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
@@ -43,8 +44,7 @@ func (upc *UpdatePostController) Update(ctx *gin.Context) {
 		return
 	}
 	postRequest.ID = post.ID
-	postRequest.AuthorID = post.AuthorID
-	err = upc.UpdatePostService.UpdatePost(ctx, &postRequest)
+	err = upc.UpdatePostService.UpdatePost(ctx, &postRequest, uuid.MustParse(authorID))
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return

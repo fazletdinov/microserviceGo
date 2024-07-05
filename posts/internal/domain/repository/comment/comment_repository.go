@@ -27,9 +27,9 @@ func (cr *commentRepository) CreateComment(ctx context.Context, comment *models.
 	return nil
 }
 
-func (cr *commentRepository) GetByIDComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) (*models.Comment, error) {
+func (cr *commentRepository) GetByIDComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error) {
 	var comment models.Comment
-	result := cr.database.First(&comment, "id = ? AND post_id = ?", commentID, postID)
+	result := cr.database.Model(&models.Comment{PostID: postID, AuthorID: authorID}).First(&comment, "id = ?", commentID)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -45,16 +45,16 @@ func (cr *commentRepository) GetComments(ctx context.Context, postID uuid.UUID, 
 	return &comments, nil
 }
 
-func (cr *commentRepository) UpdateComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, comment *schemas.CommentUpdateRequest) error {
-	result := cr.database.Model(&models.Comment{PostID: postID, ID: commentID}).Updates(&comment)
+func (cr *commentRepository) UpdateComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID, comment *schemas.CommentUpdateRequest) error {
+	result := cr.database.Model(&models.Comment{PostID: postID, ID: commentID, AuthorID: authorID}).Updates(&comment)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (cr *commentRepository) DeleteComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) error {
-	result := cr.database.Where("post_id = ?", postID).Delete(&models.Comment{}, commentID)
+func (cr *commentRepository) DeleteComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) error {
+	result := cr.database.Where("post_id = ? AND author_id = ?", postID, authorID).Delete(&models.Comment{}, commentID)
 	if result.Error != nil {
 		return result.Error
 	}

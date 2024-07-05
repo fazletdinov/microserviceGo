@@ -18,34 +18,6 @@ type GetCommentController struct {
 	Env               *config.Config
 }
 
-// GetComment  godoc
-// @Summary	   Получение Comment
-// @Tags       Comment
-// @Accept	   json
-// @Produce    json
-// @Param	   post_id		path		string		          	true		"Post ID"
-// @Param	   comment_id	path		string		          	true		"Comment ID"
-// @Success    200  		{object}  	schemas.CommentResponse
-// @Failure	   500			{object}	schemas.ErrorResponse
-// @Router     /post/{post_id}/comment/{comment_id}  [get]
-func (gcc *GetCommentController) Fetch(ctx *gin.Context) {
-	postID := ctx.Param("post_id")
-	commentID := ctx.Param("comment_id")
-	_, err := gcc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
-		return
-	}
-
-	comment, err := gcc.GetCommentService.GetByID(ctx, uuid.MustParse(postID), uuid.MustParse(commentID))
-	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Comment не найден"})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, comment)
-}
-
 // ListComments godoc
 //
 // @Summary		Получение списока Comment

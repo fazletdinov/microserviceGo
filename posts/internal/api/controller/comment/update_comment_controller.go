@@ -33,6 +33,7 @@ type UpdateCommentController struct {
 func (upc *UpdateCommentController) Update(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
 	commentID := ctx.Param("comment_id")
+	authorID := ctx.GetString("x-user-id")
 
 	_, err := upc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
@@ -40,7 +41,7 @@ func (upc *UpdateCommentController) Update(ctx *gin.Context) {
 		return
 	}
 
-	_, err = upc.UpdateCommentService.GetByID(ctx, uuid.MustParse(postID), uuid.MustParse(commentID))
+	_, err = upc.UpdateCommentService.GetByID(ctx, uuid.MustParse(postID), uuid.MustParse(commentID), uuid.MustParse(authorID))
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Comment не найден"})
 		return
@@ -52,7 +53,7 @@ func (upc *UpdateCommentController) Update(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
-	err = upc.UpdateCommentService.UpdateComment(ctx, uuid.MustParse(postID), uuid.MustParse(commentID), &commentRequest)
+	err = upc.UpdateCommentService.UpdateComment(ctx, uuid.MustParse(postID), uuid.MustParse(commentID), uuid.MustParse(authorID), &commentRequest)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return

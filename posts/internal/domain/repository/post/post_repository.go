@@ -45,16 +45,16 @@ func (pr *postRepository) GetPosts(ctx context.Context, limit int, offset int) (
 	return &posts, nil
 }
 
-func (pr *postRepository) UpdatePost(ctx context.Context, post *schemas.PostUpdateRequest) error {
-	result := pr.database.Model(&models.Post{}).Where("id = ?", post.ID).Updates(&post)
+func (pr *postRepository) UpdatePost(ctx context.Context, post *schemas.PostUpdateRequest, authorID uuid.UUID) error {
+	result := pr.database.Model(&models.Post{ID: post.ID}).Where("author_id = ?", authorID).Updates(&post)
 	if result.Error != nil {
 		return result.Error
 	}
 	return nil
 }
 
-func (pr *postRepository) DeletePost(ctx context.Context, postID uuid.UUID) error {
-	result := pr.database.Delete(&models.Post{}, postID)
+func (pr *postRepository) DeletePost(ctx context.Context, postID uuid.UUID, authorID uuid.UUID) error {
+	result := pr.database.Where("author_id = ?", authorID).Delete(&models.Post{}, postID)
 	if result.Error != nil {
 		return result.Error
 	}

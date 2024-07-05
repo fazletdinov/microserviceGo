@@ -23,6 +23,6 @@ func (ups *updatePostService) GetByID(ctx context.Context, postID uuid.UUID) (*m
 	return ups.postRepository.GetByIDPost(ctx, postID)
 }
 
-func (ups *updatePostService) UpdatePost(ctx context.Context, post *schemas.PostUpdateRequest) error {
-	return ups.postRepository.UpdatePost(ctx, post)
+func (ups *updatePostService) UpdatePost(ctx context.Context, post *schemas.PostUpdateRequest, authorID uuid.UUID) error {
+	return ups.postRepository.UpdatePost(ctx, post, authorID)
 }

@@ -4,6 +4,14 @@ import (
 	_ "auth/docs"
 	route "auth/internal/api/route"
 	"auth/internal/app"
+	"fmt"
+	"os"
+	"os/signal"
+
+	// "os"
+	// "os/signal"
+	"syscall"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -24,15 +32,18 @@ import (
 
 func main() {
 
-	app := app.App()
-
+	app := app.NewApp()
 	env := app.Env
 
 	db := app.DB
-
 	gin := gin.Default()
 	gin.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	route.SetupRouter(env, db, gin)
+	go app.GRPCServer.MustRun()
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)
+	go gin.Run(":" + env.AuthServer.AuthPort)
 
-	gin.Run(":" + env.AuthServer.AuthPort)
+	<-stop
+	app.GRPCServer.Stop()
 }

@@ -29,7 +29,7 @@ func (ur *userRepository) Create(ctx context.Context, user *models.Users) error 
 
 func (ur *userRepository) GetByEmail(c context.Context, email string) (*models.Users, error) {
 	var user models.Users
-	result := ur.database.Where("email = ? AND is_active = ?", email, true).First(&user)
+	result := ur.database.Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -38,7 +38,7 @@ func (ur *userRepository) GetByEmail(c context.Context, email string) (*models.U
 
 func (ur *userRepository) GetByID(c context.Context, userID uuid.UUID) (*models.Users, error) {
 	var user models.Users
-	result := ur.database.Where("id = ? AND is_active = ?", userID, true).First(&user)
+	result := ur.database.Model(models.Users{ID: userID, IsActive: true}).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -46,7 +46,7 @@ func (ur *userRepository) GetByID(c context.Context, userID uuid.UUID) (*models.
 }
 
 func (ur *userRepository) Update(c context.Context, userID uuid.UUID, userUpdate *schemas.UpdateUser) error {
-	result := ur.database.Model(&models.Users{}).Where("is_active = ? AND id = ?", true, userID).Updates(&userUpdate)
+	result := ur.database.Model(&models.Users{ID: userID, IsActive: true}).Updates(&userUpdate)
 	if result.Error != nil {
 		return result.Error
 	}

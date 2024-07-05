@@ -18,10 +18,10 @@ func NewDeleteCommentService(commentRepository comment.CommentRepository) Delete
 	}
 }
 
-func (ucs *deleteCommentService) GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) (*models.Comment, error) {
-	return ucs.commentRepository.GetByIDComment(ctx, postID, commentID)
+func (ucs *deleteCommentService) GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error) {
+	return ucs.commentRepository.GetByIDComment(ctx, postID, commentID, authorID)
 }
 
-func (ucs *deleteCommentService) DeleteComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) error {
-	return ucs.commentRepository.DeleteComment(ctx, postID, commentID)
+func (ucs *deleteCommentService) DeleteComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) error {
+	return ucs.commentRepository.DeleteComment(ctx, postID, commentID, authorID)
 }

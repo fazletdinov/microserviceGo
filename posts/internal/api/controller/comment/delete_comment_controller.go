@@ -31,6 +31,7 @@ type DeleteCommentController struct {
 func (dpc *DeleteCommentController) Delete(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
 	commentID := ctx.Param("comment_id")
+	authorID := ctx.GetString("x-user-id")
 
 	_, err := dpc.GetPostService.GetByID(ctx, uuid.MustParse(postID))
 	if err != nil {
@@ -38,13 +39,13 @@ func (dpc *DeleteCommentController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	_, err = dpc.DeleteCommentService.GetByID(ctx, uuid.MustParse(postID), uuid.MustParse(commentID))
+	_, err = dpc.DeleteCommentService.GetByID(ctx, uuid.MustParse(postID), uuid.MustParse(commentID), uuid.MustParse(authorID))
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Comment не найден"})
 		return
 	}
 
-	if err = dpc.DeleteCommentService.DeleteComment(ctx, uuid.MustParse(postID), uuid.MustParse(commentID)); err != nil {
+	if err = dpc.DeleteCommentService.DeleteComment(ctx, uuid.MustParse(postID), uuid.MustParse(commentID), uuid.MustParse(authorID)); err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}

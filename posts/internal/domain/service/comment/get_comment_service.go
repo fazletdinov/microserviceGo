@@ -18,8 +18,8 @@ func NewGetCommentService(commentRepository comment.CommentRepository) GetCommen
 	}
 }
 
-func (gcs *getCommentService) GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID) (*models.Comment, error) {
-	return gcs.commentRepository.GetByIDComment(ctx, postID, commentID)
+func (gcs *getCommentService) GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error) {
+	return gcs.commentRepository.GetByIDComment(ctx, postID, commentID, authorID)
 }
 
 func (gcs *getCommentService) GetComments(ctx context.Context, postID uuid.UUID, limit int, offset int) (*[]models.Comment, error) {
