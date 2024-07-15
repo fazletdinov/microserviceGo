@@ -6,9 +6,6 @@ import (
 	"auth/internal/app"
 	"os"
 	"os/signal"
-
-	// "os"
-	// "os/signal"
 	"syscall"
 
 	"github.com/gin-gonic/gin"

@@ -25,7 +25,7 @@ type CreatePostController struct {
 // @Success     201  		{object}  	schemas.SuccessResponse
 // @Failure		400			{object}	schemas.ErrorResponse
 // @Failure		500			{object}	schemas.ErrorResponse
-// @Router      /post 	[post]
+// @Router      /post 		[post]
 func (pc *CreatePostController) Create(ctx *gin.Context) {
 	var postRequest schemas.PostCreateRequest
 	authorID := ctx.GetString("x-user-id")

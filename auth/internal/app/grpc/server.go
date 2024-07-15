@@ -1,29 +1,41 @@
 package grpcapp
 
 import (
+	"auth/config"
 	"auth/internal/api/grpc/auth"
 	"fmt"
 	"log/slog"
 	"net"
 
-	"auth/internal/domain/service"
+	authgrpc "auth/protogen/auth"
+
+	"auth/internal/domain/repository"
+	"auth/internal/domain/service/grpc_service"
+
 	"google.golang.org/grpc"
+	"gorm.io/gorm"
 )
 
 type GRPC struct {
 	log        *slog.Logger
 	gRPCServer *grpc.Server
-	port       int
+	Env        *config.Config
 }
 
-func NewGRPC(log *slog.Logger, port int, pathSecret string) *GRPC {
+func NewGRPC(log *slog.Logger, env *config.Config, db *gorm.DB) *GRPC {
 	gRPCServer := grpc.NewServer()
-	auth.Register(gRPCServer, service.NewGRPCService(), pathSecret)
+	authgrpc.RegisterGatewayAuthServer(
+		gRPCServer,
+		&auth.GRPCController{
+			UserGRPCService: grpcservice.NewUserGRPCService(repository.NewUserGRPCRepository(db)),
+			Env:             env,
+		},
+	)
 
 	return &GRPC{
 		log:        log,
 		gRPCServer: gRPCServer,
-		port:       port,
+		Env:        env,
 	}
 }
 
@@ -36,9 +48,9 @@ func (g *GRPC) MustRun() {
 func (g *GRPC) Run() error {
 	const op = "grpcapp.Run"
 	log := g.log.With(slog.String("op", op),
-		slog.Int("port", g.port),
+		slog.Int("port", g.Env.GRPC.Port),
 	)
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", g.port))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.GRPC.Port))
 	if err != nil {
 		return fmt.Errorf("%s:%v", op, err)
 	}
@@ -52,6 +64,6 @@ func (g *GRPC) Run() error {
 
 func (g *GRPC) Stop() {
 	const op = "grpcapp.Run"
-	g.log.With(slog.String("op", op)).Info("Остановка gRPC Server", slog.Int("port", g.port))
+	g.log.With(slog.String("op", op)).Info("Остановка gRPC Server", slog.Int("port", g.Env.GRPC.Port))
 	g.gRPCServer.GracefulStop()
 }

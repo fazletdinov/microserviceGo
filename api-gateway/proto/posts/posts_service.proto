@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package posts;
+
+option go_package = "api-grpc-gateway/protogen/golang";
+
+import "posts/posts.proto";
+
+
+service GatewayPosts {
+  rpc CreatePost(CreatePostRequest) returns (CreatePostResponse);
+  rpc GetPostByID(GetPostRequest) returns (GetPostResponse);
+  rpc GetPosts(GetPostsRequest) returns (GetPostsResponse);
+  rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse);
+  rpc DeletePost(DeletePostRequest) returns (DeletePostResponse);
+
+  rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
+  rpc GetPostComments(GetCommentsRequest) returns (GetCommentsResponse);
+  rpc GetCommentByID(GetCommentRequest) returns (GetCommentResponse);
+  rpc DeletePostComment(DeleteCommentRequest) returns (DeleteCommentResponse);
+  rpc UpdatePostComment(UpdateCommentRequest) returns (UpdateCommentResponse);
+}

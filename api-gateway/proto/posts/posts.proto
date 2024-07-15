@@ -1,0 +1,127 @@
+syntax = "proto3";
+
+package posts;
+
+option go_package = "api-grpc-gateway/protogen/golang";
+
+import "google/protobuf/timestamp.proto";
+
+
+message CreatePostRequest {
+    string title = 1;
+    string content = 2;
+    string author_id = 3;
+}
+
+message CreatePostResponse {
+    string post_id = 1;
+}
+
+message GetPostRequest {
+    string post_id = 1;
+}
+
+message GetPostResponse {
+    string title = 1;
+    string content = 2;
+    string author_id = 3;
+    google.protobuf.Timestamp created_at = 4;
+    repeated Comment comments = 5;
+}
+
+message GetPostsRequest {
+    uint64 limit = 1;
+    uint64 offset = 2;
+}
+
+message GetPostsResponse {
+    repeated Post posts = 1;
+}
+
+message Post {
+    string title = 1;
+    string content = 2;
+    string author_id = 3;
+    google.protobuf.Timestamp created_at = 4;
+    repeated Comment comments = 5;
+}
+
+message DeletePostRequest {
+    string post_id = 1;
+    string author_id = 2;
+}
+
+message DeletePostResponse {
+    string success_message = 1;
+}
+
+
+message UpdatePostRequest {
+    string post_id = 1;
+    string author_id = 2;
+    string title = 3;
+    string content = 4;
+};
+
+message UpdatePostResponse {
+    string success_message = 1;
+}
+
+// Комментарии к постам
+
+message CreateCommentRequest {
+    string text = 1;
+    string post_id = 2;
+    string author_id = 3;
+}
+
+message CreateCommentResponse {
+    string comment_id = 1;
+}
+
+message GetCommentsRequest {
+    string post_id = 1;
+    uint64 limit = 2;
+    uint64 offset = 3;
+}
+
+message GetCommentsResponse {
+    repeated Comment comments = 1;
+}
+
+message Comment {
+    string text = 1;
+    string author_id = 2;
+    google.protobuf.Timestamp created_at = 3;
+}
+
+message GetCommentRequest {
+    string comment_id = 1;
+    string post_id = 2;
+    string author_id = 3;
+}
+
+message GetCommentResponse {
+    Comment comment = 1;
+}
+
+message DeleteCommentRequest {
+    string comment_id = 1;
+    string post_id = 2;
+    string author_id = 3;
+}
+
+message DeleteCommentResponse {
+    string success_message = 1;
+}
+
+message UpdateCommentRequest {
+    string comment_id = 1;
+    string post_id = 2;
+    string author_id = 3;
+    string text = 4;
+};
+
+message UpdateCommentResponse {
+    string success_message = 1;
+}

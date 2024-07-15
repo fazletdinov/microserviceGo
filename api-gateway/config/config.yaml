@@ -1,0 +1,17 @@
+# Окружение - local, dev или prod
+env: "local"
+
+# конфигурация gatewayGRPCServer
+gatewayGRPCServer: 
+  grpc_port: "8000"
+  auth_server_address: "localhost:13713"
+  posts_server_address: "localhost:8081"
+  likes_server_address: "localhost:8082"
+
+# конфигурация JWT
+jwt_config:
+  path_private_key: ""
+  path_public_key: ""
+  access_token_exp: 60
+  refresh_token_exp: 60
+  session_cookie_name: ""

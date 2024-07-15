@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"net/http"
 	"posts/internal/clients/auth/grpc"
 	"posts/internal/schemas"
@@ -17,7 +16,6 @@ func JwtAuthMiddleware(client *grpc.GRPCClient) gin.HandlerFunc {
 		if len(token) == 2 {
 			authToken := token[1]
 			userID, err := client.ExtractUserIDFromToken(ctx, authToken)
-			fmt.Printf("userID ==================== %v\nerrr ============ %v\n", userID, err)
 			if err != nil {
 				ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 				ctx.Abort()

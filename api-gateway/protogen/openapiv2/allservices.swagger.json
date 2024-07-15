@@ -1,0 +1,1169 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "auth/auth.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "GatewayAuth"
+    },
+    {
+      "name": "GatewayLikes"
+    },
+    {
+      "name": "GatewayPosts"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/auth.GatewayAuth/CreateUser": {
+      "post": {
+        "operationId": "GatewayAuth_CreateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authCreateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authCreateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayAuth"
+        ]
+      }
+    },
+    "/auth.GatewayAuth/DeleteUser": {
+      "post": {
+        "operationId": "GatewayAuth_DeleteUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authDeleteUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authDeleteUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayAuth"
+        ]
+      }
+    },
+    "/auth.GatewayAuth/GetUserByEmail": {
+      "post": {
+        "operationId": "GatewayAuth_GetUserByEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authGetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authGetUserByEmailRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayAuth"
+        ]
+      }
+    },
+    "/auth.GatewayAuth/GetUserByEmailIsActive": {
+      "post": {
+        "operationId": "GatewayAuth_GetUserByEmailIsActive",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authGetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authGetUserByEmailRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayAuth"
+        ]
+      }
+    },
+    "/auth.GatewayAuth/GetUserByID": {
+      "post": {
+        "operationId": "GatewayAuth_GetUserByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authGetUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authGetUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayAuth"
+        ]
+      }
+    },
+    "/auth.GatewayAuth/UpdateUser": {
+      "post": {
+        "operationId": "GatewayAuth_UpdateUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/authUpdateUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/authUpdateUserRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayAuth"
+        ]
+      }
+    },
+    "/likes.GatewayLikes/CreateReaction": {
+      "post": {
+        "operationId": "GatewayLikes_CreateReaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/likesCreateReactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/likesCreateReactionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayLikes"
+        ]
+      }
+    },
+    "/likes.GatewayLikes/DeleteReaction": {
+      "post": {
+        "operationId": "GatewayLikes_DeleteReaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/likesDeleteReactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/likesDeleteReactionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayLikes"
+        ]
+      }
+    },
+    "/likes.GatewayLikes/GetReactionByID": {
+      "post": {
+        "operationId": "GatewayLikes_GetReactionByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/likesGetReactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/likesGetReactionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayLikes"
+        ]
+      }
+    },
+    "/likes.GatewayLikes/GetReactions": {
+      "post": {
+        "operationId": "GatewayLikes_GetReactions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/likesGetReactionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/likesGetReactionsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayLikes"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/CreateComment": {
+      "post": {
+        "operationId": "GatewayPosts_CreateComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsCreateCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsCreateCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/CreatePost": {
+      "post": {
+        "operationId": "GatewayPosts_CreatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsCreatePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsCreatePostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/DeletePost": {
+      "post": {
+        "operationId": "GatewayPosts_DeletePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsDeletePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsDeletePostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/DeletePostComment": {
+      "post": {
+        "operationId": "GatewayPosts_DeletePostComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsDeleteCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsDeleteCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/GetCommentByID": {
+      "post": {
+        "operationId": "GatewayPosts_GetCommentByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsGetCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsGetCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/GetPostByID": {
+      "post": {
+        "operationId": "GatewayPosts_GetPostByID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsGetPostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsGetPostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/GetPostComments": {
+      "post": {
+        "operationId": "GatewayPosts_GetPostComments",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsGetCommentsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsGetCommentsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/GetPosts": {
+      "post": {
+        "operationId": "GatewayPosts_GetPosts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsGetPostsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsGetPostsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/UpdatePost": {
+      "post": {
+        "operationId": "GatewayPosts_UpdatePost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsUpdatePostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsUpdatePostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/UpdatePostComment": {
+      "post": {
+        "operationId": "GatewayPosts_UpdatePostComment",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsUpdateCommentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsUpdateCommentRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "authCreateUserRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "authCreateUserResponse": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "authDeleteUserRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "authDeleteUserResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "authGetUserByEmailRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        }
+      }
+    },
+    "authGetUserRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        }
+      }
+    },
+    "authGetUserResponse": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "authUpdateUserRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        }
+      }
+    },
+    "authUpdateUserResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "likesCreateReactionRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "likesCreateReactionResponse": {
+      "type": "object",
+      "properties": {
+        "reactionId": {
+          "type": "string"
+        }
+      }
+    },
+    "likesDeleteReactionRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "likesDeleteReactionResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "likesGetReactionRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "likesGetReactionResponse": {
+      "type": "object",
+      "properties": {
+        "reactionId": {
+          "type": "string"
+        }
+      }
+    },
+    "likesGetReactionsRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "offset": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "likesGetReactionsResponse": {
+      "type": "object",
+      "properties": {
+        "reactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/likesReaction"
+          }
+        }
+      }
+    },
+    "likesReaction": {
+      "type": "object",
+      "properties": {
+        "reactionId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsComment": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "postsCreateCommentRequest": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsCreateCommentResponse": {
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsCreatePostRequest": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsCreatePostResponse": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsDeleteCommentRequest": {
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "string"
+        },
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsDeleteCommentResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "postsDeletePostRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsDeletePostResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "postsGetCommentRequest": {
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "string"
+        },
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsGetCommentResponse": {
+      "type": "object",
+      "properties": {
+        "comment": {
+          "$ref": "#/definitions/postsComment"
+        }
+      }
+    },
+    "postsGetCommentsRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "limit": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "offset": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "postsGetCommentsResponse": {
+      "type": "object",
+      "properties": {
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/postsComment"
+          }
+        }
+      }
+    },
+    "postsGetPostRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsGetPostResponse": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/postsComment"
+          }
+        }
+      }
+    },
+    "postsGetPostsRequest": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "offset": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "postsGetPostsResponse": {
+      "type": "object",
+      "properties": {
+        "posts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/postsPost"
+          }
+        }
+      }
+    },
+    "postsPost": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/postsComment"
+          }
+        }
+      }
+    },
+    "postsUpdateCommentRequest": {
+      "type": "object",
+      "properties": {
+        "commentId": {
+          "type": "string"
+        },
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        }
+      }
+    },
+    "postsUpdateCommentResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "postsUpdatePostRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        }
+      }
+    },
+    "postsUpdatePostResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

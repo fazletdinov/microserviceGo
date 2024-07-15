@@ -35,7 +35,7 @@ func NewApp() Application {
 		log.Fatalf("ошибка подключения к Postgres - %v", errPostgres)
 	}
 	log := setupLogger(Env.Env)
-	app.GRPCServer = grpcapp.NewGRPC(log, Env.GRPC.Port, Env.JWTConfig.PathPublicKey)
+	app.GRPCServer = grpcapp.NewGRPC(log, Env, Client)
 	app.Env = Env
 	app.DB = Client
 	return *app

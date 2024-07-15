@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package auth;
+
+option go_package = "api-grpc-gateway/protogen/golang";
+
+import "google/protobuf/timestamp.proto";
+
+
+message CreateUserRequest {
+    string email = 1;
+    string password = 2;
+}
+
+message CreateUserResponse {
+    string user_id = 1;
+}
+
+message GetUserRequest {
+    string user_id = 1;
+};
+
+message GetUserResponse {
+    string user_id = 1;
+    string email = 2;
+    string password = 3;
+    string first_name = 4;
+    string last_name = 5;
+    google.protobuf.Timestamp created_at = 6;
+}
+
+message DeleteUserRequest {
+    string user_id = 1;
+}
+
+message DeleteUserResponse {
+    string success_message = 1;
+}
+
+message UpdateUserRequest {
+    string user_id = 1;
+    string first_name = 2;
+    string last_name = 3;
+}
+
+message UpdateUserResponse {
+    string success_message = 1;
+}
+
+
+message UserRequest {
+    string access_token = 1;
+}
+
+message UserResponse {
+    string user_id = 1;
+}
+
+
+message GetUserByEmailRequest {
+    string email = 1;
+}

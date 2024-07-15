@@ -1,3 +1,4 @@
 .env
 .idea
 auth/cert
+api-gateway/cert
