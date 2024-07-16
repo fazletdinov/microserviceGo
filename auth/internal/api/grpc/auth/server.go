@@ -8,7 +8,6 @@ import (
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"auth/internal/domain/service/grpc_service"
 )
@@ -54,7 +53,7 @@ func (gc *GRPCController) GetUserByID(
 	return &authgrpc.GetUserResponse{
 		UserId:    user.ID.String(),
 		Email:     user.Email,
-		CreatedAt: timestamppb.New(user.CreatedAt),
+		CreatedAt: user.CreatedAt.String(),
 	}, nil
 }
 
@@ -114,7 +113,7 @@ func (gc *GRPCController) GetUserByEmail(
 		UserId:    user.ID.String(),
 		Email:     user.Email,
 		Password:  user.Password,
-		CreatedAt: timestamppb.New(user.CreatedAt),
+		CreatedAt: user.CreatedAt.String(),
 	}, nil
 }
 
@@ -134,6 +133,6 @@ func (gc *GRPCController) GetUserByEmailIsActive(
 		UserId:    user.ID.String(),
 		Email:     user.Email,
 		Password:  user.Password,
-		CreatedAt: timestamppb.New(user.CreatedAt),
+		CreatedAt: user.CreatedAt.String(),
 	}, nil
 }

@@ -3,26 +3,14 @@ package comment
 import (
 	"context"
 	"posts/internal/models"
-	"posts/internal/schemas"
 
 	"github.com/google/uuid"
 )
 
-type CreateCommentServcie interface {
-	CreateComment(ctx context.Context, comment *models.Comment) error
-}
-
-type GetCommentServcie interface {
-	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)
-	GetComments(ctx context.Context, postID uuid.UUID, limit int, offset int) (*[]models.Comment, error)
-}
-
-type UpdateCommentService interface {
-	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)
-	UpdateComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID, comment *schemas.CommentUpdateRequest) error
-}
-
-type DeleteCommentService interface {
-	GetByID(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)
-	DeleteComment(ctx context.Context, postID uuid.UUID, commentID uuid.UUID, authorID uuid.UUID) error
+type CommentGRPCServcie interface {
+	CreateComment(ctx context.Context, text string, postID uuid.UUID, authorID uuid.UUID) (uuid.UUID, error)
+	GetPostComments(ctx context.Context, postID uuid.UUID, limit uint64, offset uint64) (*[]models.Comment, error)
+	GetCommentByID(ctx context.Context, commentID uuid.UUID, postID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)
+	UpdateComment(ctx context.Context, commentID uuid.UUID, postID uuid.UUID, authorID uuid.UUID, text string) error
+	DeleteComment(ctx context.Context, commentID uuid.UUID, postID uuid.UUID, authorID uuid.UUID) error
 }

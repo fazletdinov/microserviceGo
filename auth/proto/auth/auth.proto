@@ -4,8 +4,6 @@ package auth;
 
 option go_package = "auth/protogen";
 
-import "google/protobuf/timestamp.proto";
-
 
 message CreateUserRequest {
     string email = 1;
@@ -26,7 +24,7 @@ message GetUserResponse {
     string password = 3;
     string first_name = 4;
     string last_name = 5;
-    google.protobuf.Timestamp created_at = 6;
+    string created_at = 6;
 }
 
 message DeleteUserRequest {

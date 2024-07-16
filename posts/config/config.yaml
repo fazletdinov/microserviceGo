@@ -22,3 +22,6 @@ redis_posts_db:
 
 clients:
   address: "localhost:13713"
+
+grpc:
+  port: 13714

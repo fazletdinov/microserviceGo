@@ -3,17 +3,27 @@ package app
 import (
 	"github.com/go-redis/redis"
 	"log"
+	"log/slog"
+	"os"
 	"posts/config"
+	"posts/internal/app/grpc_app"
 	"posts/internal/database/postgres"
 	"posts/internal/database/redis_client"
 
 	"gorm.io/gorm"
 )
 
+const (
+	envLocal = "local"
+	envDev   = "dev"
+	envProd  = "prod"
+)
+
 type Application struct {
-	DB    *gorm.DB
-	Env   *config.Config
-	Redis *redis.Client
+	DB         *gorm.DB
+	Env        *config.Config
+	Redis      *redis.Client
+	GRPCServer *grpcapp.GRPC
 }
 
 func App() Application {
@@ -30,8 +40,25 @@ func App() Application {
 	if errRedis != nil {
 		log.Fatalf("ошибка подключения к Redis - %v", errPostgres)
 	}
+
+	log := setupLogger(Env.Env)
+	app.GRPCServer = grpcapp.NewGRPC(log, Env, PostgresClient)
 	app.Env = Env
 	app.DB = PostgresClient
 	app.Redis = RedisClient
 	return *app
+}
+
+func setupLogger(env string) *slog.Logger {
+	var log *slog.Logger
+	switch env {
+	case envLocal:
+		log = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	case envDev:
+		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	case envProd:
+		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
+	}
+
+	return log
 }

@@ -734,8 +734,7 @@
           "type": "string"
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         }
       }
     },
@@ -857,6 +856,9 @@
     "postsComment": {
       "type": "object",
       "properties": {
+        "commentId": {
+          "type": "string"
+        },
         "text": {
           "type": "string"
         },
@@ -864,8 +866,7 @@
           "type": "string"
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         }
       }
     },
@@ -1015,6 +1016,9 @@
     "postsGetPostResponse": {
       "type": "object",
       "properties": {
+        "postId": {
+          "type": "string"
+        },
         "title": {
           "type": "string"
         },
@@ -1025,8 +1029,7 @@
           "type": "string"
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "comments": {
           "type": "array",
@@ -1065,6 +1068,9 @@
     "postsPost": {
       "type": "object",
       "properties": {
+        "postId": {
+          "type": "string"
+        },
         "title": {
           "type": "string"
         },
@@ -1075,8 +1081,7 @@
           "type": "string"
         },
         "createdAt": {
-          "type": "string",
-          "format": "date-time"
+          "type": "string"
         },
         "comments": {
           "type": "array",

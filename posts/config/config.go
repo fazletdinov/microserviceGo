@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/joho/godotenv"
@@ -15,6 +16,7 @@ type Config struct {
 	PostgresDB  PostgresDB  `yaml:"postgres_posts_db"`
 	RedisDB     RedisDB     `yaml:"redis_posts_db"`
 	Clients     GRPCClient  `yaml:"clients"`
+	GRPC        GRPC        `yaml:"grpc"`
 }
 
 type PostsServer struct {
@@ -38,6 +40,11 @@ type RedisDB struct {
 
 type GRPCClient struct {
 	Address string `yaml:"address"`
+}
+
+type GRPC struct {
+	Port    int           `yaml:"port"`
+	Timeout time.Duration `yaml:"timeout"`
 }
 
 func InitConfig() (*Config, error) {

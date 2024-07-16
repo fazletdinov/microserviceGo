@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"api-grpc-gateway/config"
@@ -44,15 +45,16 @@ func (ccc *CreateCommentController) Create(ctx *gin.Context) {
 		return
 	}
 
-	if _, errCreate := ccc.GRPCClientPosts.CreateComment(
+	commentID, errCreate := ccc.GRPCClientPosts.CreateComment(
 		ctx,
 		commentRequest.Text,
 		uuid.MustParse(postID),
 		uuid.MustParse(authorID),
-	); errCreate != nil {
+	)
+	if errCreate != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, schemas.SuccessResponse{Message: "Комментарий успешно создан"})
+	ctx.JSON(http.StatusCreated, schemas.SuccessResponse{Message: fmt.Sprintf("ID = %v", commentID.CommentId)})
 }
