@@ -10,7 +10,6 @@ import (
 	authgrpc "auth/protogen/auth"
 
 	"auth/internal/domain/repository"
-	"auth/internal/domain/service/grpc_service"
 
 	"google.golang.org/grpc"
 	"gorm.io/gorm"

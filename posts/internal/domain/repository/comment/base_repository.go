@@ -2,8 +2,9 @@ package comment
 
 import (
 	"context"
-	"github.com/google/uuid"
 	"posts/internal/models"
+
+	"github.com/google/uuid"
 )
 
 type CommentGRPCRepository interface {

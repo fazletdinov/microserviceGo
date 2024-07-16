@@ -1,14 +1,14 @@
 package app
 
 import (
-	"github.com/go-redis/redis"
 	"log"
 	"log/slog"
 	"os"
 	"posts/config"
-	"posts/internal/app/grpc_app"
 	"posts/internal/database/postgres"
 	"posts/internal/database/redis_client"
+
+	"github.com/go-redis/redis"
 
 	"gorm.io/gorm"
 )

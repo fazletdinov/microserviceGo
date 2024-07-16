@@ -1,9 +1,10 @@
 package router
 
 import (
+	"likes/config"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"likes/config"
 )
 
 func SetupRouter(env *config.Config, db *gorm.DB, gin *gin.Engine) {

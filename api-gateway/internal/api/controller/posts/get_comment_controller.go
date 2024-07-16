@@ -7,9 +7,10 @@ import (
 	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/posts"
 
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"strconv"
 )
 
 type GetCommentController struct {

@@ -4,6 +4,7 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/api/middleware"
 	"api-grpc-gateway/internal/clients/posts"
+
 	"github.com/gin-gonic/gin"
 )
 

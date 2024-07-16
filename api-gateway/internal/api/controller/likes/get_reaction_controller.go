@@ -7,9 +7,10 @@ import (
 	"api-grpc-gateway/internal/clients/likes"
 	schemas "api-grpc-gateway/internal/schemas/likes"
 
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"strconv"
 )
 
 type GetReactionController struct {
