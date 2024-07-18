@@ -48,6 +48,19 @@ func (pr *postGRPCRepository) GetByIDPost(
 	return &post, nil
 }
 
+func (pr *postGRPCRepository) GetPostByIDAuthorID(
+	ctx context.Context,
+	postID uuid.UUID,
+	authorID uuid.UUID,
+) (*models.Post, error) {
+	var post models.Post
+	result := pr.database.Where("author_id = ?", authorID).Preload("Comments").First(&post, "id = ?", postID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &post, nil
+}
+
 func (pr *postGRPCRepository) GetPosts(
 	ctx context.Context,
 	limit int,
@@ -81,6 +94,17 @@ func (pr *postGRPCRepository) DeletePost(
 	authorID uuid.UUID,
 ) error {
 	result := pr.database.Where("author_id = ?", authorID).Delete(&models.Post{}, postID)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
+
+func (pr *postGRPCRepository) DeletePostsByAuthor(
+	ctx context.Context,
+	authorID uuid.UUID,
+) error {
+	result := pr.database.Where("author_id = ?", authorID).Delete(&models.Post{})
 	if result.Error != nil {
 		return result.Error
 	}

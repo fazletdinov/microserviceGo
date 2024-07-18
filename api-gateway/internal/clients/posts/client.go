@@ -45,9 +45,26 @@ func (gc *GRPCClientPosts) CreatePost(
 func (gc *GRPCClientPosts) GetPostByID(
 	ctx context.Context,
 	postID uuid.UUID,
-) (*postsgrpc.GetPostResponse, error) {
+) (*postsgrpc.PostResponse, error) {
 	postResponse, err := gc.posts.GetPostByID(ctx, &postsgrpc.GetPostRequest{
 		PostId: postID.String(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return postResponse, nil
+}
+
+func (gc *GRPCClientPosts) GetPostByIDAuthorID(
+	ctx context.Context,
+	postID uuid.UUID,
+	authorID uuid.UUID,
+) (*postsgrpc.PostResponse, error) {
+	postResponse, err := gc.posts.GetPostByIDAuthorID(ctx, &postsgrpc.GetPostByIDAuthorIDRequest{
+		PostId:   postID.String(),
+		AuthorId: authorID.String(),
 	})
 
 	if err != nil {
@@ -61,7 +78,7 @@ func (gc *GRPCClientPosts) GetPosts(
 	ctx context.Context,
 	limit uint64,
 	offset uint64,
-) (*postsgrpc.GetPostsResponse, error) {
+) ([]*postsgrpc.PostResponse, error) {
 	postResponse, err := gc.posts.GetPosts(ctx, &postsgrpc.GetPostsRequest{
 		Limit:  limit,
 		Offset: offset,
@@ -71,7 +88,7 @@ func (gc *GRPCClientPosts) GetPosts(
 		return nil, err
 	}
 
-	return postResponse, nil
+	return postResponse.Posts, nil
 }
 
 func (gc *GRPCClientPosts) UpdatePost(
@@ -102,6 +119,21 @@ func (gc *GRPCClientPosts) DeletePost(
 ) (*postsgrpc.DeletePostResponse, error) {
 	postResponse, err := gc.posts.DeletePost(ctx, &postsgrpc.DeletePostRequest{
 		PostId:   postID.String(),
+		AuthorId: authorID.String(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return postResponse, nil
+}
+
+func (gc *GRPCClientPosts) DeletePostsByAuthor(
+	ctx context.Context,
+	authorID uuid.UUID,
+) (*postsgrpc.DeletePostsByAuthorResponse, error) {
+	postResponse, err := gc.posts.DeletePostsByAuthor(ctx, &postsgrpc.DeletePostsByAuthorRequest{
 		AuthorId: authorID.String(),
 	})
 

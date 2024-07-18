@@ -52,3 +52,17 @@ func (rs *reactionGRPCService) DeleteReaction(
 ) error {
 	return rs.reactionGRPCRepository.DeleteReaction(ctx, reactionID, postID, authorID)
 }
+
+func (rs *reactionGRPCService) DeleteReactionsByAuthor(
+	ctx context.Context,
+	authorID uuid.UUID,
+) error {
+	return rs.reactionGRPCRepository.DeleteReactionsByAuthor(ctx, authorID)
+}
+
+func (rs *reactionGRPCService) DeleteReactionsByPost(
+	ctx context.Context,
+	postID uuid.UUID,
+) error {
+	return rs.reactionGRPCRepository.DeleteReactionsByPost(ctx, postID)
+}

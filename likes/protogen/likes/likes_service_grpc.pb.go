@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	GatewayLikes_CreateReaction_FullMethodName  = "/likes.GatewayLikes/CreateReaction"
-	GatewayLikes_GetReactions_FullMethodName    = "/likes.GatewayLikes/GetReactions"
-	GatewayLikes_DeleteReaction_FullMethodName  = "/likes.GatewayLikes/DeleteReaction"
-	GatewayLikes_GetReactionByID_FullMethodName = "/likes.GatewayLikes/GetReactionByID"
+	GatewayLikes_CreateReaction_FullMethodName          = "/likes.GatewayLikes/CreateReaction"
+	GatewayLikes_GetReactions_FullMethodName            = "/likes.GatewayLikes/GetReactions"
+	GatewayLikes_DeleteReaction_FullMethodName          = "/likes.GatewayLikes/DeleteReaction"
+	GatewayLikes_GetReactionByID_FullMethodName         = "/likes.GatewayLikes/GetReactionByID"
+	GatewayLikes_DeleteReactionsByAuthor_FullMethodName = "/likes.GatewayLikes/DeleteReactionsByAuthor"
+	GatewayLikes_DeleteReactionsByPost_FullMethodName   = "/likes.GatewayLikes/DeleteReactionsByPost"
 )
 
 // GatewayLikesClient is the client API for GatewayLikes service.
@@ -33,6 +35,8 @@ type GatewayLikesClient interface {
 	GetReactions(ctx context.Context, in *GetReactionsRequest, opts ...grpc.CallOption) (*GetReactionsResponse, error)
 	DeleteReaction(ctx context.Context, in *DeleteReactionRequest, opts ...grpc.CallOption) (*DeleteReactionResponse, error)
 	GetReactionByID(ctx context.Context, in *GetReactionRequest, opts ...grpc.CallOption) (*GetReactionResponse, error)
+	DeleteReactionsByAuthor(ctx context.Context, in *DeleteReactionsByAuthorRequest, opts ...grpc.CallOption) (*DeleteReactionsByAuthorResponse, error)
+	DeleteReactionsByPost(ctx context.Context, in *DeleteReactionsByPostRequest, opts ...grpc.CallOption) (*DeleteReactionsByPostResponse, error)
 }
 
 type gatewayLikesClient struct {
@@ -83,6 +87,26 @@ func (c *gatewayLikesClient) GetReactionByID(ctx context.Context, in *GetReactio
 	return out, nil
 }
 
+func (c *gatewayLikesClient) DeleteReactionsByAuthor(ctx context.Context, in *DeleteReactionsByAuthorRequest, opts ...grpc.CallOption) (*DeleteReactionsByAuthorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteReactionsByAuthorResponse)
+	err := c.cc.Invoke(ctx, GatewayLikes_DeleteReactionsByAuthor_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gatewayLikesClient) DeleteReactionsByPost(ctx context.Context, in *DeleteReactionsByPostRequest, opts ...grpc.CallOption) (*DeleteReactionsByPostResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteReactionsByPostResponse)
+	err := c.cc.Invoke(ctx, GatewayLikes_DeleteReactionsByPost_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // GatewayLikesServer is the server API for GatewayLikes service.
 // All implementations must embed UnimplementedGatewayLikesServer
 // for forward compatibility
@@ -91,6 +115,8 @@ type GatewayLikesServer interface {
 	GetReactions(context.Context, *GetReactionsRequest) (*GetReactionsResponse, error)
 	DeleteReaction(context.Context, *DeleteReactionRequest) (*DeleteReactionResponse, error)
 	GetReactionByID(context.Context, *GetReactionRequest) (*GetReactionResponse, error)
+	DeleteReactionsByAuthor(context.Context, *DeleteReactionsByAuthorRequest) (*DeleteReactionsByAuthorResponse, error)
+	DeleteReactionsByPost(context.Context, *DeleteReactionsByPostRequest) (*DeleteReactionsByPostResponse, error)
 	mustEmbedUnimplementedGatewayLikesServer()
 }
 
@@ -109,6 +135,12 @@ func (UnimplementedGatewayLikesServer) DeleteReaction(context.Context, *DeleteRe
 }
 func (UnimplementedGatewayLikesServer) GetReactionByID(context.Context, *GetReactionRequest) (*GetReactionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetReactionByID not implemented")
+}
+func (UnimplementedGatewayLikesServer) DeleteReactionsByAuthor(context.Context, *DeleteReactionsByAuthorRequest) (*DeleteReactionsByAuthorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteReactionsByAuthor not implemented")
+}
+func (UnimplementedGatewayLikesServer) DeleteReactionsByPost(context.Context, *DeleteReactionsByPostRequest) (*DeleteReactionsByPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteReactionsByPost not implemented")
 }
 func (UnimplementedGatewayLikesServer) mustEmbedUnimplementedGatewayLikesServer() {}
 
@@ -195,6 +227,42 @@ func _GatewayLikes_GetReactionByID_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GatewayLikes_DeleteReactionsByAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteReactionsByAuthorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayLikesServer).DeleteReactionsByAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GatewayLikes_DeleteReactionsByAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayLikesServer).DeleteReactionsByAuthor(ctx, req.(*DeleteReactionsByAuthorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GatewayLikes_DeleteReactionsByPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteReactionsByPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayLikesServer).DeleteReactionsByPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GatewayLikes_DeleteReactionsByPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayLikesServer).DeleteReactionsByPost(ctx, req.(*DeleteReactionsByPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // GatewayLikes_ServiceDesc is the grpc.ServiceDesc for GatewayLikes service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -217,6 +285,14 @@ var GatewayLikes_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetReactionByID",
 			Handler:    _GatewayLikes_GetReactionByID_Handler,
+		},
+		{
+			MethodName: "DeleteReactionsByAuthor",
+			Handler:    _GatewayLikes_DeleteReactionsByAuthor_Handler,
+		},
+		{
+			MethodName: "DeleteReactionsByPost",
+			Handler:    _GatewayLikes_DeleteReactionsByPost_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

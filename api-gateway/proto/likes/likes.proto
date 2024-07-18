@@ -45,3 +45,19 @@ message GetReactionRequest {
 message GetReactionResponse {
     string reaction_id = 1;
 }
+
+message DeleteReactionsByAuthorRequest {
+    string author_id = 1;
+}
+
+message DeleteReactionsByAuthorResponse {
+    string success_message = 1;
+}
+
+message DeleteReactionsByPostRequest {
+    string post_id = 1;
+}
+
+message DeleteReactionsByPostResponse {
+    string success_message = 1;
+}

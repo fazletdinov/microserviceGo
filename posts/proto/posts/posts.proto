@@ -19,13 +19,9 @@ message GetPostRequest {
     string post_id = 1;
 }
 
-message GetPostResponse {
+message GetPostByIDAuthorIDRequest {
     string post_id = 1;
-    string title = 2;
-    string content = 3;
-    string author_id = 4;
-    string created_at = 5;
-    repeated Comment comments = 6;
+    string author_id = 2;
 }
 
 message GetPostsRequest {
@@ -34,10 +30,10 @@ message GetPostsRequest {
 }
 
 message GetPostsResponse {
-    repeated Post posts = 1;
+    repeated PostResponse posts = 1;
 }
 
-message Post {
+message PostResponse {
     string post_id = 1;
     string title = 2;
     string content = 3;
@@ -64,6 +60,14 @@ message UpdatePostRequest {
 };
 
 message UpdatePostResponse {
+    string success_message = 1;
+}
+
+message DeletePostsByAuthorRequest {
+    string author_id = 1;
+}
+
+message DeletePostsByAuthorResponse {
     string success_message = 1;
 }
 

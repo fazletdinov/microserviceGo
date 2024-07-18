@@ -1,10 +1,13 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/auth"
+	"api-grpc-gateway/internal/clients/likes"
+	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/auth"
 
 	"github.com/gin-gonic/gin"
@@ -12,8 +15,10 @@ import (
 )
 
 type DeleteController struct {
-	GRPCClientAuth *auth.GRPCClientAuth
-	Env            *config.Config
+	GRPCClientAuth  *auth.GRPCClientAuth
+	GRPCClientPosts *posts.GRPCClientPosts
+	GRPCClientLikes *likes.GRPCClientLikes
+	Env             *config.Config
 }
 
 // DeleteUser	godoc
@@ -34,9 +39,21 @@ func (dc *DeleteController) Delete(ctx *gin.Context) {
 		return
 	}
 
-	_, errDelete := dc.GRPCClientAuth.DeleteUser(ctx, uuid.MustParse(userID))
-	if errDelete != nil {
-		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server"})
+	_, errDeleteUser := dc.GRPCClientAuth.DeleteUser(ctx, uuid.MustParse(userID))
+	if errDeleteUser != nil {
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server %v", err)})
+		return
+	}
+
+	_, errDeletePost := dc.GRPCClientPosts.DeletePostsByAuthor(ctx, uuid.MustParse(userID))
+	if errDeletePost != nil {
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server %v", err)})
+		return
+	}
+
+	_, errDeleteReaction := dc.GRPCClientLikes.DeleteReactionsByAuthor(ctx, uuid.MustParse(userID))
+	if errDeleteReaction != nil {
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server %v", err)})
 		return
 	}
 

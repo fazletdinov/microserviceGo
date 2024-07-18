@@ -9,10 +9,12 @@ import "posts/posts.proto";
 
 service GatewayPosts {
   rpc CreatePost(CreatePostRequest) returns (CreatePostResponse);
-  rpc GetPostByID(GetPostRequest) returns (GetPostResponse);
+  rpc GetPostByID(GetPostRequest) returns (PostResponse);
+  rpc GetPostByIDAuthorID(GetPostByIDAuthorIDRequest) returns (PostResponse);
   rpc GetPosts(GetPostsRequest) returns (GetPostsResponse);
   rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse);
   rpc DeletePost(DeletePostRequest) returns (DeletePostResponse);
+  rpc DeletePostsByAuthor(DeletePostsByAuthorRequest) returns (DeletePostsByAuthorResponse);
 
   rpc CreateComment(CreateCommentRequest) returns (CreateCommentResponse);
   rpc GetPostComments(GetCommentsRequest) returns (GetCommentsResponse);

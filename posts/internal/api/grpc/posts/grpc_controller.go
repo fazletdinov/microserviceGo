@@ -51,7 +51,7 @@ func (gc *GRPCController) CreatePost(
 func (gc *GRPCController) GetPostByID(
 	ctx context.Context,
 	postRequest *postsgrpc.GetPostRequest,
-) (*postsgrpc.GetPostResponse, error) {
+) (*postsgrpc.PostResponse, error) {
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -71,7 +71,44 @@ func (gc *GRPCController) GetPostByID(
 			CreatedAt: comment.CreatedAt.String(),
 		})
 	}
-	return &postsgrpc.GetPostResponse{
+	return &postsgrpc.PostResponse{
+		PostId:    post.ID.String(),
+		Title:     post.Title,
+		Content:   post.Content,
+		AuthorId:  post.AuthorID.String(),
+		CreatedAt: post.CreatedAt.String(),
+		Comments:  arrayComment,
+	}, nil
+}
+
+func (gc *GRPCController) GetPostByIDAuthorID(
+	ctx context.Context,
+	postRequest *postsgrpc.GetPostByIDAuthorIDRequest,
+) (*postsgrpc.PostResponse, error) {
+	if postRequest.GetPostId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
+	}
+	if postRequest.GetAuthorId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
+	}
+
+	post, err := gc.PostGRPCService.GetPostByIDAuthorID(
+		ctx,
+		uuid.MustParse(postRequest.GetPostId()),
+		uuid.MustParse(postRequest.GetAuthorId()),
+	)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+	arrayComment := make([]*postsgrpc.Comment, 0, 10)
+	for _, comment := range post.Comments {
+		arrayComment = append(arrayComment, &postsgrpc.Comment{
+			Text:      comment.Text,
+			AuthorId:  comment.AuthorID.String(),
+			CreatedAt: comment.CreatedAt.String(),
+		})
+	}
+	return &postsgrpc.PostResponse{
 		PostId:    post.ID.String(),
 		Title:     post.Title,
 		Content:   post.Content,
@@ -93,7 +130,7 @@ func (gc *GRPCController) GetPosts(
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
-	arrayPost := make([]*postsgrpc.Post, 0, postRequest.GetLimit())
+	arrayPost := make([]*postsgrpc.PostResponse, 0, postRequest.GetLimit())
 	for _, post := range *posts {
 		arrayComment := make([]*postsgrpc.Comment, 0, 10)
 		for _, comment := range post.Comments {
@@ -104,7 +141,7 @@ func (gc *GRPCController) GetPosts(
 				CreatedAt: comment.CreatedAt.String(),
 			})
 		}
-		arrayPost = append(arrayPost, &postsgrpc.Post{
+		arrayPost = append(arrayPost, &postsgrpc.PostResponse{
 			PostId:    post.ID.String(),
 			Title:     post.Title,
 			Content:   post.Content,
@@ -168,6 +205,25 @@ func (gc *GRPCController) DeletePost(
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 	return &postsgrpc.DeletePostResponse{
+		SuccessMessage: "Удаление прошло успешно",
+	}, nil
+}
+
+func (gc *GRPCController) DeletePostsByAuthor(
+	ctx context.Context,
+	postRequest *postsgrpc.DeletePostsByAuthorRequest,
+) (*postsgrpc.DeletePostsByAuthorResponse, error) {
+	if postRequest.GetAuthorId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
+	}
+	err := gc.PostGRPCService.DeletePostsByAuthor(
+		ctx,
+		uuid.MustParse(postRequest.GetAuthorId()),
+	)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+	return &postsgrpc.DeletePostsByAuthorResponse{
 		SuccessMessage: "Удаление прошло успешно",
 	}, nil
 }

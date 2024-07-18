@@ -47,8 +47,8 @@ func main() {
 	if err != nil {
 		panic("Ошибка подключения к сервису Likes")
 	}
-	authroute.SetupAuthRouter(gin, authClient, env)
-	postsroute.SetupPostsRouter(gin, postsClient, env)
+	authroute.SetupAuthRouter(gin, authClient, postsClient, likesClient, env)
+	postsroute.SetupPostsRouter(gin, postsClient, likesClient, env)
 	likesroute.SetupLikesRouter(gin, likesClient, env)
 
 	gin.Run(":" + env.GatewayGRPCServer.ApiGatewayPort)

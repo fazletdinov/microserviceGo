@@ -32,9 +32,9 @@ func (upc *UpdatePostController) Update(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
-	_, err := upc.GRPCClientPosts.GetPostByID(ctx, uuid.MustParse(postID))
+	_, err := upc.GRPCClientPosts.GetPostByIDAuthorID(ctx, uuid.MustParse(postID), uuid.MustParse(authorID))
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден или вы не являетесь автором поста"})
 		return
 	}
 

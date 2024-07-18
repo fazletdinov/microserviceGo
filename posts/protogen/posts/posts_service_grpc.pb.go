@@ -8,7 +8,6 @@ package golang
 
 import (
 	context "context"
-
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -20,16 +19,18 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	GatewayPosts_CreatePost_FullMethodName        = "/posts.GatewayPosts/CreatePost"
-	GatewayPosts_GetPostByID_FullMethodName       = "/posts.GatewayPosts/GetPostByID"
-	GatewayPosts_GetPosts_FullMethodName          = "/posts.GatewayPosts/GetPosts"
-	GatewayPosts_UpdatePost_FullMethodName        = "/posts.GatewayPosts/UpdatePost"
-	GatewayPosts_DeletePost_FullMethodName        = "/posts.GatewayPosts/DeletePost"
-	GatewayPosts_CreateComment_FullMethodName     = "/posts.GatewayPosts/CreateComment"
-	GatewayPosts_GetPostComments_FullMethodName   = "/posts.GatewayPosts/GetPostComments"
-	GatewayPosts_GetCommentByID_FullMethodName    = "/posts.GatewayPosts/GetCommentByID"
-	GatewayPosts_DeletePostComment_FullMethodName = "/posts.GatewayPosts/DeletePostComment"
-	GatewayPosts_UpdatePostComment_FullMethodName = "/posts.GatewayPosts/UpdatePostComment"
+	GatewayPosts_CreatePost_FullMethodName          = "/posts.GatewayPosts/CreatePost"
+	GatewayPosts_GetPostByID_FullMethodName         = "/posts.GatewayPosts/GetPostByID"
+	GatewayPosts_GetPostByIDAuthorID_FullMethodName = "/posts.GatewayPosts/GetPostByIDAuthorID"
+	GatewayPosts_GetPosts_FullMethodName            = "/posts.GatewayPosts/GetPosts"
+	GatewayPosts_UpdatePost_FullMethodName          = "/posts.GatewayPosts/UpdatePost"
+	GatewayPosts_DeletePost_FullMethodName          = "/posts.GatewayPosts/DeletePost"
+	GatewayPosts_DeletePostsByAuthor_FullMethodName = "/posts.GatewayPosts/DeletePostsByAuthor"
+	GatewayPosts_CreateComment_FullMethodName       = "/posts.GatewayPosts/CreateComment"
+	GatewayPosts_GetPostComments_FullMethodName     = "/posts.GatewayPosts/GetPostComments"
+	GatewayPosts_GetCommentByID_FullMethodName      = "/posts.GatewayPosts/GetCommentByID"
+	GatewayPosts_DeletePostComment_FullMethodName   = "/posts.GatewayPosts/DeletePostComment"
+	GatewayPosts_UpdatePostComment_FullMethodName   = "/posts.GatewayPosts/UpdatePostComment"
 )
 
 // GatewayPostsClient is the client API for GatewayPosts service.
@@ -37,10 +38,12 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GatewayPostsClient interface {
 	CreatePost(ctx context.Context, in *CreatePostRequest, opts ...grpc.CallOption) (*CreatePostResponse, error)
-	GetPostByID(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*GetPostResponse, error)
+	GetPostByID(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*PostResponse, error)
+	GetPostByIDAuthorID(ctx context.Context, in *GetPostByIDAuthorIDRequest, opts ...grpc.CallOption) (*PostResponse, error)
 	GetPosts(ctx context.Context, in *GetPostsRequest, opts ...grpc.CallOption) (*GetPostsResponse, error)
 	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*UpdatePostResponse, error)
 	DeletePost(ctx context.Context, in *DeletePostRequest, opts ...grpc.CallOption) (*DeletePostResponse, error)
+	DeletePostsByAuthor(ctx context.Context, in *DeletePostsByAuthorRequest, opts ...grpc.CallOption) (*DeletePostsByAuthorResponse, error)
 	CreateComment(ctx context.Context, in *CreateCommentRequest, opts ...grpc.CallOption) (*CreateCommentResponse, error)
 	GetPostComments(ctx context.Context, in *GetCommentsRequest, opts ...grpc.CallOption) (*GetCommentsResponse, error)
 	GetCommentByID(ctx context.Context, in *GetCommentRequest, opts ...grpc.CallOption) (*GetCommentResponse, error)
@@ -66,10 +69,20 @@ func (c *gatewayPostsClient) CreatePost(ctx context.Context, in *CreatePostReque
 	return out, nil
 }
 
-func (c *gatewayPostsClient) GetPostByID(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*GetPostResponse, error) {
+func (c *gatewayPostsClient) GetPostByID(ctx context.Context, in *GetPostRequest, opts ...grpc.CallOption) (*PostResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetPostResponse)
+	out := new(PostResponse)
 	err := c.cc.Invoke(ctx, GatewayPosts_GetPostByID_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gatewayPostsClient) GetPostByIDAuthorID(ctx context.Context, in *GetPostByIDAuthorIDRequest, opts ...grpc.CallOption) (*PostResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(PostResponse)
+	err := c.cc.Invoke(ctx, GatewayPosts_GetPostByIDAuthorID_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,6 +113,16 @@ func (c *gatewayPostsClient) DeletePost(ctx context.Context, in *DeletePostReque
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(DeletePostResponse)
 	err := c.cc.Invoke(ctx, GatewayPosts_DeletePost_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gatewayPostsClient) DeletePostsByAuthor(ctx context.Context, in *DeletePostsByAuthorRequest, opts ...grpc.CallOption) (*DeletePostsByAuthorResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeletePostsByAuthorResponse)
+	err := c.cc.Invoke(ctx, GatewayPosts_DeletePostsByAuthor_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -161,10 +184,12 @@ func (c *gatewayPostsClient) UpdatePostComment(ctx context.Context, in *UpdateCo
 // for forward compatibility
 type GatewayPostsServer interface {
 	CreatePost(context.Context, *CreatePostRequest) (*CreatePostResponse, error)
-	GetPostByID(context.Context, *GetPostRequest) (*GetPostResponse, error)
+	GetPostByID(context.Context, *GetPostRequest) (*PostResponse, error)
+	GetPostByIDAuthorID(context.Context, *GetPostByIDAuthorIDRequest) (*PostResponse, error)
 	GetPosts(context.Context, *GetPostsRequest) (*GetPostsResponse, error)
 	UpdatePost(context.Context, *UpdatePostRequest) (*UpdatePostResponse, error)
 	DeletePost(context.Context, *DeletePostRequest) (*DeletePostResponse, error)
+	DeletePostsByAuthor(context.Context, *DeletePostsByAuthorRequest) (*DeletePostsByAuthorResponse, error)
 	CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error)
 	GetPostComments(context.Context, *GetCommentsRequest) (*GetCommentsResponse, error)
 	GetCommentByID(context.Context, *GetCommentRequest) (*GetCommentResponse, error)
@@ -180,8 +205,11 @@ type UnimplementedGatewayPostsServer struct {
 func (UnimplementedGatewayPostsServer) CreatePost(context.Context, *CreatePostRequest) (*CreatePostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePost not implemented")
 }
-func (UnimplementedGatewayPostsServer) GetPostByID(context.Context, *GetPostRequest) (*GetPostResponse, error) {
+func (UnimplementedGatewayPostsServer) GetPostByID(context.Context, *GetPostRequest) (*PostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPostByID not implemented")
+}
+func (UnimplementedGatewayPostsServer) GetPostByIDAuthorID(context.Context, *GetPostByIDAuthorIDRequest) (*PostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPostByIDAuthorID not implemented")
 }
 func (UnimplementedGatewayPostsServer) GetPosts(context.Context, *GetPostsRequest) (*GetPostsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPosts not implemented")
@@ -191,6 +219,9 @@ func (UnimplementedGatewayPostsServer) UpdatePost(context.Context, *UpdatePostRe
 }
 func (UnimplementedGatewayPostsServer) DeletePost(context.Context, *DeletePostRequest) (*DeletePostResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeletePost not implemented")
+}
+func (UnimplementedGatewayPostsServer) DeletePostsByAuthor(context.Context, *DeletePostsByAuthorRequest) (*DeletePostsByAuthorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePostsByAuthor not implemented")
 }
 func (UnimplementedGatewayPostsServer) CreateComment(context.Context, *CreateCommentRequest) (*CreateCommentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateComment not implemented")
@@ -256,6 +287,24 @@ func _GatewayPosts_GetPostByID_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _GatewayPosts_GetPostByIDAuthorID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPostByIDAuthorIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayPostsServer).GetPostByIDAuthorID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GatewayPosts_GetPostByIDAuthorID_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayPostsServer).GetPostByIDAuthorID(ctx, req.(*GetPostByIDAuthorIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _GatewayPosts_GetPosts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetPostsRequest)
 	if err := dec(in); err != nil {
@@ -306,6 +355,24 @@ func _GatewayPosts_DeletePost_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayPostsServer).DeletePost(ctx, req.(*DeletePostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GatewayPosts_DeletePostsByAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePostsByAuthorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayPostsServer).DeletePostsByAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: GatewayPosts_DeletePostsByAuthor_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayPostsServer).DeletePostsByAuthor(ctx, req.(*DeletePostsByAuthorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -416,6 +483,10 @@ var GatewayPosts_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _GatewayPosts_GetPostByID_Handler,
 		},
 		{
+			MethodName: "GetPostByIDAuthorID",
+			Handler:    _GatewayPosts_GetPostByIDAuthorID_Handler,
+		},
+		{
 			MethodName: "GetPosts",
 			Handler:    _GatewayPosts_GetPosts_Handler,
 		},
@@ -426,6 +497,10 @@ var GatewayPosts_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeletePost",
 			Handler:    _GatewayPosts_DeletePost_Handler,
+		},
+		{
+			MethodName: "DeletePostsByAuthor",
+			Handler:    _GatewayPosts_DeletePostsByAuthor_Handler,
 		},
 		{
 			MethodName: "CreateComment",

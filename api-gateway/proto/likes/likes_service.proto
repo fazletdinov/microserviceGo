@@ -12,4 +12,6 @@ service GatewayLikes {
   rpc GetReactions(GetReactionsRequest) returns (GetReactionsResponse);
   rpc DeleteReaction(DeleteReactionRequest) returns (DeleteReactionResponse);
   rpc GetReactionByID(GetReactionRequest) returns (GetReactionResponse);
+  rpc DeleteReactionsByAuthor(DeleteReactionsByAuthorRequest) returns (DeleteReactionsByAuthorResponse);
+  rpc DeleteReactionsByPost(DeleteReactionsByPostRequest) returns (DeleteReactionsByPostResponse);
 }

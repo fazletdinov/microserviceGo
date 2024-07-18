@@ -34,6 +34,14 @@ func (ps *postGRPCService) GetByIDPost(
 	return ps.postGRPCRepository.GetByIDPost(ctx, postID)
 }
 
+func (ps *postGRPCService) GetPostByIDAuthorID(
+	ctx context.Context,
+	postID uuid.UUID,
+	authorID uuid.UUID,
+) (*models.Post, error) {
+	return ps.postGRPCRepository.GetPostByIDAuthorID(ctx, postID, authorID)
+}
+
 func (ps *postGRPCService) GetPosts(
 	ctx context.Context,
 	limit uint64,
@@ -58,4 +66,11 @@ func (ps *postGRPCService) DeletePost(
 	authorID uuid.UUID,
 ) error {
 	return ps.postGRPCRepository.DeletePost(ctx, postID, authorID)
+}
+
+func (ps *postGRPCService) DeletePostsByAuthor(
+	ctx context.Context,
+	authorID uuid.UUID,
+) error {
+	return ps.postGRPCRepository.DeletePostsByAuthor(ctx, authorID)
 }

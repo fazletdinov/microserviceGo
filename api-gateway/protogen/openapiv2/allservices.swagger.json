@@ -278,6 +278,70 @@
         ]
       }
     },
+    "/likes.GatewayLikes/DeleteReactionsByAuthor": {
+      "post": {
+        "operationId": "GatewayLikes_DeleteReactionsByAuthor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/likesDeleteReactionsByAuthorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/likesDeleteReactionsByAuthorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayLikes"
+        ]
+      }
+    },
+    "/likes.GatewayLikes/DeleteReactionsByPost": {
+      "post": {
+        "operationId": "GatewayLikes_DeleteReactionsByPost",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/likesDeleteReactionsByPostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/likesDeleteReactionsByPostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayLikes"
+        ]
+      }
+    },
     "/likes.GatewayLikes/GetReactionByID": {
       "post": {
         "operationId": "GatewayLikes_GetReactionByID",
@@ -470,6 +534,38 @@
         ]
       }
     },
+    "/posts.GatewayPosts/DeletePostsByAuthor": {
+      "post": {
+        "operationId": "GatewayPosts_DeletePostsByAuthor",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsDeletePostsByAuthorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsDeletePostsByAuthorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
     "/posts.GatewayPosts/GetCommentByID": {
       "post": {
         "operationId": "GatewayPosts_GetCommentByID",
@@ -509,7 +605,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/postsGetPostResponse"
+              "$ref": "#/definitions/postsPostResponse"
             }
           },
           "default": {
@@ -526,6 +622,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/postsGetPostRequest"
+            }
+          }
+        ],
+        "tags": [
+          "GatewayPosts"
+        ]
+      }
+    },
+    "/posts.GatewayPosts/GetPostByIDAuthorID": {
+      "post": {
+        "operationId": "GatewayPosts_GetPostByIDAuthorID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/postsPostResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/postsGetPostByIDAuthorIDRequest"
             }
           }
         ],
@@ -798,6 +926,38 @@
         }
       }
     },
+    "likesDeleteReactionsByAuthorRequest": {
+      "type": "object",
+      "properties": {
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "likesDeleteReactionsByAuthorResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
+    "likesDeleteReactionsByPostRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        }
+      }
+    },
+    "likesDeleteReactionsByPostResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
     "likesGetReactionRequest": {
       "type": "object",
       "properties": {
@@ -955,6 +1115,22 @@
         }
       }
     },
+    "postsDeletePostsByAuthorRequest": {
+      "type": "object",
+      "properties": {
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
+    "postsDeletePostsByAuthorResponse": {
+      "type": "object",
+      "properties": {
+        "successMessage": {
+          "type": "string"
+        }
+      }
+    },
     "postsGetCommentRequest": {
       "type": "object",
       "properties": {
@@ -1005,38 +1181,22 @@
         }
       }
     },
+    "postsGetPostByIDAuthorIDRequest": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "string"
+        },
+        "authorId": {
+          "type": "string"
+        }
+      }
+    },
     "postsGetPostRequest": {
       "type": "object",
       "properties": {
         "postId": {
           "type": "string"
-        }
-      }
-    },
-    "postsGetPostResponse": {
-      "type": "object",
-      "properties": {
-        "postId": {
-          "type": "string"
-        },
-        "title": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "authorId": {
-          "type": "string"
-        },
-        "createdAt": {
-          "type": "string"
-        },
-        "comments": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/postsComment"
-          }
         }
       }
     },
@@ -1060,12 +1220,12 @@
           "type": "array",
           "items": {
             "type": "object",
-            "$ref": "#/definitions/postsPost"
+            "$ref": "#/definitions/postsPostResponse"
           }
         }
       }
     },
-    "postsPost": {
+    "postsPostResponse": {
       "type": "object",
       "properties": {
         "postId": {

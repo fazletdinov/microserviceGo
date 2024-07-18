@@ -7,11 +7,10 @@
 package golang
 
 import (
-	reflect "reflect"
-	sync "sync"
-
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -484,6 +483,194 @@ func (x *GetReactionResponse) GetReactionId() string {
 	return ""
 }
 
+type DeleteReactionsByAuthorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AuthorId string `protobuf:"bytes,1,opt,name=author_id,json=authorId,proto3" json:"author_id,omitempty"`
+}
+
+func (x *DeleteReactionsByAuthorRequest) Reset() {
+	*x = DeleteReactionsByAuthorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_likes_likes_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteReactionsByAuthorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteReactionsByAuthorRequest) ProtoMessage() {}
+
+func (x *DeleteReactionsByAuthorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_likes_likes_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteReactionsByAuthorRequest.ProtoReflect.Descriptor instead.
+func (*DeleteReactionsByAuthorRequest) Descriptor() ([]byte, []int) {
+	return file_likes_likes_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeleteReactionsByAuthorRequest) GetAuthorId() string {
+	if x != nil {
+		return x.AuthorId
+	}
+	return ""
+}
+
+type DeleteReactionsByAuthorResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SuccessMessage string `protobuf:"bytes,1,opt,name=success_message,json=successMessage,proto3" json:"success_message,omitempty"`
+}
+
+func (x *DeleteReactionsByAuthorResponse) Reset() {
+	*x = DeleteReactionsByAuthorResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_likes_likes_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteReactionsByAuthorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteReactionsByAuthorResponse) ProtoMessage() {}
+
+func (x *DeleteReactionsByAuthorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_likes_likes_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteReactionsByAuthorResponse.ProtoReflect.Descriptor instead.
+func (*DeleteReactionsByAuthorResponse) Descriptor() ([]byte, []int) {
+	return file_likes_likes_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *DeleteReactionsByAuthorResponse) GetSuccessMessage() string {
+	if x != nil {
+		return x.SuccessMessage
+	}
+	return ""
+}
+
+type DeleteReactionsByPostRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PostId string `protobuf:"bytes,1,opt,name=post_id,json=postId,proto3" json:"post_id,omitempty"`
+}
+
+func (x *DeleteReactionsByPostRequest) Reset() {
+	*x = DeleteReactionsByPostRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_likes_likes_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteReactionsByPostRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteReactionsByPostRequest) ProtoMessage() {}
+
+func (x *DeleteReactionsByPostRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_likes_likes_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteReactionsByPostRequest.ProtoReflect.Descriptor instead.
+func (*DeleteReactionsByPostRequest) Descriptor() ([]byte, []int) {
+	return file_likes_likes_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *DeleteReactionsByPostRequest) GetPostId() string {
+	if x != nil {
+		return x.PostId
+	}
+	return ""
+}
+
+type DeleteReactionsByPostResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	SuccessMessage string `protobuf:"bytes,1,opt,name=success_message,json=successMessage,proto3" json:"success_message,omitempty"`
+}
+
+func (x *DeleteReactionsByPostResponse) Reset() {
+	*x = DeleteReactionsByPostResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_likes_likes_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteReactionsByPostResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteReactionsByPostResponse) ProtoMessage() {}
+
+func (x *DeleteReactionsByPostResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_likes_likes_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteReactionsByPostResponse.ProtoReflect.Descriptor instead.
+func (*DeleteReactionsByPostResponse) Descriptor() ([]byte, []int) {
+	return file_likes_likes_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *DeleteReactionsByPostResponse) GetSuccessMessage() string {
+	if x != nil {
+		return x.SuccessMessage
+	}
+	return ""
+}
+
 var File_likes_likes_proto protoreflect.FileDescriptor
 
 var file_likes_likes_proto_rawDesc = []byte{
@@ -527,10 +714,27 @@ var file_likes_likes_proto_rawDesc = []byte{
 	0x6f, 0x72, 0x49, 0x64, 0x22, 0x36, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x52, 0x65, 0x61, 0x63, 0x74,
 	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x72,
 	0x65, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0a, 0x72, 0x65, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x42, 0x22, 0x5a, 0x20,
-	0x61, 0x70, 0x69, 0x2d, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79,
-	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x67, 0x65, 0x6e, 0x2f, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x0a, 0x72, 0x65, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x22, 0x3d, 0x0a, 0x1e,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42,
+	0x79, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b,
+	0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x08, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x49, 0x64, 0x22, 0x4a, 0x0a, 0x1f, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x79,
+	0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x27,
+	0x0a, 0x0f, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x5f, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67,
+	0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
+	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x22, 0x37, 0x0a, 0x1c, 0x44, 0x65, 0x6c, 0x65, 0x74,
+	0x65, 0x52, 0x65, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x79, 0x50, 0x6f, 0x73, 0x74,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x70, 0x6f, 0x73, 0x74, 0x5f,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x6f, 0x73, 0x74, 0x49, 0x64,
+	0x22, 0x48, 0x0a, 0x1d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x52, 0x65, 0x61, 0x63, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x42, 0x79, 0x50, 0x6f, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x27, 0x0a, 0x0f, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x5f, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x73, 0x75, 0x63, 0x63,
+	0x65, 0x73, 0x73, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x42, 0x22, 0x5a, 0x20, 0x61, 0x70,
+	0x69, 0x2d, 0x67, 0x72, 0x70, 0x63, 0x2d, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x67, 0x65, 0x6e, 0x2f, 0x67, 0x6f, 0x6c, 0x61, 0x6e, 0x67, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -545,17 +749,21 @@ func file_likes_likes_proto_rawDescGZIP() []byte {
 	return file_likes_likes_proto_rawDescData
 }
 
-var file_likes_likes_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_likes_likes_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_likes_likes_proto_goTypes = []any{
-	(*CreateReactionRequest)(nil),  // 0: likes.CreateReactionRequest
-	(*CreateReactionResponse)(nil), // 1: likes.CreateReactionResponse
-	(*GetReactionsRequest)(nil),    // 2: likes.GetReactionsRequest
-	(*GetReactionsResponse)(nil),   // 3: likes.GetReactionsResponse
-	(*Reaction)(nil),               // 4: likes.Reaction
-	(*DeleteReactionRequest)(nil),  // 5: likes.DeleteReactionRequest
-	(*DeleteReactionResponse)(nil), // 6: likes.DeleteReactionResponse
-	(*GetReactionRequest)(nil),     // 7: likes.GetReactionRequest
-	(*GetReactionResponse)(nil),    // 8: likes.GetReactionResponse
+	(*CreateReactionRequest)(nil),           // 0: likes.CreateReactionRequest
+	(*CreateReactionResponse)(nil),          // 1: likes.CreateReactionResponse
+	(*GetReactionsRequest)(nil),             // 2: likes.GetReactionsRequest
+	(*GetReactionsResponse)(nil),            // 3: likes.GetReactionsResponse
+	(*Reaction)(nil),                        // 4: likes.Reaction
+	(*DeleteReactionRequest)(nil),           // 5: likes.DeleteReactionRequest
+	(*DeleteReactionResponse)(nil),          // 6: likes.DeleteReactionResponse
+	(*GetReactionRequest)(nil),              // 7: likes.GetReactionRequest
+	(*GetReactionResponse)(nil),             // 8: likes.GetReactionResponse
+	(*DeleteReactionsByAuthorRequest)(nil),  // 9: likes.DeleteReactionsByAuthorRequest
+	(*DeleteReactionsByAuthorResponse)(nil), // 10: likes.DeleteReactionsByAuthorResponse
+	(*DeleteReactionsByPostRequest)(nil),    // 11: likes.DeleteReactionsByPostRequest
+	(*DeleteReactionsByPostResponse)(nil),   // 12: likes.DeleteReactionsByPostResponse
 }
 var file_likes_likes_proto_depIdxs = []int32{
 	4, // 0: likes.GetReactionsResponse.reactions:type_name -> likes.Reaction
@@ -680,6 +888,54 @@ func file_likes_likes_proto_init() {
 				return nil
 			}
 		}
+		file_likes_likes_proto_msgTypes[9].Exporter = func(v any, i int) any {
+			switch v := v.(*DeleteReactionsByAuthorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_likes_likes_proto_msgTypes[10].Exporter = func(v any, i int) any {
+			switch v := v.(*DeleteReactionsByAuthorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_likes_likes_proto_msgTypes[11].Exporter = func(v any, i int) any {
+			switch v := v.(*DeleteReactionsByPostRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_likes_likes_proto_msgTypes[12].Exporter = func(v any, i int) any {
+			switch v := v.(*DeleteReactionsByPostResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -687,7 +943,7 @@ func file_likes_likes_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_likes_likes_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   9,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

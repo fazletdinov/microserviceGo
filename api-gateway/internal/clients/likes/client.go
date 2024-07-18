@@ -89,3 +89,31 @@ func (gc *GRPCClientLikes) DeleteReaction(
 
 	return reactionResponse, nil
 }
+
+func (gc *GRPCClientLikes) DeleteReactionsByAuthor(
+	ctx context.Context,
+	authorID uuid.UUID,
+) (*likesgrpc.DeleteReactionsByAuthorResponse, error) {
+	reactionResponse, err := gc.likes.DeleteReactionsByAuthor(ctx, &likesgrpc.DeleteReactionsByAuthorRequest{
+		AuthorId: authorID.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return reactionResponse, nil
+}
+
+func (gc *GRPCClientLikes) DeleteReactionsByPost(
+	ctx context.Context,
+	postID uuid.UUID,
+) (*likesgrpc.DeleteReactionsByPostResponse, error) {
+	reactionResponse, err := gc.likes.DeleteReactionsByPost(ctx, &likesgrpc.DeleteReactionsByPostRequest{
+		PostId: postID.String(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return reactionResponse, nil
+}

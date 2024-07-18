@@ -112,3 +112,41 @@ func (gc *GRPCController) DeleteReaction(
 		SuccessMessage: "Удаление прошло успешно",
 	}, nil
 }
+
+func (gc *GRPCController) DeleteReactionsByAuthor(
+	ctx context.Context,
+	reactionRequest *likesgrpc.DeleteReactionsByAuthorRequest,
+) (*likesgrpc.DeleteReactionsByAuthorResponse, error) {
+	if reactionRequest.GetAuthorId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
+	}
+	err := gc.ReactionGRPCService.DeleteReactionsByAuthor(
+		ctx,
+		uuid.MustParse(reactionRequest.GetAuthorId()),
+	)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+	return &likesgrpc.DeleteReactionsByAuthorResponse{
+		SuccessMessage: "Удаление прошло успешно",
+	}, nil
+}
+
+func (gc *GRPCController) DeleteReactionsByPost(
+	ctx context.Context,
+	reactionRequest *likesgrpc.DeleteReactionsByPostRequest,
+) (*likesgrpc.DeleteReactionsByPostResponse, error) {
+	if reactionRequest.GetPostId() == "" {
+		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
+	}
+	err := gc.ReactionGRPCService.DeleteReactionsByPost(
+		ctx,
+		uuid.MustParse(reactionRequest.GetPostId()),
+	)
+	if err != nil {
+		return nil, status.Error(codes.Internal, "internal error")
+	}
+	return &likesgrpc.DeleteReactionsByPostResponse{
+		SuccessMessage: "Удаление прошло успешно",
+	}, nil
+}
