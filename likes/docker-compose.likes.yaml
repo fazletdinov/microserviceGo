@@ -7,11 +7,32 @@ services:
     image: postgres:15-alpine
     volumes:
       - pg-likes-data:/var/lib/postgresql/data
-    ports:
-      - ${POSTGRES_PORT}:5432
     networks:
       - dev-network
     env_file:
+      - .env
+    ports:
+      - "5434:5432"
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      start_period: 30s
+      interval: 30s
+      timeout: 30s
+      retries: 3
+
+  likes:
+    container_name: likes
+    build: ./
+    networks:
+      - dev-network
+    expose:
+      - ${LIKES_GRPC_PORT}
+    depends_on:
+      postgres_likes_db:
+        condition: service_healthy
+        restart: true
+    env_file: 
       - .env
 
 volumes:
@@ -19,5 +40,5 @@ volumes:
 
 networks:
   dev-network:
-    name: auth_dev-network
+    name: api-gateway_dev-network
     external: true

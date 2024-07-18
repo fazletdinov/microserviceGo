@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package likes;
+
+option go_package = "likes/protogen/golang";
+
+import "likes/likes.proto";
+
+
+service GatewayLikes {
+  rpc CreateReaction(CreateReactionRequest) returns (CreateReactionResponse);
+  rpc GetReactions(GetReactionsRequest) returns (GetReactionsResponse);
+  rpc DeleteReaction(DeleteReactionRequest) returns (DeleteReactionResponse);
+  rpc GetReactionByID(GetReactionRequest) returns (GetReactionResponse);
+}

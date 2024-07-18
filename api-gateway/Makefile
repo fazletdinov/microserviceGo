@@ -16,3 +16,7 @@ proto:
 cert:
 	openssl genrsa -out cert/id_rsa 4096
 	openssl rsa -in cert/id_rsa -pubout -out cert/id_rsa.pub
+
+.PHONY: start
+start:
+	docker compose -f docker-compose.gateway.yaml up --build

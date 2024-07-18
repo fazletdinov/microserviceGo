@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"api-grpc-gateway/config"
@@ -30,10 +31,11 @@ func (rc *CreateReactionController) Create(ctx *gin.Context) {
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
-	if _, err := rc.GRPCClientLikes.CreateReaction(ctx, uuid.MustParse(postID), uuid.MustParse(authorID)); err != nil {
+	reactionID, err := rc.GRPCClientLikes.CreateReaction(ctx, uuid.MustParse(postID), uuid.MustParse(authorID))
+	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, schemas.SuccessResponse{Message: "Reaction создан успешно"})
+	ctx.JSON(http.StatusCreated, schemas.SuccessResponse{Message: fmt.Sprintf("ID = %v", reactionID)})
 }

@@ -3,10 +3,10 @@ env: "local"
 
 # конфигурация gatewayGRPCServer
 gatewayGRPCServer: 
-  grpc_port: "8000"
-  auth_server_address: "localhost:13713"
-  posts_server_address: "localhost:13714"
-  likes_server_address: "localhost:8082"
+  api_gateway_port: "8000"
+  auth_server_address: "auth:13713"
+  posts_server_address: "posts:13714"
+  likes_server_address: "likes:13715"
 
 # конфигурация JWT
 jwt_config:

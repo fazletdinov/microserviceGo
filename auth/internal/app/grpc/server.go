@@ -10,6 +10,7 @@ import (
 	authgrpc "auth/protogen/auth"
 
 	"auth/internal/domain/repository"
+	"auth/internal/domain/service/grpc_service"
 
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
@@ -47,9 +48,9 @@ func (g *GRPC) MustRun() {
 func (g *GRPC) Run() error {
 	const op = "grpcapp.Run"
 	log := g.log.With(slog.String("op", op),
-		slog.Int("port", g.Env.GRPC.Port),
+		slog.Int("port", g.Env.GRPC.AuthGRPCPort),
 	)
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.GRPC.Port))
+	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", g.Env.GRPC.AuthGRPCPort))
 	if err != nil {
 		return fmt.Errorf("%s:%v", op, err)
 	}
@@ -63,6 +64,6 @@ func (g *GRPC) Run() error {
 
 func (g *GRPC) Stop() {
 	const op = "grpcapp.Run"
-	g.log.With(slog.String("op", op)).Info("Остановка gRPC Server", slog.Int("port", g.Env.GRPC.Port))
+	g.log.With(slog.String("op", op)).Info("Остановка gRPC Server", slog.Int("port", g.Env.GRPC.AuthGRPCPort))
 	g.gRPCServer.GracefulStop()
 }

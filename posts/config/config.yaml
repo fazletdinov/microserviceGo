@@ -9,14 +9,14 @@ posts_server:
 postgres_posts_db: 
   user: ""
   password: ""
-  host: "localhost"
-  port: 5433
+  host: "postgres_posts_db"
+  port: 5432
   name: "postgres"
   ssl_mode: "disable"
 
 # конфигурация RedisDB
 redis_posts_db:
-  host: "localhost"
+  host: "redis_posts_db"
   port: 6379
   exp: 60
 
@@ -24,4 +24,4 @@ clients:
   address: "localhost:13713"
 
 grpc:
-  port: 13714
+  posts_grpc_port: 13714

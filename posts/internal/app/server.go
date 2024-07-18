@@ -9,6 +9,7 @@ import (
 	"posts/internal/database/redis_client"
 
 	"github.com/go-redis/redis"
+	"posts/internal/app/grpc_app"
 
 	"gorm.io/gorm"
 )

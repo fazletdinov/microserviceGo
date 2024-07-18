@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -44,21 +44,21 @@ type PostgresDB struct {
 	Password string `yaml:"password" env:"POSTGRES_PASSWORD"`
 	Host     string `yaml:"host" env:"POSTGRES_HOST"`
 	Port     uint   `yaml:"port" env:"POSTGRES_PORT"`
-	Name     string `yaml:"name" env:"POSTGRES_NAME"`
+	Name     string `yaml:"name" env:"POSTGRES_DB"`
 	SSLMode  string `yaml:"ssl_mode" env:"POSTGRES_USE_SSL"`
 }
 
 type GRPC struct {
-	Port    int           `yaml:"port"`
-	Timeout time.Duration `yaml:"timeout"`
+	AuthGRPCPort int           `yaml:"port" env:"AUTH_GRPC_PORT"`
+	Timeout      time.Duration `yaml:"timeout"`
 }
 
 func InitConfig() (*Config, error) {
 	var env Config
-	errEnv := godotenv.Load()
-	if errEnv != nil {
-		return nil, fmt.Errorf("ошибка при загрузки ENV %v", errEnv)
-	}
+	// errEnv := godotenv.Load()
+	// if errEnv != nil {
+	// 	return nil, fmt.Errorf("ошибка при загрузки ENV %v", errEnv)
+	// }
 	path := parseCommand()
 	err := cleanenv.ReadConfig(path, &env)
 	if err != nil {

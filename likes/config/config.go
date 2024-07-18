@@ -4,15 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	"github.com/joho/godotenv"
 )
 
 type Config struct {
 	Env         string      `yaml:"env" env:"ENV"`
 	LikesServer LikesServer `yaml:"likes_server"`
 	PostgresDB  PostgresDB  `yaml:"postgres_likes_db"`
+	GRPC        GRPC        `yaml:"grpc"`
 }
 
 type LikesServer struct {
@@ -24,16 +25,17 @@ type PostgresDB struct {
 	Password string `yaml:"password" env:"POSTGRES_PASSWORD"`
 	Host     string `yaml:"host" env:"POSTGRES_HOST"`
 	Port     uint   `yaml:"port" env:"POSTGRES_PORT"`
-	Name     string `yaml:"name" env:"POSTGRES_NAME"`
+	Name     string `yaml:"name" env:"POSTGRES_DB"`
 	SSLMode  string `yaml:"ssl_mode" env:"POSTGRES_USE_SSL"`
+}
+
+type GRPC struct {
+	LikesGRPCPort int           `yaml:"likes_grpc_port" env:"LIKES_GRPC_PORT"`
+	Timeout       time.Duration `yaml:"timeout"`
 }
 
 func InitConfig() (*Config, error) {
 	var env Config
-	errEnv := godotenv.Load()
-	if errEnv != nil {
-		return nil, fmt.Errorf("ошибка при загрузки ENV %v", errEnv)
-	}
 	path := parseCommand()
 	err := cleanenv.ReadConfig(path, &env)
 	if err != nil {
@@ -44,8 +46,10 @@ func InitConfig() (*Config, error) {
 
 func parseCommand() string {
 	var cfgPath string
-	fset := flag.NewFlagSet("Likes", flag.ContinueOnError)
-	fset.StringVar(&cfgPath, "path", os.Getenv("PATH_CONFIG"), "path to config file")
-	fset.Parse(os.Args[1:])
+	flag.StringVar(&cfgPath, "path", "", "path to config file")
+	flag.Parse()
+	if cfgPath == "" {
+		cfgPath = os.Getenv("PATH_CONFIG")
+	}
 	return cfgPath
 }

@@ -2,17 +2,15 @@ package grpcapp
 
 import (
 	"fmt"
+	"likes/config"
+	"likes/internal/api/grpc/likes"
 	"log/slog"
 	"net"
-	"posts/config"
-	"posts/internal/api/grpc/posts"
 
-	postsgrpc "posts/protogen/posts"
+	likesgrpc "likes/protogen/likes"
 
-	repositoryComment "posts/internal/domain/repository/comment"
-	repositoryPost "posts/internal/domain/repository/post"
-	commentService "posts/internal/domain/service/comment"
-	postService "posts/internal/domain/service/post"
+	reactionRepository "likes/internal/domain/repository"
+	reactionService "likes/internal/domain/service"
 
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
@@ -26,12 +24,11 @@ type GRPC struct {
 
 func NewGRPC(log *slog.Logger, env *config.Config, db *gorm.DB) *GRPC {
 	gRPCServer := grpc.NewServer()
-	postsgrpc.RegisterGatewayPostsServer(
+	likesgrpc.RegisterGatewayLikesServer(
 		gRPCServer,
-		&posts.GRPCController{
-			PostGRPCService:    postService.NewPostGRPCService(repositoryPost.NewPostGRPCRepository(db)),
-			CommentGRPCService: commentService.NewCommentGRPCService(repositoryComment.NewCommentGRPCRepository(db)),
-			Env:                env,
+		&likes.GRPCController{
+			ReactionGRPCService: reactionService.NewReactionGRPCService(reactionRepository.NewReactionGRPCRepository(db)),
+			Env:                 env,
 		},
 	)
 
@@ -51,9 +48,9 @@ func (g *GRPC) MustRun() {
 func (g *GRPC) Run() error {
 	const op = "grpcapp.Run"
 	log := g.log.With(slog.String("op", op),
-		slog.Int("port", g.Env.GRPC.PostsGRPCPort),
+		slog.Int("port", g.Env.GRPC.LikesGRPCPort),
 	)
-	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.GRPC.PostsGRPCPort))
+	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", g.Env.GRPC.LikesGRPCPort))
 	if err != nil {
 		return fmt.Errorf("%s:%v", op, err)
 	}
@@ -67,6 +64,6 @@ func (g *GRPC) Run() error {
 
 func (g *GRPC) Stop() {
 	const op = "grpcapp.Run"
-	g.log.With(slog.String("op", op)).Info("Остановка gRPC Server", slog.Int("port", g.Env.GRPC.PostsGRPCPort))
+	g.log.With(slog.String("op", op)).Info("Остановка gRPC Server", slog.Int("port", g.Env.GRPC.LikesGRPCPort))
 	g.gRPCServer.GracefulStop()
 }

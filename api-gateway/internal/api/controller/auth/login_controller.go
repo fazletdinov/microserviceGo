@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 
 	"api-grpc-gateway/config"
@@ -41,7 +42,7 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 
 	user, err := lc.GRPCClientAuth.GetUserByEmailIsActive(ctx, request.Email)
 	if err != nil {
-		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Пользователь с таким email не обнаружен"})
+		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: fmt.Sprintf("Пользователь с таким email не обнаружен %v", err)})
 		return
 	}
 
@@ -52,13 +53,13 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 
 	accessToken, err := tokenService.GenerateAccessToken(uuid.MustParse(user.UserId), lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.AccessTokenExp))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server error %v", err)})
 		return
 	}
 
 	refreshToken, err := tokenService.GenerateRefreshToken(uuid.MustParse(user.UserId), lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.RefreshTokenExp))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server error %v", err)})
 		return
 	}
 	ctx.SetCookie(lc.Env.JWTConfig.SessionCookieName,

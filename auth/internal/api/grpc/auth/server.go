@@ -5,6 +5,7 @@ import (
 	authgrpc "auth/protogen/auth"
 	"context"
 
+	"auth/internal/domain/service/grpc_service"
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

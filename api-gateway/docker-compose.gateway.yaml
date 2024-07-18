@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+  api-gateway:
+    container_name: api-gateway
+    build: ./
+    networks:
+      - dev-network
+    ports:
+      - ${API_GATEWAY_PORT}:${API_GATEWAY_PORT}
+    env_file: 
+      - .env
+
+networks:
+  dev-network:
+    driver: bridge

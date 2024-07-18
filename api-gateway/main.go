@@ -8,6 +8,7 @@ import (
 	authgrpc "api-grpc-gateway/internal/clients/auth"
 	likesgrpc "api-grpc-gateway/internal/clients/likes"
 	postsgrpc "api-grpc-gateway/internal/clients/posts"
+	grpcapp "api-grpc-gateway/internal/grpc_app"
 
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -50,5 +51,5 @@ func main() {
 	postsroute.SetupPostsRouter(gin, postsClient, env)
 	likesroute.SetupLikesRouter(gin, likesClient, env)
 
-	gin.Run(":" + env.GatewayGRPCServer.GRPCPort)
+	gin.Run(":" + env.GatewayGRPCServer.ApiGatewayPort)
 }

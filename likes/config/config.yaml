@@ -9,7 +9,11 @@ likes_server:
 postgres_likes_db: 
   user: ""
   password: ""
-  host: "localhost"
-  port: 5434
+  host: "postgres_likes_db"
+  port: 5432
   name: "postgres"
   ssl_mode: "disable"
+
+# конфигурация gRPC сервера
+grpc:
+  likes_grpc_port: 13715

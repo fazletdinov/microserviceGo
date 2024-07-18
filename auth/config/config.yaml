@@ -17,7 +17,7 @@ jwt_config:
 postgres_auth_db: 
   user: ""
   password: ""
-  host: "localhost"
+  host: "postgres_auth_db"
   port: 5432
   name: "postgres"
   ssl_mode: "disable"
@@ -26,10 +26,10 @@ postgres_auth_db:
 mongo_auth_db:
   user: ""     
   password: "" 
-  port: 27017
-  host: "localhost"     
+  port: 27016
+  host: "mongo_auth_db"     
   ctxExp: 10
 
 grpc:
-  port: 13713
+  auth_grpc_port: 13713
   timeout: 10h

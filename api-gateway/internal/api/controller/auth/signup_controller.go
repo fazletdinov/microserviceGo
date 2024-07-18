@@ -48,13 +48,13 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 		bcrypt.DefaultCost,
 	)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server error %v", err)})
 		return
 	}
 
 	userID, err := sc.GRPCClientAuth.CreateUser(ctx, request.Email, string(encryptedPassword))
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
+		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server error %v", err)})
 		return
 	}
 

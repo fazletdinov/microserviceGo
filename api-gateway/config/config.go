@@ -16,7 +16,7 @@ type Config struct {
 }
 
 type GatewayGRPCServer struct {
-	GRPCPort           string `yaml:"grpc_port"`
+	ApiGatewayPort     string `yaml:"api_gateway_port"`
 	AuthServerAddress  string `yaml:"auth_server_address"`
 	PostsServerAddress string `yaml:"posts_server_address"`
 	LikesServerAddress string `yaml:"likes_server_address"`
