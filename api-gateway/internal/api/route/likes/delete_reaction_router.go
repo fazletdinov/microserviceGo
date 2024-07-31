@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewDeleteReactionRouter(group *gin.RouterGroup, client *likes.GRPCClientLikes, env *config.Config) {
+func NewDeleteReactionRouter(
+	group *gin.RouterGroup,
+	client *likes.GRPCClientLikes,
+	env *config.Config,
+) {
 	likesController := &controller.DeleteReactionController{
 		GRPCClientLikes: client,
 		Env:             env,

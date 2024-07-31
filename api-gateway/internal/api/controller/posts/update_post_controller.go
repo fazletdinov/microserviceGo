@@ -6,6 +6,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/posts"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -29,10 +32,23 @@ type UpdatePostController struct {
 // @Failure	  	500			    {object}	schemas.ErrorResponse
 // @Router      /post/{post_id} [put]
 func (upc *UpdatePostController) Update(ctx *gin.Context) {
+	var tracer = otel.Tracer(upc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
-	_, err := upc.GRPCClientPosts.GetPostByIDAuthorID(ctx, uuid.MustParse(postID), uuid.MustParse(authorID))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Update",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
+	)
+	defer span.End()
+
+	_, err := upc.GRPCClientPosts.GetPostByIDAuthorID(
+		traceCtx,
+		uuid.MustParse(postID),
+		uuid.MustParse(authorID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден или вы не являетесь автором поста"})
 		return
@@ -45,7 +61,7 @@ func (upc *UpdatePostController) Update(ctx *gin.Context) {
 		return
 	}
 	_, err = upc.GRPCClientPosts.UpdatePost(
-		ctx,
+		traceCtx,
 		uuid.MustParse(postID),
 		uuid.MustParse(authorID),
 		postRequest.Title,

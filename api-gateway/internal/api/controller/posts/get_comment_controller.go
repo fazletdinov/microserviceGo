@@ -6,6 +6,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/posts"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"strconv"
 
@@ -33,6 +36,7 @@ type GetCommentController struct {
 // @Failure		500	{object}	schemas.ErrorResponse
 // @Router	    /post/{post_id}/comments 			[get]
 func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
+	var tracer = otel.Tracer(gcc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
 	_, err := gcc.GRPCClientPosts.GetPostByID(ctx, uuid.MustParse(postID))
 	if err != nil {
@@ -50,7 +54,21 @@ func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
 		return
 	}
 
-	comments, err := gcc.GRPCClientPosts.GetPostComments(ctx, uuid.MustParse(postID), uint64(limit), uint64(offset))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Fetchs",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+		oteltrace.WithAttributes(attribute.Int("Limit", limit)),
+		oteltrace.WithAttributes(attribute.Int("Offset", offset)),
+	)
+	defer span.End()
+
+	comments, err := gcc.GRPCClientPosts.GetPostComments(
+		traceCtx,
+		uuid.MustParse(postID),
+		uint64(limit),
+		uint64(offset),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: err.Error()})
 		return

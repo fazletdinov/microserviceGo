@@ -7,6 +7,7 @@ import (
 	"api-grpc-gateway/internal/clients/auth"
 	tokenService "api-grpc-gateway/internal/domain/services/auth"
 	schemas "api-grpc-gateway/internal/schemas/auth"
+	"go.opentelemetry.io/otel"
 
 	"github.com/gin-gonic/gin"
 )
@@ -26,31 +27,52 @@ type RefreshTokenController struct {
 // @Failure		500			{object}	schemas.ErrorResponse
 // @Router      /refresh 	[get]
 func (rtc *RefreshTokenController) RefreshToken(ctx *gin.Context) {
+	var tracer = otel.Tracer(rtc.Env.Jaeger.ServerName)
 	token, errCookie := ctx.Cookie(rtc.Env.JWTConfig.SessionCookieName)
 	if errCookie != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
 
-	userID, err := tokenService.ExtractUserIDFromToken(token, rtc.Env.JWTConfig.PathPublicKey)
+	userID, err := tokenService.ExtractUserIDFromToken(
+		token,
+		rtc.Env.JWTConfig.PathPublicKey,
+	)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
 
-	_, err = rtc.GRPCClientAuth.GetUserByID(ctx, userID)
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"RefreshToken",
+	)
+	defer span.End()
+
+	_, err = rtc.GRPCClientAuth.GetUserByID(
+		traceCtx,
+		userID,
+	)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
 
-	accessToken, err := tokenService.GenerateAccessToken(userID, rtc.Env.JWTConfig.PathPrivateKey, int(rtc.Env.JWTConfig.AccessTokenExp))
+	accessToken, err := tokenService.GenerateAccessToken(
+		userID,
+		rtc.Env.JWTConfig.PathPrivateKey,
+		int(rtc.Env.JWTConfig.AccessTokenExp),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return
 	}
 
-	refreshToken, err := tokenService.GenerateRefreshToken(userID, rtc.Env.JWTConfig.PathPrivateKey, int(rtc.Env.JWTConfig.RefreshTokenExp))
+	refreshToken, err := tokenService.GenerateRefreshToken(
+		userID,
+		rtc.Env.JWTConfig.PathPrivateKey,
+		int(rtc.Env.JWTConfig.RefreshTokenExp),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return

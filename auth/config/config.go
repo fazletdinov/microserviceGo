@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
-	// "github.com/joho/godotenv"
 )
 
 type Config struct {
@@ -17,6 +16,7 @@ type Config struct {
 	PostgresDB PostgresDB `yaml:"postgres_auth_db"`
 	JWTConfig  JWTConfig  `yaml:"jwt_config"`
 	GRPC       GRPC       `yaml:"grpc"`
+	Jaeger     Jaeger     `yaml:"jaeger"`
 }
 
 type AuthServer struct {
@@ -53,12 +53,14 @@ type GRPC struct {
 	Timeout      time.Duration `yaml:"timeout"`
 }
 
+type Jaeger struct {
+	ServerName   string `yaml:"server_name"`
+	CollectorUrl string `yaml:"collector_url"`
+	Application  string `yaml:"application"`
+}
+
 func InitConfig() (*Config, error) {
 	var env Config
-	// errEnv := godotenv.Load()
-	// if errEnv != nil {
-	// 	return nil, fmt.Errorf("ошибка при загрузки ENV %v", errEnv)
-	// }
 	path := parseCommand()
 	err := cleanenv.ReadConfig(path, &env)
 	if err != nil {

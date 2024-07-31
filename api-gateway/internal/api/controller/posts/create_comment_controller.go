@@ -7,6 +7,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/posts"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -29,10 +32,22 @@ type CreateCommentController struct {
 // @Failure		500						{object}	schemas.ErrorResponse
 // @Router      /post/{post_id}/comment [post]
 func (ccc *CreateCommentController) Create(ctx *gin.Context) {
+	var tracer = otel.Tracer(ccc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
-	_, err := ccc.GRPCClientPosts.GetPostByID(ctx, uuid.MustParse(postID))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Create",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
+	)
+	defer span.End()
+
+	_, err := ccc.GRPCClientPosts.GetPostByID(
+		traceCtx,
+		uuid.MustParse(postID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
@@ -46,7 +61,7 @@ func (ccc *CreateCommentController) Create(ctx *gin.Context) {
 	}
 
 	commentID, errCreate := ccc.GRPCClientPosts.CreateComment(
-		ctx,
+		traceCtx,
 		commentRequest.Text,
 		uuid.MustParse(postID),
 		uuid.MustParse(authorID),

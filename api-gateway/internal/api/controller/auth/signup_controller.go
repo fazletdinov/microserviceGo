@@ -8,6 +8,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/auth"
 	schemas "api-grpc-gateway/internal/schemas/auth"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -31,6 +34,7 @@ type SignupController struct {
 // @Failure		500			{object}	schemas.ErrorResponse
 // @Router      /user/signup [post]
 func (sc *SignupController) Signup(ctx *gin.Context) {
+	var tracer = otel.Tracer(sc.Env.Jaeger.ServerName)
 	var request schemas.SignupUserRequest
 
 	err := ctx.ShouldBindJSON(&request)
@@ -39,7 +43,17 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 		return
 	}
 
-	_, err = sc.GRPCClientAuth.GetUserByEmail(ctx, request.Email)
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Signup",
+		oteltrace.WithAttributes(attribute.String("Email", request.Email)),
+	)
+	defer span.End()
+
+	_, err = sc.GRPCClientAuth.GetUserByEmail(
+		traceCtx,
+		request.Email,
+	)
 	if err == nil {
 		ctx.JSON(http.StatusConflict, schemas.ErrorResponse{Message: "Пользователь с указанным email уже существует"})
 		return
@@ -54,7 +68,11 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 		return
 	}
 
-	userID, err := sc.GRPCClientAuth.CreateUser(ctx, request.Email, string(encryptedPassword))
+	userID, err := sc.GRPCClientAuth.CreateUser(
+		traceCtx,
+		request.Email,
+		string(encryptedPassword),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server error %v", err)})
 		return

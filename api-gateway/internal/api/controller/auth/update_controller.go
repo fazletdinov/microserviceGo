@@ -3,8 +3,12 @@ package controller
 import (
 	"net/http"
 
+	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/auth"
 	schemas "api-grpc-gateway/internal/schemas/auth"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -12,6 +16,7 @@ import (
 
 type UpdateController struct {
 	GRPCClientAuth *auth.GRPCClientAuth
+	Env            *config.Config
 }
 
 // UpdateUser    godoc
@@ -26,8 +31,20 @@ type UpdateController struct {
 // @Failure	  	500			{object}	schemas.ErrorResponse
 // @Router      /user/update [put]
 func (uc *UpdateController) Update(ctx *gin.Context) {
+	var tracer = otel.Tracer(uc.Env.Jaeger.ServerName)
 	userID := ctx.GetString("x-user-id")
-	_, err := uc.GRPCClientAuth.GetUserByID(ctx, uuid.MustParse(userID))
+
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Update",
+		oteltrace.WithAttributes(attribute.String("UserID", userID)),
+	)
+	defer span.End()
+
+	_, err := uc.GRPCClientAuth.GetUserByID(
+		traceCtx,
+		uuid.MustParse(userID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
@@ -39,7 +56,12 @@ func (uc *UpdateController) Update(ctx *gin.Context) {
 		return
 	}
 
-	_, err = uc.GRPCClientAuth.UpdateUser(ctx, uuid.MustParse(userID), *userUpdate.FirstName, *userUpdate.LastName)
+	_, err = uc.GRPCClientAuth.UpdateUser(
+		traceCtx,
+		uuid.MustParse(userID),
+		*userUpdate.FirstName,
+		*userUpdate.LastName,
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return

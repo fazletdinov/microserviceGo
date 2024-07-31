@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewDeleteCommentRouter(group *gin.RouterGroup, client *posts.GRPCClientPosts, env *config.Config) {
+func NewDeleteCommentRouter(
+	group *gin.RouterGroup,
+	client *posts.GRPCClientPosts,
+	env *config.Config,
+) {
 	postsController := &controller.DeleteCommentController{
 		GRPCClientPosts: client,
 		Env:             env,

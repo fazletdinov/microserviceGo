@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewGetPostRouter(group *gin.RouterGroup, client *posts.GRPCClientPosts, env *config.Config) {
+func NewGetPostRouter(
+	group *gin.RouterGroup,
+	client *posts.GRPCClientPosts,
+	env *config.Config,
+) {
 	postsController := &controller.GetPostController{
 		GRPCClientPosts: client,
 		Env:             env,

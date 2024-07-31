@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewCreateCommentRouter(group *gin.RouterGroup, client *posts.GRPCClientPosts, env *config.Config) {
+func NewCreateCommentRouter(
+	group *gin.RouterGroup,
+	client *posts.GRPCClientPosts,
+	env *config.Config,
+) {
 	postsController := &controller.CreateCommentController{
 		GRPCClientPosts: client,
 		Env:             env,

@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewCreateReactionRouter(group *gin.RouterGroup, client *likes.GRPCClientLikes, env *config.Config) {
+func NewCreateReactionRouter(
+	group *gin.RouterGroup,
+	client *likes.GRPCClientLikes,
+	env *config.Config,
+) {
 	likesController := &controller.CreateReactionController{
 		GRPCClientLikes: client,
 		Env:             env,

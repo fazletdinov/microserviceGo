@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupLikesRouter(gin *gin.Engine, client *likes.GRPCClientLikes, env *config.Config) {
+func SetupLikesRouter(
+	gin *gin.Engine,
+	client *likes.GRPCClientLikes,
+	env *config.Config,
+) {
 	publicRouter := gin.Group("/api/v1")
 	NewGetReactionRouter(publicRouter, client, env)
 

@@ -6,6 +6,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/posts"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"strconv"
 
@@ -28,8 +31,20 @@ type GetPostController struct {
 // @Failure	   500			      {object}	    schemas.ErrorResponse
 // @Router     /post/{post_id}    [get]
 func (pc *GetPostController) Fetch(ctx *gin.Context) {
+	var tracer = otel.Tracer(pc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
-	post, err := pc.GRPCClientPosts.GetPostByID(ctx, uuid.MustParse(postID))
+
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Fetch",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+	)
+	defer span.End()
+
+	post, err := pc.GRPCClientPosts.GetPostByID(
+		traceCtx,
+		uuid.MustParse(postID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
@@ -52,6 +67,7 @@ func (pc *GetPostController) Fetch(ctx *gin.Context) {
 // @Failure		500	{object}	schemas.ErrorResponse
 // @Router	    /posts 			[get]
 func (pc *GetPostController) Fetchs(ctx *gin.Context) {
+	var tracer = otel.Tracer(pc.Env.Jaeger.ServerName)
 	limit, err := strconv.Atoi(ctx.Query("limit"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Невалидные данные"})
@@ -63,7 +79,15 @@ func (pc *GetPostController) Fetchs(ctx *gin.Context) {
 		return
 	}
 
-	posts, err := pc.GRPCClientPosts.GetPosts(ctx, uint64(limit), uint64(offset))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Fetchs",
+		oteltrace.WithAttributes(attribute.Int("Limit", limit)),
+		oteltrace.WithAttributes(attribute.Int("Offset", offset)),
+	)
+	defer span.End()
+
+	posts, err := pc.GRPCClientPosts.GetPosts(traceCtx, uint64(limit), uint64(offset))
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return

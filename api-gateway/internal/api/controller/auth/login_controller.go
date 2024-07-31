@@ -12,6 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -33,15 +35,7 @@ type LoginController struct {
 // @Failure	  	500			{object}	schemas.ErrorResponse
 // @Router      /login [post]
 func (lc *LoginController) Login(ctx *gin.Context) {
-	tracer := otel.GetTracerProvider().Tracer("Api-Gateway")
-	fmt.Printf("tracer ========================== %v\n", tracer)
-
-	tracerKey, flag := ctx.Get("otel-go-contrib-tracer")
-	if !flag {
-		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Отсутствует ключ"})
-		return
-	}
-	fmt.Printf("tracerKey ========================== %+v\n", tracerKey)
+	var tracer = otel.Tracer(lc.Env.Jaeger.ServerName)
 	var request schemas.LoginRequest
 
 	err := ctx.ShouldBindJSON(&request)
@@ -50,24 +44,45 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 		return
 	}
 
-	user, err := lc.GRPCClientAuth.GetUserByEmailIsActive(ctx, request.Email)
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Login",
+		oteltrace.WithAttributes(attribute.String("User", request.Email)),
+	)
+	defer span.End()
+
+	user, err := lc.GRPCClientAuth.GetUserByEmailIsActive(
+		traceCtx,
+		request.Email,
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: fmt.Sprintf("Пользователь с таким email не обнаружен %v", err)})
 		return
 	}
 
-	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
+	if err = bcrypt.CompareHashAndPassword(
+		[]byte(user.Password),
+		[]byte(request.Password),
+	); err != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Неверные учетные данные"})
 		return
 	}
 
-	accessToken, err := tokenService.GenerateAccessToken(uuid.MustParse(user.UserId), lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.AccessTokenExp))
+	accessToken, err := tokenService.GenerateAccessToken(
+		uuid.MustParse(user.UserId),
+		lc.Env.JWTConfig.PathPrivateKey,
+		int(lc.Env.JWTConfig.AccessTokenExp),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server error %v", err)})
 		return
 	}
 
-	refreshToken, err := tokenService.GenerateRefreshToken(uuid.MustParse(user.UserId), lc.Env.JWTConfig.PathPrivateKey, int(lc.Env.JWTConfig.RefreshTokenExp))
+	refreshToken, err := tokenService.GenerateRefreshToken(
+		uuid.MustParse(user.UserId),
+		lc.Env.JWTConfig.PathPrivateKey,
+		int(lc.Env.JWTConfig.RefreshTokenExp),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: fmt.Sprintf("Internal Server error %v", err)})
 		return

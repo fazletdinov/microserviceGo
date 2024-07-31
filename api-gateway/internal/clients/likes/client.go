@@ -4,23 +4,33 @@ import (
 	likesgrpc "api-grpc-gateway/protogen/golang/likes"
 	"context"
 
+	"api-grpc-gateway/config"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
 type GRPCClientLikes struct {
 	likes likesgrpc.GatewayLikesClient
+	env   *config.Config
 }
 
 func NewGRPCClientLikes(
 	addrs string,
+	env *config.Config,
 ) (*GRPCClientLikes, error) {
 	cc, err := grpc.NewClient(addrs, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		return nil, err
 	}
-	return &GRPCClientLikes{likes: likesgrpc.NewGatewayLikesClient(cc)}, nil
+	return &GRPCClientLikes{
+			likes: likesgrpc.NewGatewayLikesClient(cc),
+			env:   env,
+		},
+		nil
 }
 
 func (gc *GRPCClientLikes) CreateReaction(
@@ -28,7 +38,16 @@ func (gc *GRPCClientLikes) CreateReaction(
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) (uuid.UUID, error) {
-	reactionResponse, err := gc.likes.CreateReaction(ctx, &likesgrpc.CreateReactionRequest{
+	var tracer = otel.Tracer(gc.env.Jaeger.ServerName)
+	traceCtx, span := tracer.Start(
+		ctx,
+		"CreateReaction",
+		oteltrace.WithAttributes(attribute.String("PostID", postID.String())),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID.String())),
+	)
+	span.AddEvent("Начало gRPC запроса в сервис likes для создания реакции на post")
+	defer span.End()
+	reactionResponse, err := gc.likes.CreateReaction(traceCtx, &likesgrpc.CreateReactionRequest{
 		PostId:   postID.String(),
 		AuthorId: authorID.String(),
 	})
@@ -45,7 +64,16 @@ func (gc *GRPCClientLikes) GetReactionByID(
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) (*likesgrpc.GetReactionResponse, error) {
-	reactionResponse, err := gc.likes.GetReactionByID(ctx, &likesgrpc.GetReactionRequest{
+	var tracer = otel.Tracer(gc.env.Jaeger.ServerName)
+	traceCtx, span := tracer.Start(
+		ctx,
+		"GetReactionByID",
+		oteltrace.WithAttributes(attribute.String("PostID", postID.String())),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID.String())),
+	)
+	span.AddEvent("Начало gRPC запроса в сервис likes для получения реакции на post")
+	defer span.End()
+	reactionResponse, err := gc.likes.GetReactionByID(traceCtx, &likesgrpc.GetReactionRequest{
 		PostId:   postID.String(),
 		AuthorId: authorID.String(),
 	})
@@ -62,7 +90,17 @@ func (gc *GRPCClientLikes) GetReactionsPost(
 	limit uint64,
 	offset uint64,
 ) (*likesgrpc.GetReactionsResponse, error) {
-	reactionResponse, err := gc.likes.GetReactions(ctx, &likesgrpc.GetReactionsRequest{
+	var tracer = otel.Tracer(gc.env.Jaeger.ServerName)
+	traceCtx, span := tracer.Start(
+		ctx,
+		"GetReactionsPost",
+		oteltrace.WithAttributes(attribute.String("PostID", postID.String())),
+		oteltrace.WithAttributes(attribute.Int64("Limit", int64(limit))),
+		oteltrace.WithAttributes(attribute.Int64("Offset", int64(offset))),
+	)
+	span.AddEvent("Начало gRPC запроса в сервис likes для получения списка реакции на post")
+	defer span.End()
+	reactionResponse, err := gc.likes.GetReactions(traceCtx, &likesgrpc.GetReactionsRequest{
 		PostId: postID.String(),
 		Limit:  limit,
 		Offset: offset,
@@ -79,7 +117,16 @@ func (gc *GRPCClientLikes) DeleteReaction(
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) (*likesgrpc.DeleteReactionResponse, error) {
-	reactionResponse, err := gc.likes.DeleteReaction(ctx, &likesgrpc.DeleteReactionRequest{
+	var tracer = otel.Tracer(gc.env.Jaeger.ServerName)
+	traceCtx, span := tracer.Start(
+		ctx,
+		"DeleteReaction",
+		oteltrace.WithAttributes(attribute.String("PostID", postID.String())),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID.String())),
+	)
+	span.AddEvent("Начало gRPC запроса в сервис likes для удаления реакции")
+	defer span.End()
+	reactionResponse, err := gc.likes.DeleteReaction(traceCtx, &likesgrpc.DeleteReactionRequest{
 		AuthorId: authorID.String(),
 		PostId:   postID.String(),
 	})
@@ -94,7 +141,15 @@ func (gc *GRPCClientLikes) DeleteReactionsByAuthor(
 	ctx context.Context,
 	authorID uuid.UUID,
 ) (*likesgrpc.DeleteReactionsByAuthorResponse, error) {
-	reactionResponse, err := gc.likes.DeleteReactionsByAuthor(ctx, &likesgrpc.DeleteReactionsByAuthorRequest{
+	var tracer = otel.Tracer(gc.env.Jaeger.ServerName)
+	traceCtx, span := tracer.Start(
+		ctx,
+		"DeleteReactionsByAuthor",
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID.String())),
+	)
+	span.AddEvent("Начало gRPC запроса в сервис likes для удаления реакций на post по AuthorID")
+	defer span.End()
+	reactionResponse, err := gc.likes.DeleteReactionsByAuthor(traceCtx, &likesgrpc.DeleteReactionsByAuthorRequest{
 		AuthorId: authorID.String(),
 	})
 	if err != nil {
@@ -108,7 +163,15 @@ func (gc *GRPCClientLikes) DeleteReactionsByPost(
 	ctx context.Context,
 	postID uuid.UUID,
 ) (*likesgrpc.DeleteReactionsByPostResponse, error) {
-	reactionResponse, err := gc.likes.DeleteReactionsByPost(ctx, &likesgrpc.DeleteReactionsByPostRequest{
+	var tracer = otel.Tracer(gc.env.Jaeger.ServerName)
+	traceCtx, span := tracer.Start(
+		ctx,
+		"DeleteReactionsByPost",
+		oteltrace.WithAttributes(attribute.String("PostID", postID.String())),
+	)
+	span.AddEvent("Начало gRPC запроса в сервис likes для удаления реакций на post")
+	defer span.End()
+	reactionResponse, err := gc.likes.DeleteReactionsByPost(traceCtx, &likesgrpc.DeleteReactionsByPostRequest{
 		PostId: postID.String(),
 	})
 	if err != nil {

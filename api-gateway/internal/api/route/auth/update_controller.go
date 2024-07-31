@@ -9,9 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewUpdateRouter(group *gin.RouterGroup, client *auth.GRPCClientAuth, env *config.Config) {
+func NewUpdateRouter(
+	group *gin.RouterGroup,
+	client *auth.GRPCClientAuth,
+	env *config.Config,
+) {
 	updateController := &controller.UpdateController{
 		GRPCClientAuth: client,
+		Env:            env,
 	}
 	group.PUT("/user/update", updateController.Update)
 }

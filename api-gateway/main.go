@@ -10,7 +10,7 @@ import (
 	postsgrpc "api-grpc-gateway/internal/clients/posts"
 	grpcapp "api-grpc-gateway/internal/grpc_app"
 	"api-grpc-gateway/pkg/jaeger"
-	"api-grpc-gateway/pkg/logger"
+	// "api-grpc-gateway/pkg/logger"
 	"api-grpc-gateway/pkg/metric"
 	"context"
 
@@ -37,7 +37,7 @@ func main() {
 	app := grpcapp.App()
 
 	env := app.Env
-	log := app.Log
+	// log := app.Log
 
 	ctx := context.Background()
 	{
@@ -61,19 +61,28 @@ func main() {
 	}
 
 	gin := gin.Default()
-	gin.Use(logger.LoggingMiddleware(log, env.Jaeger.Application))
+	// gin.Use(logger.LoggingMiddleware(log, env.Jaeger.Application))
 	gin.Use(otelgin.Middleware(env.Jaeger.ServerName))
 
 	gin.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	authClient, err := authgrpc.NewGRPCClientAuth(env.GatewayGRPCServer.AuthServerAddress)
+	authClient, err := authgrpc.NewGRPCClientAuth(
+		env.GatewayGRPCServer.AuthServerAddress,
+		env,
+	)
 	if err != nil {
 		panic("Ошибка подключения к сервису Auth")
 	}
-	postsClient, err := postsgrpc.NewGRPCClientPosts(env.GatewayGRPCServer.PostsServerAddress)
+	postsClient, err := postsgrpc.NewGRPCClientPosts(
+		env.GatewayGRPCServer.PostsServerAddress,
+		env,
+	)
 	if err != nil {
 		panic("Ошибка подключения к сервису Posts")
 	}
-	likesClient, err := likesgrpc.NewGRPCClientLikes(env.GatewayGRPCServer.LikesServerAddress)
+	likesClient, err := likesgrpc.NewGRPCClientLikes(
+		env.GatewayGRPCServer.LikesServerAddress,
+		env,
+	)
 	if err != nil {
 		panic("Ошибка подключения к сервису Likes")
 	}

@@ -9,7 +9,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewRefreshRouter(group *gin.RouterGroup, client *auth.GRPCClientAuth, env *config.Config) {
+func NewRefreshRouter(
+	group *gin.RouterGroup,
+	client *auth.GRPCClientAuth,
+	env *config.Config,
+) {
 	refreshController := &controller.RefreshTokenController{
 		GRPCClientAuth: client,
 		Env:            env,

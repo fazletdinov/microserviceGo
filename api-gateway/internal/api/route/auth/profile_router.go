@@ -9,9 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewProfileRouter(group *gin.RouterGroup, client *auth.GRPCClientAuth, env *config.Config) {
+func NewProfileRouter(
+	group *gin.RouterGroup,
+	client *auth.GRPCClientAuth,
+	env *config.Config,
+) {
 	profileController := &controller.ProfileController{
 		GRPCClientAuth: client,
+		Env:            env,
 	}
 	group.GET("/user/me", profileController.Fetch)
 }

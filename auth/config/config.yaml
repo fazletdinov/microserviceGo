@@ -33,3 +33,9 @@ mongo_auth_db:
 grpc:
   auth_grpc_port: 13713
   timeout: 10h
+
+# jaeger
+jaeger:
+  server_name: "MicroserviseGo"
+  collector_url: "otel_collector:4317"
+  application: "Auth"

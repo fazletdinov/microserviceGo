@@ -6,6 +6,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/likes"
 	schemas "api-grpc-gateway/internal/schemas/likes"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -26,17 +29,34 @@ type DeleteReactionController struct {
 // @Failure		401			             {object}	schemas.ErrorResponse
 // @Failure		500			             {object}	schemas.ErrorResponse
 // @Router      /post/{post_id}/reaction [delete]
-func (dpc *DeleteReactionController) Delete(ctx *gin.Context) {
+func (drc *DeleteReactionController) Delete(ctx *gin.Context) {
+	var tracer = otel.Tracer(drc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
-	_, err := dpc.GRPCClientLikes.GetReactionByID(ctx, uuid.MustParse(postID), uuid.MustParse(authorID))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Delete",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
+	)
+	defer span.End()
+
+	_, err := drc.GRPCClientLikes.GetReactionByID(
+		traceCtx,
+		uuid.MustParse(postID),
+		uuid.MustParse(authorID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Reaction не найден"})
 		return
 	}
 
-	if _, err = dpc.GRPCClientLikes.DeleteReaction(ctx, uuid.MustParse(postID), uuid.MustParse(authorID)); err != nil {
+	if _, err = drc.GRPCClientLikes.DeleteReaction(
+		traceCtx,
+		uuid.MustParse(postID),
+		uuid.MustParse(authorID),
+	); err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return
 	}

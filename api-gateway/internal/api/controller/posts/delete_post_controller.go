@@ -8,6 +8,9 @@ import (
 	"api-grpc-gateway/internal/clients/likes"
 	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/posts"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -30,21 +33,41 @@ type DeletePostController struct {
 // @Failure		500			    {object}	schemas.ErrorResponse
 // @Router      /post/{post_id} [delete]
 func (dpc *DeletePostController) Delete(ctx *gin.Context) {
+	var tracer = otel.Tracer(dpc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
-	_, err := dpc.GRPCClientPosts.GetPostByIDAuthorID(ctx, uuid.MustParse(postID), uuid.MustParse(authorID))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Delete",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
+	)
+	defer span.End()
+
+	_, err := dpc.GRPCClientPosts.GetPostByIDAuthorID(
+		traceCtx,
+		uuid.MustParse(postID),
+		uuid.MustParse(authorID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: fmt.Sprintf("Post не найден или вы не являетесь автором поста %v", err)})
 		return
 	}
 
-	if _, err = dpc.GRPCClientPosts.DeletePost(ctx, uuid.MustParse(postID), uuid.MustParse(authorID)); err != nil {
+	if _, err = dpc.GRPCClientPosts.DeletePost(
+		traceCtx,
+		uuid.MustParse(postID),
+		uuid.MustParse(authorID),
+	); err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return
 	}
 
-	if _, err = dpc.GRPCClientLikes.DeleteReactionsByPost(ctx, uuid.MustParse(postID)); err != nil {
+	if _, err = dpc.GRPCClientLikes.DeleteReactionsByPost(
+		traceCtx,
+		uuid.MustParse(postID),
+	); err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return
 	}

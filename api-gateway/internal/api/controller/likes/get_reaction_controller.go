@@ -6,6 +6,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/likes"
 	schemas "api-grpc-gateway/internal/schemas/likes"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"strconv"
 
@@ -33,6 +36,7 @@ type GetReactionController struct {
 // @Failure		500	{object}	schemas.ErrorResponse
 // @Router	    /post/{post_id}/reactions 	[get]
 func (rc *GetReactionController) Fetchs(ctx *gin.Context) {
+	var tracer = otel.Tracer(rc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
 
 	limit, err := strconv.Atoi(ctx.Query("limit"))
@@ -46,7 +50,21 @@ func (rc *GetReactionController) Fetchs(ctx *gin.Context) {
 		return
 	}
 
-	reactions, err := rc.GRPCClientLikes.GetReactionsPost(ctx, uuid.MustParse(postID), uint64(limit), uint64(offset))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Fetchs",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+		oteltrace.WithAttributes(attribute.Int("Limit", limit)),
+		oteltrace.WithAttributes(attribute.Int("Offset", offset)),
+	)
+	defer span.End()
+
+	reactions, err := rc.GRPCClientLikes.GetReactionsPost(
+		traceCtx,
+		uuid.MustParse(postID),
+		uint64(limit),
+		uint64(offset),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "not found"})
 		return

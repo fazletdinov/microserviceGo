@@ -6,6 +6,9 @@ import (
 	"api-grpc-gateway/config"
 	"api-grpc-gateway/internal/clients/posts"
 	schemas "api-grpc-gateway/internal/schemas/posts"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -30,17 +33,35 @@ type UpdateCommentController struct {
 // @Failure	  	500			    {object}	schemas.ErrorResponse
 // @Router      /post/{post_id}/comment/{comment_id} 	[put]
 func (upc *UpdateCommentController) Update(ctx *gin.Context) {
+	var tracer = otel.Tracer(upc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
 	commentID := ctx.Param("comment_id")
 	authorID := ctx.GetString("x-user-id")
 
-	_, err := upc.GRPCClientPosts.GetPostByID(ctx, uuid.MustParse(postID))
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Update",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
+		oteltrace.WithAttributes(attribute.String("CommentID", commentID)),
+	)
+	defer span.End()
+
+	_, err := upc.GRPCClientPosts.GetPostByID(
+		traceCtx,
+		uuid.MustParse(postID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
 	}
 
-	_, err = upc.GRPCClientPosts.GetCommentByID(ctx, uuid.MustParse(commentID), uuid.MustParse(postID), uuid.MustParse(authorID))
+	_, err = upc.GRPCClientPosts.GetCommentByID(
+		traceCtx,
+		uuid.MustParse(commentID),
+		uuid.MustParse(postID),
+		uuid.MustParse(authorID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Comment не найден"})
 		return
@@ -52,7 +73,13 @@ func (upc *UpdateCommentController) Update(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Невалидные данные"})
 		return
 	}
-	_, err = upc.GRPCClientPosts.UpdateComment(ctx, uuid.MustParse(commentID), commentRequest.Text, uuid.MustParse(postID), uuid.MustParse(authorID))
+	_, err = upc.GRPCClientPosts.UpdateComment(
+		traceCtx,
+		uuid.MustParse(commentID),
+		commentRequest.Text,
+		uuid.MustParse(postID),
+		uuid.MustParse(authorID),
+	)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, schemas.ErrorResponse{Message: "Internal Server error"})
 		return
