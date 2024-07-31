@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"api-grpc-gateway/config"
@@ -15,6 +16,7 @@ import (
 type SignupController struct {
 	GRPCClientAuth *auth.GRPCClientAuth
 	Env            *config.Config
+	Log            *slog.Logger
 }
 
 // LoginUser	godoc

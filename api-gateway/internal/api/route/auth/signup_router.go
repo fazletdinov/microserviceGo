@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewSignupRouter(group *gin.RouterGroup, client *auth.GRPCClientAuth, env *config.Config) {
+func NewSignupRouter(
+	group *gin.RouterGroup,
+	client *auth.GRPCClientAuth,
+	env *config.Config,
+) {
 	signupController := controller.SignupController{
 		GRPCClientAuth: client,
 		Env:            env,

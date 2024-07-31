@@ -11,6 +11,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -32,6 +33,15 @@ type LoginController struct {
 // @Failure	  	500			{object}	schemas.ErrorResponse
 // @Router      /login [post]
 func (lc *LoginController) Login(ctx *gin.Context) {
+	tracer := otel.GetTracerProvider().Tracer("Api-Gateway")
+	fmt.Printf("tracer ========================== %v\n", tracer)
+
+	tracerKey, flag := ctx.Get("otel-go-contrib-tracer")
+	if !flag {
+		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Отсутствует ключ"})
+		return
+	}
+	fmt.Printf("tracerKey ========================== %+v\n", tracerKey)
 	var request schemas.LoginRequest
 
 	err := ctx.ShouldBindJSON(&request)

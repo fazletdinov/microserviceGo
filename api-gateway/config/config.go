@@ -13,6 +13,7 @@ type Config struct {
 	Env               string            `yaml:"env" env:"ENV"`
 	GatewayGRPCServer GatewayGRPCServer `yaml:"gatewayGRPCServer"`
 	JWTConfig         JWTConfig         `yaml:"jwt_config"`
+	Jaeger            Jaeger            `yaml:"jaeger"`
 }
 
 type GatewayGRPCServer struct {
@@ -28,6 +29,12 @@ type JWTConfig struct {
 	AccessTokenExp    uint   `yaml:"access_token_exp" env:"ACCESS_TOKEN_EXP"`
 	RefreshTokenExp   uint   `yaml:"refresh_token_exp" env:"REFRESH_TOKEN_EXP"`
 	SessionCookieName string `yaml:"session_cookie_name" env:"SESSION_COOKIE_NAME"`
+}
+
+type Jaeger struct {
+	ServerName   string `yaml:"server_name"`
+	CollectorUrl string `yaml:"collector_url"`
+	Application  string `yaml:"application"`
 }
 
 func InitConfig() (*Config, error) {

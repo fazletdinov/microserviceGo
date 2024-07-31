@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	// "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -16,7 +17,11 @@ type GRPCClientAuth struct {
 func NewGRPCClientAuth(
 	addrs string,
 ) (*GRPCClientAuth, error) {
-	cc, err := grpc.NewClient(addrs, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	cc, err := grpc.NewClient(
+		addrs,
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		// grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
+	)
 	if err != nil {
 		return nil, err
 	}

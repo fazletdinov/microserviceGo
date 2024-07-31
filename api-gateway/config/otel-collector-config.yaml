@@ -1,0 +1,51 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  batch:
+  memory_limiter:
+    # 80% of maximum memory up to 2G
+    limit_mib: 1500
+    # 25% of limit up to 2G
+    spike_limit_mib: 512
+    check_interval: 5s
+
+extensions:
+  health_check:
+  pprof:
+    endpoint: :1888
+  zpages:
+    endpoint: :55679
+
+exporters:
+  # prometheusremotewrite:
+  #   endpoint: 0.0.0.0:8889
+  #   add_metric_suffixes: false
+  # otlp:
+  #   endpoint: jaeger:4317
+  otlp/jaeger:
+    endpoint: jaeger:4317
+    tls:
+      insecure: true
+  # prometheus:
+  #   endpoint: :8889
+  #   namespace: promexample
+  #   const_labels:
+  #     label1: value1
+
+service:
+  extensions: [pprof, zpages, health_check]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch]
+      exporters: [otlp/jaeger]
+    # metrics:
+    #   receivers: [otlp]
+    #   processors: [memory_limiter, batch]
+    #   exporters: [prometheusremotewrite]

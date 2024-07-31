@@ -2,3 +2,4 @@
 .idea
 auth/cert
 api-gateway/cert
+.vscode
