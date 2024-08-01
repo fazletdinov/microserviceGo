@@ -33,7 +33,7 @@ type DeletePostController struct {
 // @Failure		500			    {object}	schemas.ErrorResponse
 // @Router      /post/{post_id} [delete]
 func (dpc *DeletePostController) Delete(ctx *gin.Context) {
-	var tracer = otel.Tracer(dpc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(dpc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 

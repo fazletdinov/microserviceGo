@@ -31,7 +31,7 @@ type CreatePostController struct {
 // @Failure		500			{object}	schemas.ErrorResponse
 // @Router      /post 		[post]
 func (cp *CreatePostController) Create(ctx *gin.Context) {
-	var tracer = otel.Tracer(cp.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(cp.Env.Jaeger.Application)
 	var request schemas.CreatePostRequest
 	userID := ctx.GetString("x-user-id")
 

@@ -35,7 +35,7 @@ type LoginController struct {
 // @Failure	  	500			{object}	schemas.ErrorResponse
 // @Router      /login [post]
 func (lc *LoginController) Login(ctx *gin.Context) {
-	var tracer = otel.Tracer(lc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(lc.Env.Jaeger.Application)
 	var request schemas.LoginRequest
 
 	err := ctx.ShouldBindJSON(&request)

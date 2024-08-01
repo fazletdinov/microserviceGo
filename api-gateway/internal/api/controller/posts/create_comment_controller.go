@@ -32,7 +32,7 @@ type CreateCommentController struct {
 // @Failure		500						{object}	schemas.ErrorResponse
 // @Router      /post/{post_id}/comment [post]
 func (ccc *CreateCommentController) Create(ctx *gin.Context) {
-	var tracer = otel.Tracer(ccc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(ccc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 

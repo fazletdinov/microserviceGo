@@ -30,7 +30,7 @@ type DeleteReactionController struct {
 // @Failure		500			             {object}	schemas.ErrorResponse
 // @Router      /post/{post_id}/reaction [delete]
 func (drc *DeleteReactionController) Delete(ctx *gin.Context) {
-	var tracer = otel.Tracer(drc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(drc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 

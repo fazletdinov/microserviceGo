@@ -33,7 +33,7 @@ type UpdateCommentController struct {
 // @Failure	  	500			    {object}	schemas.ErrorResponse
 // @Router      /post/{post_id}/comment/{comment_id} 	[put]
 func (upc *UpdateCommentController) Update(ctx *gin.Context) {
-	var tracer = otel.Tracer(upc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(upc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 	commentID := ctx.Param("comment_id")
 	authorID := ctx.GetString("x-user-id")

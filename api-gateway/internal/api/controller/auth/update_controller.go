@@ -31,7 +31,7 @@ type UpdateController struct {
 // @Failure	  	500			{object}	schemas.ErrorResponse
 // @Router      /user/update [put]
 func (uc *UpdateController) Update(ctx *gin.Context) {
-	var tracer = otel.Tracer(uc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(uc.Env.Jaeger.Application)
 	userID := ctx.GetString("x-user-id")
 
 	traceCtx, span := tracer.Start(

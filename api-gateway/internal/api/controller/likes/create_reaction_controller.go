@@ -31,7 +31,7 @@ type CreateReactionController struct {
 // @Failure		500			{object}	  schemas.ErrorResponse
 // @Router      /post/{post_id}/reaction  [post]
 func (rc *CreateReactionController) Create(ctx *gin.Context) {
-	var tracer = otel.Tracer(rc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(rc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 

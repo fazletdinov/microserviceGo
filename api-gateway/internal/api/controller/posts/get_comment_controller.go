@@ -36,7 +36,7 @@ type GetCommentController struct {
 // @Failure		500	{object}	schemas.ErrorResponse
 // @Router	    /post/{post_id}/comments 			[get]
 func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
-	var tracer = otel.Tracer(gcc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(gcc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 
 	traceCtx, span := tracer.Start(

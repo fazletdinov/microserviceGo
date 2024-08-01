@@ -31,7 +31,7 @@ type ProfileController struct {
 // @Failure		404			{object}	schemas.ErrorResponse
 // @Router      /user/me     [get]
 func (pc *ProfileController) Fetch(ctx *gin.Context) {
-	var tracer = otel.Tracer(pc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(pc.Env.Jaeger.Application)
 	fmt.Printf("tracer ===================== %v\n", tracer)
 	userID := ctx.GetString("x-user-id")
 

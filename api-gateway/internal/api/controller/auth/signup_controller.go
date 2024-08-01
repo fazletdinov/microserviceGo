@@ -34,7 +34,7 @@ type SignupController struct {
 // @Failure		500			{object}	schemas.ErrorResponse
 // @Router      /user/signup [post]
 func (sc *SignupController) Signup(ctx *gin.Context) {
-	var tracer = otel.Tracer(sc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(sc.Env.Jaeger.Application)
 	var request schemas.SignupUserRequest
 
 	err := ctx.ShouldBindJSON(&request)

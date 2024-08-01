@@ -36,7 +36,7 @@ type GetReactionController struct {
 // @Failure		500	{object}	schemas.ErrorResponse
 // @Router	    /post/{post_id}/reactions 	[get]
 func (rc *GetReactionController) Fetchs(ctx *gin.Context) {
-	var tracer = otel.Tracer(rc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(rc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 
 	limit, err := strconv.Atoi(ctx.Query("limit"))

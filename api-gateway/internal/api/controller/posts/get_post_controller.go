@@ -67,7 +67,7 @@ func (pc *GetPostController) Fetch(ctx *gin.Context) {
 // @Failure		500	{object}	schemas.ErrorResponse
 // @Router	    /posts 			[get]
 func (pc *GetPostController) Fetchs(ctx *gin.Context) {
-	var tracer = otel.Tracer(pc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(pc.Env.Jaeger.Application)
 	limit, err := strconv.Atoi(ctx.Query("limit"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Невалидные данные"})

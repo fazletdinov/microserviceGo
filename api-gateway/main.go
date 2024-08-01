@@ -62,7 +62,7 @@ func main() {
 
 	gin := gin.Default()
 	// gin.Use(logger.LoggingMiddleware(log, env.Jaeger.Application))
-	gin.Use(otelgin.Middleware(env.Jaeger.Application))
+	gin.Use(otelgin.Middleware(env.Jaeger.ServerName))
 
 	gin.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	authClient, err := authgrpc.NewGRPCClientAuth(

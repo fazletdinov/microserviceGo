@@ -27,7 +27,7 @@ type RefreshTokenController struct {
 // @Failure		500			{object}	schemas.ErrorResponse
 // @Router      /refresh 	[get]
 func (rtc *RefreshTokenController) RefreshToken(ctx *gin.Context) {
-	var tracer = otel.Tracer(rtc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(rtc.Env.Jaeger.Application)
 	token, errCookie := ctx.Cookie(rtc.Env.JWTConfig.SessionCookieName)
 	if errCookie != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})

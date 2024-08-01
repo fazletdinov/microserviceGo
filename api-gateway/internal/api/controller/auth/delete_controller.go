@@ -34,7 +34,7 @@ type DeleteController struct {
 // @Failure		500			{object}	schemas.ErrorResponse
 // @Router      /user/delete [delete]
 func (dc *DeleteController) Delete(ctx *gin.Context) {
-	var tracer = otel.Tracer(dc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(dc.Env.Jaeger.Application)
 	userID := ctx.GetString("x-user-id")
 
 	_, err := dc.GRPCClientAuth.GetUserByID(ctx, uuid.MustParse(userID))

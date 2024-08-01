@@ -32,7 +32,7 @@ type UpdatePostController struct {
 // @Failure	  	500			    {object}	schemas.ErrorResponse
 // @Router      /post/{post_id} [put]
 func (upc *UpdatePostController) Update(ctx *gin.Context) {
-	var tracer = otel.Tracer(upc.Env.Jaeger.ServerName)
+	var tracer = otel.Tracer(upc.Env.Jaeger.Application)
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
