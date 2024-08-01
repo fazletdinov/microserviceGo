@@ -28,7 +28,7 @@ func (cr *commentGRPCRepository) CreateComment(
 		PostID:   postID,
 		AuthorID: authorID,
 	}
-	result := cr.database.Create(&comment)
+	result := cr.database.WithContext(ctx).Create(&comment)
 	if result.Error != nil {
 		return uuid.Nil, result.Error
 	}
@@ -42,7 +42,7 @@ func (cr *commentGRPCRepository) GetByIDComment(
 	authorID uuid.UUID,
 ) (*models.Comment, error) {
 	var comment models.Comment
-	result := cr.database.Model(&models.Comment{PostID: postID, AuthorID: authorID}).First(&comment, "id = ?", commentID)
+	result := cr.database.WithContext(ctx).Model(&models.Comment{PostID: postID, AuthorID: authorID}).First(&comment, "id = ?", commentID)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -56,7 +56,7 @@ func (cr *commentGRPCRepository) GetComments(
 	offset int,
 ) (*[]models.Comment, error) {
 	var comments []models.Comment
-	result := cr.database.Model(&models.Comment{PostID: postID}).Limit(limit).Offset(offset).Find(&comments)
+	result := cr.database.WithContext(ctx).Model(&models.Comment{PostID: postID}).Limit(limit).Offset(offset).Find(&comments)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -70,7 +70,7 @@ func (cr *commentGRPCRepository) UpdateComment(
 	authorID uuid.UUID,
 	text string,
 ) error {
-	result := cr.database.Model(&models.Comment{PostID: postID, ID: commentID, AuthorID: authorID}).Updates(models.Comment{Text: text})
+	result := cr.database.WithContext(ctx).Model(&models.Comment{PostID: postID, ID: commentID, AuthorID: authorID}).Updates(models.Comment{Text: text})
 	if result.Error != nil {
 		return result.Error
 	}
@@ -83,7 +83,7 @@ func (cr *commentGRPCRepository) DeleteComment(
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) error {
-	result := cr.database.Where("post_id = ? AND author_id = ?", postID, authorID).Delete(&models.Comment{}, commentID)
+	result := cr.database.WithContext(ctx).Where("post_id = ? AND author_id = ?", postID, authorID).Delete(&models.Comment{}, commentID)
 	if result.Error != nil {
 		return result.Error
 	}

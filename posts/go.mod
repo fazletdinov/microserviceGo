@@ -88,6 +88,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/postgres v1.5.9 // indirect
 	gorm.io/gorm v1.25.10 // indirect
+	gorm.io/plugin/opentelemetry v0.1.4 // indirect
 	olympos.io/encoding/edn v0.0.0-20201019073823-d3554ca0b0a3 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )

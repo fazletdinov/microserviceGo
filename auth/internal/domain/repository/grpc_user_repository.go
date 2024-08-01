@@ -24,7 +24,7 @@ func (ur *userGRPCRepository) Create(ctx context.Context, email string, password
 		Password: password,
 		IsActive: true,
 	}
-	result := ur.database.Create(&user)
+	result := ur.database.WithContext(ctx).Create(&user)
 	if result.Error != nil {
 		return uuid.Nil, result.Error
 	}
@@ -33,7 +33,7 @@ func (ur *userGRPCRepository) Create(ctx context.Context, email string, password
 
 func (ur *userGRPCRepository) GetByEmail(ctx context.Context, email string) (*models.Users, error) {
 	var user models.Users
-	result := ur.database.Where("email = ?", email).First(&user)
+	result := ur.database.WithContext(ctx).Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -42,7 +42,7 @@ func (ur *userGRPCRepository) GetByEmail(ctx context.Context, email string) (*mo
 
 func (ur *userGRPCRepository) GetByEmailIsActive(ctx context.Context, email string) (*models.Users, error) {
 	var user models.Users
-	result := ur.database.Where("email = ? AND is_active = ?", email, true).First(&user)
+	result := ur.database.WithContext(ctx).Where("email = ? AND is_active = ?", email, true).First(&user)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -51,7 +51,7 @@ func (ur *userGRPCRepository) GetByEmailIsActive(ctx context.Context, email stri
 
 func (ur *userGRPCRepository) GetByID(ctx context.Context, userID uuid.UUID) (*models.Users, error) {
 	var user models.Users
-	result := ur.database.Where("is_active = ?", true).First(&user, "id = ?", userID)
+	result := ur.database.WithContext(ctx).Where("is_active = ?", true).First(&user, "id = ?", userID)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -59,7 +59,7 @@ func (ur *userGRPCRepository) GetByID(ctx context.Context, userID uuid.UUID) (*m
 }
 
 func (ur *userGRPCRepository) Update(ctx context.Context, userID uuid.UUID, firstName string, lastName string) error {
-	result := ur.database.Model(&models.Users{ID: userID, IsActive: true}).Updates(models.Users{FirstName: &firstName, LastName: &lastName})
+	result := ur.database.WithContext(ctx).Model(&models.Users{ID: userID, IsActive: true}).Updates(models.Users{FirstName: &firstName, LastName: &lastName})
 	if result.Error != nil {
 		return result.Error
 	}
@@ -67,7 +67,7 @@ func (ur *userGRPCRepository) Update(ctx context.Context, userID uuid.UUID, firs
 }
 
 func (ur *userGRPCRepository) Delete(ctx context.Context, userID uuid.UUID) error {
-	result := ur.database.Model(&models.Users{}).Where("id = ?", userID).Update("is_active", false)
+	result := ur.database.WithContext(ctx).Model(&models.Users{}).Where("id = ?", userID).Update("is_active", false)
 	if result.Error != nil {
 		return result.Error
 	}

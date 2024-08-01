@@ -29,7 +29,7 @@ func (pr *postGRPCRepository) Create(
 		Content:  content,
 		AuthorID: authirID,
 	}
-	result := pr.database.Create(&post)
+	result := pr.database.WithContext(ctx).Create(&post)
 	if result.Error != nil {
 		return uuid.Nil, result.Error
 	}
@@ -41,7 +41,7 @@ func (pr *postGRPCRepository) GetByIDPost(
 	postID uuid.UUID,
 ) (*models.Post, error) {
 	var post models.Post
-	result := pr.database.Preload("Comments").First(&post, "id = ?", postID)
+	result := pr.database.WithContext(ctx).Preload("Comments").First(&post, "id = ?", postID)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -54,7 +54,7 @@ func (pr *postGRPCRepository) GetPostByIDAuthorID(
 	authorID uuid.UUID,
 ) (*models.Post, error) {
 	var post models.Post
-	result := pr.database.Where("author_id = ?", authorID).Preload("Comments").First(&post, "id = ?", postID)
+	result := pr.database.WithContext(ctx).Where("author_id = ?", authorID).Preload("Comments").First(&post, "id = ?", postID)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -67,7 +67,7 @@ func (pr *postGRPCRepository) GetPosts(
 	offset int,
 ) (*[]models.Post, error) {
 	var posts []models.Post
-	result := pr.database.Model(&models.Post{}).Preload("Comments").Limit(int(limit)).Offset(int(offset)).Find(&posts)
+	result := pr.database.WithContext(ctx).Model(&models.Post{}).Preload("Comments").Limit(int(limit)).Offset(int(offset)).Find(&posts)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -81,7 +81,7 @@ func (pr *postGRPCRepository) UpdatePost(
 	title string,
 	content string,
 ) error {
-	result := pr.database.Model(&models.Post{ID: postID}).Where("author_id = ?", authorID).Updates(models.Post{Title: title, Content: content})
+	result := pr.database.WithContext(ctx).Model(&models.Post{ID: postID}).Where("author_id = ?", authorID).Updates(models.Post{Title: title, Content: content})
 	if result.Error != nil {
 		return result.Error
 	}
@@ -93,7 +93,7 @@ func (pr *postGRPCRepository) DeletePost(
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) error {
-	result := pr.database.Where("author_id = ?", authorID).Delete(&models.Post{}, postID)
+	result := pr.database.WithContext(ctx).Where("author_id = ?", authorID).Delete(&models.Post{}, postID)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -104,7 +104,7 @@ func (pr *postGRPCRepository) DeletePostsByAuthor(
 	ctx context.Context,
 	authorID uuid.UUID,
 ) error {
-	result := pr.database.Where("author_id = ?", authorID).Delete(&models.Post{})
+	result := pr.database.WithContext(ctx).Where("author_id = ?", authorID).Delete(&models.Post{})
 	if result.Error != nil {
 		return result.Error
 	}

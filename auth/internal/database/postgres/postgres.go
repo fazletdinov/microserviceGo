@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/plugin/opentelemetry/tracing"
 )
 
 func NewPostgresClient(env *config.Config) (*gorm.DB, error) {
@@ -19,6 +20,9 @@ func NewPostgresClient(env *config.Config) (*gorm.DB, error) {
 	db, err := gorm.Open(postgres.Open(uri), &gorm.Config{})
 	if err != nil {
 		return nil, err
+	}
+	if err := db.Use(tracing.NewPlugin()); err != nil {
+		panic(err)
 	}
 	return db, nil
 }

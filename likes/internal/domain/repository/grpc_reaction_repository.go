@@ -27,7 +27,7 @@ func (rr *reactionGRPCRepository) Create(
 		PostID:   postID,
 		AuthorID: authorID,
 	}
-	result := rr.database.Create(&reaction)
+	result := rr.database.WithContext(ctx).Create(&reaction)
 	if result.Error != nil {
 		return uuid.Nil, result.Error
 	}
@@ -39,7 +39,7 @@ func (rr *reactionGRPCRepository) GetByIDReaction(
 	reactionID uuid.UUID,
 ) (*models.Reaction, error) {
 	var reaction models.Reaction
-	result := rr.database.First(&reaction, "id = ?", reactionID)
+	result := rr.database.WithContext(ctx).First(&reaction, "id = ?", reactionID)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -53,7 +53,7 @@ func (rr *reactionGRPCRepository) GetReactionsPost(
 	offset uint64,
 ) (*[]models.Reaction, error) {
 	var reactions []models.Reaction
-	result := rr.database.Where(&models.Reaction{PostID: postID}).Limit(int(limit)).Offset(int(offset)).Find(&reactions)
+	result := rr.database.WithContext(ctx).Where(&models.Reaction{PostID: postID}).Limit(int(limit)).Offset(int(offset)).Find(&reactions)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -66,7 +66,7 @@ func (rr *reactionGRPCRepository) DeleteReaction(
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) error {
-	result := rr.database.Where("post_id = ? AND author_id = ?", postID, authorID).Delete(&models.Reaction{}, reactionID)
+	result := rr.database.WithContext(ctx).Where("post_id = ? AND author_id = ?", postID, authorID).Delete(&models.Reaction{}, reactionID)
 	if result.Error != nil {
 		return result.Error
 	}
@@ -77,7 +77,7 @@ func (rr *reactionGRPCRepository) DeleteReactionsByAuthor(
 	ctx context.Context,
 	authorID uuid.UUID,
 ) error {
-	result := rr.database.Where("author_id = ?", authorID).Delete(&models.Reaction{})
+	result := rr.database.WithContext(ctx).Where("author_id = ?", authorID).Delete(&models.Reaction{})
 	if result.Error != nil {
 		return result.Error
 	}
@@ -88,7 +88,7 @@ func (rr *reactionGRPCRepository) DeleteReactionsByPost(
 	ctx context.Context,
 	postID uuid.UUID,
 ) error {
-	result := rr.database.Where("post_id = ?", postID).Delete(&models.Reaction{})
+	result := rr.database.WithContext(ctx).Where("post_id = ?", postID).Delete(&models.Reaction{})
 	if result.Error != nil {
 		return result.Error
 	}
