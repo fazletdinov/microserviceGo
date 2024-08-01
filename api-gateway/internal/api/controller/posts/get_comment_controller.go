@@ -38,7 +38,15 @@ type GetCommentController struct {
 func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
 	var tracer = otel.Tracer(gcc.Env.Jaeger.ServerName)
 	postID := ctx.Param("post_id")
-	_, err := gcc.GRPCClientPosts.GetPostByID(ctx, uuid.MustParse(postID))
+
+	traceCtx, span := tracer.Start(
+		ctx.Request.Context(),
+		"Fetchs",
+		oteltrace.WithAttributes(attribute.String("PostID", postID)),
+	)
+	defer span.End()
+
+	_, err := gcc.GRPCClientPosts.GetPostByID(traceCtx, uuid.MustParse(postID))
 	if err != nil {
 		ctx.JSON(http.StatusNotFound, schemas.ErrorResponse{Message: "Post не найден"})
 		return
@@ -53,15 +61,6 @@ func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: err.Error()})
 		return
 	}
-
-	traceCtx, span := tracer.Start(
-		ctx.Request.Context(),
-		"Fetchs",
-		oteltrace.WithAttributes(attribute.String("PostID", postID)),
-		oteltrace.WithAttributes(attribute.Int("Limit", limit)),
-		oteltrace.WithAttributes(attribute.Int("Offset", offset)),
-	)
-	defer span.End()
 
 	comments, err := gcc.GRPCClientPosts.GetPostComments(
 		traceCtx,
