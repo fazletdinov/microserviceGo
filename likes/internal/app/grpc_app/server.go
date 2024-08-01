@@ -12,6 +12,7 @@ import (
 	reactionRepository "likes/internal/domain/repository"
 	reactionService "likes/internal/domain/service"
 
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
 )
@@ -23,7 +24,7 @@ type GRPC struct {
 }
 
 func NewGRPC(log *slog.Logger, env *config.Config, db *gorm.DB) *GRPC {
-	gRPCServer := grpc.NewServer()
+	gRPCServer := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	likesgrpc.RegisterGatewayLikesServer(
 		gRPCServer,
 		&likes.GRPCController{

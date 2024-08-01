@@ -4,6 +4,9 @@ import (
 	"auth/config"
 	authgrpc "auth/protogen/auth"
 	"context"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"auth/internal/domain/service/grpc_service"
 	"github.com/google/uuid"
@@ -21,6 +24,8 @@ func (gc *GRPCController) CreateUser(
 	ctx context.Context,
 	authRequest *authgrpc.CreateUserRequest,
 ) (*authgrpc.CreateUserResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+
 	if authRequest.GetEmail() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле email обязательно")
 	}
@@ -28,7 +33,15 @@ func (gc *GRPCController) CreateUser(
 		return nil, status.Error(codes.InvalidArgument, "поле password обязательно")
 	}
 
-	userID, err := gc.UserGRPCService.CreateUser(ctx, authRequest.GetEmail(), authRequest.GetPassword())
+	traceCtx, span := tracer.Start(
+		ctx,
+		"CreateUser",
+		oteltrace.WithAttributes(attribute.String("Email", authRequest.Email)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в auth для создания пользователя")
+	defer span.End()
+
+	userID, err := gc.UserGRPCService.CreateUser(traceCtx, authRequest.GetEmail(), authRequest.GetPassword())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -41,11 +54,20 @@ func (gc *GRPCController) GetUserByID(
 	ctx context.Context,
 	authRequest *authgrpc.GetUserRequest,
 ) (*authgrpc.GetUserResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if authRequest.GetUserId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле user_id обязательно")
 	}
 
-	user, err := gc.UserGRPCService.GetUserByID(ctx, uuid.MustParse(authRequest.GetUserId()))
+	traceCtx, span := tracer.Start(
+		ctx,
+		"GetUserByID",
+		oteltrace.WithAttributes(attribute.String("UserID", authRequest.UserId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в auth для получения пользователя по ID")
+	defer span.End()
+
+	user, err := gc.UserGRPCService.GetUserByID(traceCtx, uuid.MustParse(authRequest.GetUserId()))
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -60,6 +82,7 @@ func (gc *GRPCController) UpdateUser(
 	ctx context.Context,
 	authRequest *authgrpc.UpdateUserRequest,
 ) (*authgrpc.UpdateUserResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if authRequest.GetUserId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле user_id обязательно")
 	}
@@ -70,7 +93,17 @@ func (gc *GRPCController) UpdateUser(
 		return nil, status.Error(codes.InvalidArgument, "поле last_name обязательно")
 	}
 
-	err := gc.UserGRPCService.UpdateUser(ctx, uuid.MustParse(authRequest.GetUserId()), authRequest.GetFirstName(), authRequest.GetLastName())
+	traceCtx, span := tracer.Start(
+		ctx,
+		"UpdateUser",
+		oteltrace.WithAttributes(attribute.String("UserID", authRequest.UserId)),
+		oteltrace.WithAttributes(attribute.String("FirstName", authRequest.FirstName)),
+		oteltrace.WithAttributes(attribute.String("LastName", authRequest.LastName)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в auth для обновления пользователя по ID")
+	defer span.End()
+
+	err := gc.UserGRPCService.UpdateUser(traceCtx, uuid.MustParse(authRequest.GetUserId()), authRequest.GetFirstName(), authRequest.GetLastName())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -83,11 +116,20 @@ func (gc *GRPCController) DeleteUser(
 	ctx context.Context,
 	authRequest *authgrpc.DeleteUserRequest,
 ) (*authgrpc.DeleteUserResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if authRequest.GetUserId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле user_id обязательно")
 	}
 
-	err := gc.UserGRPCService.DeleteUser(ctx, uuid.MustParse(authRequest.GetUserId()))
+	traceCtx, span := tracer.Start(
+		ctx,
+		"DeleteUser",
+		oteltrace.WithAttributes(attribute.String("UserID", authRequest.UserId)),
+	)
+
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в auth для удаления пользователя по ID")
+	defer span.End()
+	err := gc.UserGRPCService.DeleteUser(traceCtx, uuid.MustParse(authRequest.GetUserId()))
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -100,11 +142,21 @@ func (gc *GRPCController) GetUserByEmail(
 	ctx context.Context,
 	authRequest *authgrpc.GetUserByEmailRequest,
 ) (*authgrpc.GetUserResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if authRequest.GetEmail() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле email обязательно")
 	}
 
-	user, err := gc.UserGRPCService.GetUserByEmail(ctx, authRequest.GetEmail())
+	traceCtx, span := tracer.Start(
+		ctx,
+		"GetUserByEmail",
+		oteltrace.WithAttributes(attribute.String("Email", authRequest.Email)),
+	)
+
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в auth для получения пользователя по Email")
+	defer span.End()
+
+	user, err := gc.UserGRPCService.GetUserByEmail(traceCtx, authRequest.GetEmail())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -120,11 +172,21 @@ func (gc *GRPCController) GetUserByEmailIsActive(
 	ctx context.Context,
 	authRequest *authgrpc.GetUserByEmailRequest,
 ) (*authgrpc.GetUserResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if authRequest.GetEmail() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле email обязательно")
 	}
 
-	user, err := gc.UserGRPCService.GetUserByEmailIsActive(ctx, authRequest.GetEmail())
+	traceCtx, span := tracer.Start(
+		ctx,
+		"GetUserByEmailIsActive",
+		oteltrace.WithAttributes(attribute.String("Email", authRequest.Email)),
+	)
+
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в auth для получения активного пользователя по Email")
+	defer span.End()
+
+	user, err := gc.UserGRPCService.GetUserByEmailIsActive(traceCtx, authRequest.GetEmail())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}

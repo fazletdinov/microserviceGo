@@ -2,7 +2,7 @@ package main
 
 import (
 	"auth/internal/app"
-	"auth/pkg/jaeger"
+	"auth/pkg/tracer"
 	"context"
 	"os"
 	"os/signal"
@@ -16,7 +16,7 @@ func main() {
 	go app.GRPCServer.MustRun()
 	ctx := context.Background()
 	{
-		tp, err := jaeger.InitTracer(
+		tp, err := tracer.InitTracer(
 			ctx,
 			env.Jaeger.CollectorUrl,
 			env.Jaeger.Application,

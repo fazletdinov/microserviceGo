@@ -9,7 +9,7 @@ import (
 	likesgrpc "api-grpc-gateway/internal/clients/likes"
 	postsgrpc "api-grpc-gateway/internal/clients/posts"
 	grpcapp "api-grpc-gateway/internal/grpc_app"
-	"api-grpc-gateway/pkg/jaeger"
+	"api-grpc-gateway/pkg/tracer"
 	// "api-grpc-gateway/pkg/logger"
 	"api-grpc-gateway/pkg/metric"
 	"context"
@@ -41,7 +41,7 @@ func main() {
 
 	ctx := context.Background()
 	{
-		tp, err := jaeger.InitTracer(
+		tp, err := tracer.InitTracer(
 			ctx,
 			env.Jaeger.CollectorUrl,
 			env.Jaeger.Application,
@@ -62,7 +62,7 @@ func main() {
 
 	gin := gin.Default()
 	// gin.Use(logger.LoggingMiddleware(log, env.Jaeger.Application))
-	gin.Use(otelgin.Middleware(env.Jaeger.ServerName))
+	gin.Use(otelgin.Middleware(env.Jaeger.Application))
 
 	gin.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	authClient, err := authgrpc.NewGRPCClientAuth(

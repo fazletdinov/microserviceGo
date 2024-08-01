@@ -16,6 +16,7 @@ type Config struct {
 	RedisDB     RedisDB     `yaml:"redis_posts_db"`
 	Clients     GRPCClient  `yaml:"clients"`
 	GRPC        GRPC        `yaml:"grpc"`
+	Jaeger      Jaeger      `yaml:"jaeger"`
 }
 
 type PostsServer struct {
@@ -44,6 +45,11 @@ type GRPCClient struct {
 type GRPC struct {
 	PostsGRPCPort int           `yaml:"posts_grpc_port" env:"POSTS_GRPC_PORT"`
 	Timeout       time.Duration `yaml:"timeout"`
+}
+
+type Jaeger struct {
+	CollectorUrl string `yaml:"collector_url"`
+	Application  string `yaml:"application"`
 }
 
 func InitConfig() (*Config, error) {

@@ -1,4 +1,4 @@
-package jaeger
+package tracer
 
 import (
 	"context"

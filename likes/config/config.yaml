@@ -17,3 +17,8 @@ postgres_likes_db:
 # конфигурация gRPC сервера
 grpc:
   likes_grpc_port: 13715
+
+# jaeger
+jaeger:
+  collector_url: "otel_collector:4317"
+  application: "Likes"

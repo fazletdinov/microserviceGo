@@ -25,3 +25,8 @@ clients:
 
 grpc:
   posts_grpc_port: 13714
+
+# jaeger
+jaeger:
+  collector_url: "otel_collector:4317"
+  application: "Posts"

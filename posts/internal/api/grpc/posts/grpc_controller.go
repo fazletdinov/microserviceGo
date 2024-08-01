@@ -6,6 +6,9 @@ import (
 	postsgrpc "posts/protogen/posts"
 
 	"github.com/google/uuid"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	oteltrace "go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -24,6 +27,7 @@ func (gc *GRPCController) CreatePost(
 	ctx context.Context,
 	postRequest *postsgrpc.CreatePostRequest,
 ) (*postsgrpc.CreatePostResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if postRequest.GetTitle() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле title обязательно")
 	}
@@ -34,8 +38,18 @@ func (gc *GRPCController) CreatePost(
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
 
-	postID, err := gc.PostGRPCService.CreatePost(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"CreatePost",
+		oteltrace.WithAttributes(attribute.String("AuthorID", postRequest.AuthorId)),
+		oteltrace.WithAttributes(attribute.String("Title", postRequest.Title)),
+		oteltrace.WithAttributes(attribute.String("Content", postRequest.Content)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для создания Post")
+	defer span.End()
+
+	postID, err := gc.PostGRPCService.CreatePost(
+		traceCtx,
 		postRequest.GetTitle(),
 		postRequest.GetContent(),
 		uuid.MustParse(postRequest.GetAuthorId()),
@@ -52,12 +66,21 @@ func (gc *GRPCController) GetPostByID(
 	ctx context.Context,
 	postRequest *postsgrpc.GetPostRequest,
 ) (*postsgrpc.PostResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
 
-	post, err := gc.PostGRPCService.GetByIDPost(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"GetPostByID",
+		oteltrace.WithAttributes(attribute.String("PostID", postRequest.PostId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Post по ID")
+	defer span.End()
+
+	post, err := gc.PostGRPCService.GetByIDPost(
+		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 	)
 	if err != nil {
@@ -85,6 +108,7 @@ func (gc *GRPCController) GetPostByIDAuthorID(
 	ctx context.Context,
 	postRequest *postsgrpc.GetPostByIDAuthorIDRequest,
 ) (*postsgrpc.PostResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -92,8 +116,17 @@ func (gc *GRPCController) GetPostByIDAuthorID(
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
 
-	post, err := gc.PostGRPCService.GetPostByIDAuthorID(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"GetPostByIDAuthorID",
+		oteltrace.WithAttributes(attribute.String("PostID", postRequest.PostId)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", postRequest.AuthorId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Post по ID и AuthorID")
+	defer span.End()
+
+	post, err := gc.PostGRPCService.GetPostByIDAuthorID(
+		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 		uuid.MustParse(postRequest.GetAuthorId()),
 	)
@@ -122,8 +155,19 @@ func (gc *GRPCController) GetPosts(
 	ctx context.Context,
 	postRequest *postsgrpc.GetPostsRequest,
 ) (*postsgrpc.GetPostsResponse, error) {
-	posts, err := gc.PostGRPCService.GetPosts(
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+
+	traceCtx, span := tracer.Start(
 		ctx,
+		"GetPosts",
+		oteltrace.WithAttributes(attribute.Int64("Limit", int64(postRequest.Limit))),
+		oteltrace.WithAttributes(attribute.Int64("Offset", int64(postRequest.Offset))),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Posts")
+	defer span.End()
+
+	posts, err := gc.PostGRPCService.GetPosts(
+		traceCtx,
 		postRequest.GetLimit(),
 		postRequest.GetOffset(),
 	)
@@ -159,6 +203,7 @@ func (gc *GRPCController) UpdatePost(
 	ctx context.Context,
 	postRequest *postsgrpc.UpdatePostRequest,
 ) (*postsgrpc.UpdatePostResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -171,8 +216,20 @@ func (gc *GRPCController) UpdatePost(
 	if postRequest.GetContent() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле content обязательно")
 	}
-	err := gc.PostGRPCService.UpdatePost(
+
+	traceCtx, span := tracer.Start(
 		ctx,
+		"UpdatePost",
+		oteltrace.WithAttributes(attribute.String("PostID", postRequest.PostId)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", postRequest.AuthorId)),
+		oteltrace.WithAttributes(attribute.String("Title", postRequest.Title)),
+		oteltrace.WithAttributes(attribute.String("Content", postRequest.Content)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для обновления Post")
+	defer span.End()
+
+	err := gc.PostGRPCService.UpdatePost(
+		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 		uuid.MustParse(postRequest.GetAuthorId()),
 		postRequest.GetTitle(),
@@ -190,14 +247,25 @@ func (gc *GRPCController) DeletePost(
 	ctx context.Context,
 	postRequest *postsgrpc.DeletePostRequest,
 ) (*postsgrpc.DeletePostResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
 	if postRequest.GetAuthorId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
-	err := gc.PostGRPCService.DeletePost(
+
+	traceCtx, span := tracer.Start(
 		ctx,
+		"DeletePost",
+		oteltrace.WithAttributes(attribute.String("PostID", postRequest.PostId)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", postRequest.AuthorId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для удаления Post")
+	defer span.End()
+
+	err := gc.PostGRPCService.DeletePost(
+		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 		uuid.MustParse(postRequest.GetAuthorId()),
 	)
@@ -213,11 +281,21 @@ func (gc *GRPCController) DeletePostsByAuthor(
 	ctx context.Context,
 	postRequest *postsgrpc.DeletePostsByAuthorRequest,
 ) (*postsgrpc.DeletePostsByAuthorResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if postRequest.GetAuthorId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
-	err := gc.PostGRPCService.DeletePostsByAuthor(
+
+	traceCtx, span := tracer.Start(
 		ctx,
+		"DeletePostsByAuthor",
+		oteltrace.WithAttributes(attribute.String("AuthorID", postRequest.AuthorId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для удаления Posts автора")
+	defer span.End()
+
+	err := gc.PostGRPCService.DeletePostsByAuthor(
+		traceCtx,
 		uuid.MustParse(postRequest.GetAuthorId()),
 	)
 	if err != nil {
@@ -234,6 +312,7 @@ func (gc *GRPCController) CreateComment(
 	ctx context.Context,
 	commentRequest *postsgrpc.CreateCommentRequest,
 ) (*postsgrpc.CreateCommentResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if commentRequest.GetText() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле text обязательно")
 	}
@@ -244,8 +323,18 @@ func (gc *GRPCController) CreateComment(
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
 
-	commentID, err := gc.CommentGRPCService.CreateComment(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"CreateComment",
+		oteltrace.WithAttributes(attribute.String("PostID", commentRequest.PostId)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", commentRequest.AuthorId)),
+		oteltrace.WithAttributes(attribute.String("Text", commentRequest.Text)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для создания Comment")
+	defer span.End()
+
+	commentID, err := gc.CommentGRPCService.CreateComment(
+		traceCtx,
 		commentRequest.GetText(),
 		uuid.MustParse(commentRequest.GetPostId()),
 		uuid.MustParse(commentRequest.GetAuthorId()),
@@ -262,12 +351,21 @@ func (gc *GRPCController) GetPostComments(
 	ctx context.Context,
 	commentRequest *postsgrpc.GetCommentsRequest,
 ) (*postsgrpc.GetCommentsResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if commentRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
 
-	comments, err := gc.CommentGRPCService.GetPostComments(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"GetPostComments",
+		oteltrace.WithAttributes(attribute.String("PostID", commentRequest.PostId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Comments на Post")
+	defer span.End()
+
+	comments, err := gc.CommentGRPCService.GetPostComments(
+		traceCtx,
 		uuid.MustParse(commentRequest.GetPostId()),
 		commentRequest.GetLimit(),
 		commentRequest.GetOffset(),
@@ -294,6 +392,7 @@ func (gc *GRPCController) GetCommentByID(
 	ctx context.Context,
 	commentRequest *postsgrpc.GetCommentRequest,
 ) (*postsgrpc.GetCommentResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
 	if commentRequest.GetCommentId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле comment_id обязательно")
 	}
@@ -304,8 +403,18 @@ func (gc *GRPCController) GetCommentByID(
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
 
-	comment, err := gc.CommentGRPCService.GetCommentByID(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"GetCommentByID",
+		oteltrace.WithAttributes(attribute.String("CommentID", commentRequest.CommentId)),
+		oteltrace.WithAttributes(attribute.String("PostID", commentRequest.PostId)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", commentRequest.AuthorId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Comment по ID")
+	defer span.End()
+
+	comment, err := gc.CommentGRPCService.GetCommentByID(
+		traceCtx,
 		uuid.MustParse(commentRequest.GetCommentId()),
 		uuid.MustParse(commentRequest.GetPostId()),
 		uuid.MustParse(commentRequest.GetAuthorId()),
@@ -327,6 +436,8 @@ func (gc *GRPCController) UpdatePostComment(
 	ctx context.Context,
 	commentRequest *postsgrpc.UpdateCommentRequest,
 ) (*postsgrpc.UpdateCommentResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+
 	if commentRequest.GetCommentId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле comment_id обязательно")
 	}
@@ -340,8 +451,19 @@ func (gc *GRPCController) UpdatePostComment(
 		return nil, status.Error(codes.InvalidArgument, "поле text обязательно")
 	}
 
-	err := gc.CommentGRPCService.UpdateComment(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"UpdatePostComment",
+		oteltrace.WithAttributes(attribute.String("CommentID", commentRequest.CommentId)),
+		oteltrace.WithAttributes(attribute.String("PostID", commentRequest.PostId)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", commentRequest.AuthorId)),
+		oteltrace.WithAttributes(attribute.String("Text", commentRequest.Text)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для обновления Comment по ID")
+	defer span.End()
+
+	err := gc.CommentGRPCService.UpdateComment(
+		traceCtx,
 		uuid.MustParse(commentRequest.GetCommentId()),
 		uuid.MustParse(commentRequest.GetPostId()),
 		uuid.MustParse(commentRequest.GetAuthorId()),
@@ -359,6 +481,8 @@ func (gc *GRPCController) DeletePostComment(
 	ctx context.Context,
 	commentRequest *postsgrpc.DeleteCommentRequest,
 ) (*postsgrpc.DeleteCommentResponse, error) {
+	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+
 	if commentRequest.GetCommentId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле comment_id обязательно")
 	}
@@ -369,8 +493,18 @@ func (gc *GRPCController) DeletePostComment(
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
 
-	err := gc.CommentGRPCService.DeleteComment(
+	traceCtx, span := tracer.Start(
 		ctx,
+		"DeletePostComment",
+		oteltrace.WithAttributes(attribute.String("CommentID", commentRequest.CommentId)),
+		oteltrace.WithAttributes(attribute.String("PostID", commentRequest.PostId)),
+		oteltrace.WithAttributes(attribute.String("AuthorID", commentRequest.AuthorId)),
+	)
+	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для удаления Comment по ID")
+	defer span.End()
+
+	err := gc.CommentGRPCService.DeleteComment(
+		traceCtx,
 		uuid.MustParse(commentRequest.GetCommentId()),
 		uuid.MustParse(commentRequest.GetPostId()),
 		uuid.MustParse(commentRequest.GetAuthorId()),
@@ -379,6 +513,6 @@ func (gc *GRPCController) DeletePostComment(
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 	return &postsgrpc.DeleteCommentResponse{
-		SuccessMessage: "Обновление прошло успешно",
+		SuccessMessage: "Удаление прошло успешно",
 	}, nil
 }

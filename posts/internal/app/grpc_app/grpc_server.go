@@ -7,6 +7,7 @@ import (
 	"posts/config"
 	"posts/internal/api/grpc/posts"
 
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	postsgrpc "posts/protogen/posts"
 
 	repositoryComment "posts/internal/domain/repository/comment"
@@ -25,7 +26,7 @@ type GRPC struct {
 }
 
 func NewGRPC(log *slog.Logger, env *config.Config, db *gorm.DB) *GRPC {
-	gRPCServer := grpc.NewServer()
+	gRPCServer := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	postsgrpc.RegisterGatewayPostsServer(
 		gRPCServer,
 		&posts.GRPCController{

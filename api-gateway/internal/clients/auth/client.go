@@ -3,14 +3,16 @@ package auth
 import (
 	authgrpc "api-grpc-gateway/protogen/golang/auth"
 	"context"
+	// "fmt"
 
 	"api-grpc-gateway/config"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	oteltrace "go.opentelemetry.io/otel/trace"
+	// "google.golang.org/grpc/metadata"
 
-	// "go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -27,6 +29,7 @@ func NewGRPCClientAuth(
 	cc, err := grpc.NewClient(
 		addrs,
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
 	)
 	if err != nil {
 		return nil, err
@@ -48,6 +51,8 @@ func (gc *GRPCClientAuth) CreateUser(
 		"CreateUser",
 		oteltrace.WithAttributes(attribute.String("Email", email)),
 	)
+	// traceId := fmt.Sprintf("%s", span.SpanContext().TraceID())
+	// traceCtx = metadata.AppendToOutgoingContext(ctx, "x-trace-id", traceId)
 	span.AddEvent("Начало gRPC запроса в сервис auth для создания пользователя")
 	defer span.End()
 	response, err := gc.auth.CreateUser(traceCtx, &authgrpc.CreateUserRequest{
