@@ -38,7 +38,6 @@ func NewJaegerExporter(ctx context.Context, jaegerURL string) (*otlptrace.Export
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("traceExpoter ================== %+v\n", traceExporter)
 	return traceExporter, nil
 }
 
@@ -54,7 +53,6 @@ func NewTracerProvider(traceExporter *otlptrace.Exporter, serviceName string) (*
 	if err != nil {
 		return nil, err
 	}
-	fmt.Printf("resourse ================== %+v\n", resource)
 
 	provider := sdktrace.NewTracerProvider(
 		sdktrace.WithSampler(sdktrace.AlwaysSample()),
@@ -62,8 +60,6 @@ func NewTracerProvider(traceExporter *otlptrace.Exporter, serviceName string) (*
 		sdktrace.WithSyncer(traceExporter),
 		sdktrace.WithResource(resource),
 	)
-
-	fmt.Printf("provider ================== %+v\n", provider)
 
 	otel.SetTracerProvider(provider)
 

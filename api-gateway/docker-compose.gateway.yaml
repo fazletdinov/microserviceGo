@@ -46,23 +46,26 @@ services:
     networks:
         - dev-network
 
-  # zipkin:
-  #   container_name: zipkin
-  #   image: openzipkin/zipkin:latest
-  #   ports:
-  #     - "9411:9411"
-
-  # prometheus:
-  #   container_name: prometheus
-  #   image: prom/prometheus:latest
-  #   command:
-  #       - --config.file=/etc/prometheus/prometheus-config.yaml
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
   #   volumes:
-  #       - ./config/prometheus-config.yaml:/etc/prometheus/prometheus-config.yaml
+  #     - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+  #     - ./grafana/provisioning/:/etc/grafana/provisioning/
   #   ports:
-  #       - "9090:9090"
-  #   networks:
-  #      - dev-network
+  #     - "3000:3000"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    command:
+        - --config.file=/etc/prometheus/prometheus-config.yaml
+    volumes:
+        - ./config/prometheus-config.yaml:/etc/prometheus/prometheus-config.yaml
+    ports:
+        - "9090:9090"
+    networks:
+       - dev-network
 
 networks:
   dev-network:
