@@ -8,61 +8,61 @@ import (
 	"github.com/google/uuid"
 )
 
-type reactionGRPCService struct {
-	reactionGRPCRepository repository.ReactionGRPCRepository
+type reactionService struct {
+	reactionRepository repository.ReactionRepository
 }
 
-func NewReactionGRPCService(
-	reactionGRPCRepository repository.ReactionGRPCRepository,
-) ReactionGRPCService {
-	return &reactionGRPCService{
-		reactionGRPCRepository: reactionGRPCRepository,
+func NewReactionService(
+	reactionRepository repository.ReactionRepository,
+) ReactionService {
+	return &reactionService{
+		reactionRepository: reactionRepository,
 	}
 }
 
-func (rs *reactionGRPCService) CreateReaction(
+func (rs *reactionService) CreateReaction(
 	ctx context.Context,
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) (uuid.UUID, error) {
-	return rs.reactionGRPCRepository.Create(ctx, postID, authorID)
+	return rs.reactionRepository.Create(ctx, postID, authorID)
 }
 
-func (rs *reactionGRPCService) GetByID(
+func (rs *reactionService) GetByID(
 	ctx context.Context,
 	reactionID uuid.UUID,
 ) (*models.Reaction, error) {
-	return rs.reactionGRPCRepository.GetByIDReaction(ctx, reactionID)
+	return rs.reactionRepository.GetByIDReaction(ctx, reactionID)
 }
 
-func (rs *reactionGRPCService) GetReactionsPost(
+func (rs *reactionService) GetReactionsPost(
 	ctx context.Context,
 	postID uuid.UUID,
 	limit uint64,
 	offset uint64,
 ) (*[]models.Reaction, error) {
-	return rs.reactionGRPCRepository.GetReactionsPost(ctx, postID, limit, offset)
+	return rs.reactionRepository.GetReactionsPost(ctx, postID, limit, offset)
 }
 
-func (rs *reactionGRPCService) DeleteReaction(
+func (rs *reactionService) DeleteReaction(
 	ctx context.Context,
 	reactionID uuid.UUID,
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) error {
-	return rs.reactionGRPCRepository.DeleteReaction(ctx, reactionID, postID, authorID)
+	return rs.reactionRepository.DeleteReaction(ctx, reactionID, postID, authorID)
 }
 
-func (rs *reactionGRPCService) DeleteReactionsByAuthor(
+func (rs *reactionService) DeleteReactionsByAuthor(
 	ctx context.Context,
 	authorID uuid.UUID,
 ) error {
-	return rs.reactionGRPCRepository.DeleteReactionsByAuthor(ctx, authorID)
+	return rs.reactionRepository.DeleteReactionsByAuthor(ctx, authorID)
 }
 
-func (rs *reactionGRPCService) DeleteReactionsByPost(
+func (rs *reactionService) DeleteReactionsByPost(
 	ctx context.Context,
 	postID uuid.UUID,
 ) error {
-	return rs.reactionGRPCRepository.DeleteReactionsByPost(ctx, postID)
+	return rs.reactionRepository.DeleteReactionsByPost(ctx, postID)
 }

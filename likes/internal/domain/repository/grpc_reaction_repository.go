@@ -8,17 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type reactionGRPCRepository struct {
+type reactionRepository struct {
 	database *gorm.DB
 }
 
-func NewReactionGRPCRepository(db *gorm.DB) ReactionGRPCRepository {
-	return &reactionGRPCRepository{
+func NewReactionRepository(db *gorm.DB) ReactionRepository {
+	return &reactionRepository{
 		database: db,
 	}
 }
 
-func (rr *reactionGRPCRepository) Create(
+func (rr *reactionRepository) Create(
 	ctx context.Context,
 	postID uuid.UUID,
 	authorID uuid.UUID,
@@ -34,7 +34,7 @@ func (rr *reactionGRPCRepository) Create(
 	return reaction.ID, nil
 }
 
-func (rr *reactionGRPCRepository) GetByIDReaction(
+func (rr *reactionRepository) GetByIDReaction(
 	ctx context.Context,
 	reactionID uuid.UUID,
 ) (*models.Reaction, error) {
@@ -46,7 +46,7 @@ func (rr *reactionGRPCRepository) GetByIDReaction(
 	return &reaction, nil
 }
 
-func (rr *reactionGRPCRepository) GetReactionsPost(
+func (rr *reactionRepository) GetReactionsPost(
 	ctx context.Context,
 	postID uuid.UUID,
 	limit uint64,
@@ -60,7 +60,7 @@ func (rr *reactionGRPCRepository) GetReactionsPost(
 	return &reactions, nil
 }
 
-func (rr *reactionGRPCRepository) DeleteReaction(
+func (rr *reactionRepository) DeleteReaction(
 	ctx context.Context,
 	reactionID uuid.UUID,
 	postID uuid.UUID,
@@ -73,7 +73,7 @@ func (rr *reactionGRPCRepository) DeleteReaction(
 	return nil
 }
 
-func (rr *reactionGRPCRepository) DeleteReactionsByAuthor(
+func (rr *reactionRepository) DeleteReactionsByAuthor(
 	ctx context.Context,
 	authorID uuid.UUID,
 ) error {
@@ -84,7 +84,7 @@ func (rr *reactionGRPCRepository) DeleteReactionsByAuthor(
 	return nil
 }
 
-func (rr *reactionGRPCRepository) DeleteReactionsByPost(
+func (rr *reactionRepository) DeleteReactionsByPost(
 	ctx context.Context,
 	postID uuid.UUID,
 ) error {

@@ -27,9 +27,9 @@ func NewGRPC(log *slog.Logger, env *config.Config, db *gorm.DB) *GRPC {
 	gRPCServer := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	likesgrpc.RegisterGatewayLikesServer(
 		gRPCServer,
-		&likes.GRPCController{
-			ReactionGRPCService: reactionService.NewReactionGRPCService(reactionRepository.NewReactionGRPCRepository(db)),
-			Env:                 env,
+		&likes.ReactionController{
+			ReactionService: reactionService.NewReactionService(reactionRepository.NewReactionRepository(db)),
+			Env:             env,
 		},
 	)
 

@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type ReactionGRPCRepository interface {
+type ReactionRepository interface {
 	Create(ctx context.Context, postID uuid.UUID, authorID uuid.UUID) (uuid.UUID, error)
 	GetByIDReaction(ctx context.Context, reactionID uuid.UUID) (*models.Reaction, error)
 	GetReactionsPost(ctx context.Context, postID uuid.UUID, limit uint64, offset uint64) (*[]models.Reaction, error)

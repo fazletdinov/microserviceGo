@@ -15,13 +15,13 @@ import (
 	reactionService "likes/internal/domain/service"
 )
 
-type GRPCController struct {
+type ReactionController struct {
 	likesgrpc.UnimplementedGatewayLikesServer
-	ReactionGRPCService reactionService.ReactionGRPCService
-	Env                 *config.Config
+	ReactionService reactionService.ReactionService
+	Env             *config.Config
 }
 
-func (gc *GRPCController) CreateReaction(
+func (gc *ReactionController) CreateReaction(
 	ctx context.Context,
 	reactionRequest *likesgrpc.CreateReactionRequest,
 ) (*likesgrpc.CreateReactionResponse, error) {
@@ -52,7 +52,7 @@ func (gc *GRPCController) CreateReaction(
 		1,
 	)
 
-	reactionID, err := gc.ReactionGRPCService.CreateReaction(
+	reactionID, err := gc.ReactionService.CreateReaction(
 		traceCtx,
 		uuid.MustParse(reactionRequest.GetPostId()),
 		uuid.MustParse(reactionRequest.GetAuthorId()),
@@ -65,7 +65,7 @@ func (gc *GRPCController) CreateReaction(
 	}, nil
 }
 
-func (gc *GRPCController) GetReactionByID(
+func (gc *ReactionController) GetReactionByID(
 	ctx context.Context,
 	reactionRequest *likesgrpc.GetReactionRequest,
 ) (*likesgrpc.GetReactionResponse, error) {
@@ -92,7 +92,7 @@ func (gc *GRPCController) GetReactionByID(
 		1,
 	)
 
-	reaction, err := gc.ReactionGRPCService.GetByID(
+	reaction, err := gc.ReactionService.GetByID(
 		traceCtx,
 		uuid.MustParse(reactionRequest.GetReactionId()),
 	)
@@ -104,7 +104,7 @@ func (gc *GRPCController) GetReactionByID(
 	}, nil
 }
 
-func (gc *GRPCController) GetReactions(
+func (gc *ReactionController) GetReactions(
 	ctx context.Context,
 	reactionRequest *likesgrpc.GetReactionsRequest,
 ) (*likesgrpc.GetReactionsResponse, error) {
@@ -133,7 +133,7 @@ func (gc *GRPCController) GetReactions(
 		1,
 	)
 
-	reactions, err := gc.ReactionGRPCService.GetReactionsPost(
+	reactions, err := gc.ReactionService.GetReactionsPost(
 		traceCtx,
 		uuid.MustParse(reactionRequest.PostId),
 		reactionRequest.GetLimit(),
@@ -153,7 +153,7 @@ func (gc *GRPCController) GetReactions(
 	}, nil
 }
 
-func (gc *GRPCController) DeleteReaction(
+func (gc ReactionController) DeleteReaction(
 	ctx context.Context,
 	reactionRequest *likesgrpc.DeleteReactionRequest,
 ) (*likesgrpc.DeleteReactionResponse, error) {
@@ -188,7 +188,7 @@ func (gc *GRPCController) DeleteReaction(
 		1,
 	)
 
-	err := gc.ReactionGRPCService.DeleteReaction(
+	err := gc.ReactionService.DeleteReaction(
 		traceCtx,
 		uuid.MustParse(reactionRequest.GetReactionId()),
 		uuid.MustParse(reactionRequest.GetPostId()),
@@ -202,7 +202,7 @@ func (gc *GRPCController) DeleteReaction(
 	}, nil
 }
 
-func (gc *GRPCController) DeleteReactionsByAuthor(
+func (gc *ReactionController) DeleteReactionsByAuthor(
 	ctx context.Context,
 	reactionRequest *likesgrpc.DeleteReactionsByAuthorRequest,
 ) (*likesgrpc.DeleteReactionsByAuthorResponse, error) {
@@ -229,7 +229,7 @@ func (gc *GRPCController) DeleteReactionsByAuthor(
 		1,
 	)
 
-	err := gc.ReactionGRPCService.DeleteReactionsByAuthor(
+	err := gc.ReactionService.DeleteReactionsByAuthor(
 		traceCtx,
 		uuid.MustParse(reactionRequest.GetAuthorId()),
 	)
@@ -241,7 +241,7 @@ func (gc *GRPCController) DeleteReactionsByAuthor(
 	}, nil
 }
 
-func (gc *GRPCController) DeleteReactionsByPost(
+func (gc *ReactionController) DeleteReactionsByPost(
 	ctx context.Context,
 	reactionRequest *likesgrpc.DeleteReactionsByPostRequest,
 ) (*likesgrpc.DeleteReactionsByPostResponse, error) {
@@ -268,7 +268,7 @@ func (gc *GRPCController) DeleteReactionsByPost(
 		1,
 	)
 
-	err := gc.ReactionGRPCService.DeleteReactionsByPost(
+	err := gc.ReactionService.DeleteReactionsByPost(
 		traceCtx,
 		uuid.MustParse(reactionRequest.GetPostId()),
 	)
