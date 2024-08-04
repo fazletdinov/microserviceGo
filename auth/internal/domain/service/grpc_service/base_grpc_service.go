@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserGRPCService interface {
+type UserService interface {
 	CreateUser(ctx context.Context, email string, password string) (uuid.UUID, error)
 	GetUserByID(ctx context.Context, userID uuid.UUID) (*models.Users, error)
 	UpdateUser(ctx context.Context, userID uuid.UUID, firstName string, lastName string) error

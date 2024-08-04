@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type UserGRPCRepository interface {
+type UserRepository interface {
 	Create(ctx context.Context, email string, password string) (uuid.UUID, error)
 	GetByEmail(ctx context.Context, email string) (*models.Users, error)
 	GetByEmailIsActive(ctx context.Context, email string) (*models.Users, error)

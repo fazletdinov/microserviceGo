@@ -8,17 +8,21 @@ import (
 	"gorm.io/gorm"
 )
 
-type userGRPCRepository struct {
+type userRepository struct {
 	database *gorm.DB
 }
 
-func NewUserGRPCRepository(db *gorm.DB) UserGRPCRepository {
-	return &userGRPCRepository{
+func NewUserRepository(db *gorm.DB) UserRepository {
+	return &userRepository{
 		database: db,
 	}
 }
 
-func (ur *userGRPCRepository) Create(ctx context.Context, email string, password string) (uuid.UUID, error) {
+func (ur *userRepository) Create(
+	ctx context.Context,
+	email string,
+	password string,
+) (uuid.UUID, error) {
 	user := models.Users{
 		Email:    email,
 		Password: password,
@@ -31,7 +35,10 @@ func (ur *userGRPCRepository) Create(ctx context.Context, email string, password
 	return user.ID, nil
 }
 
-func (ur *userGRPCRepository) GetByEmail(ctx context.Context, email string) (*models.Users, error) {
+func (ur *userRepository) GetByEmail(
+	ctx context.Context,
+	email string,
+) (*models.Users, error) {
 	var user models.Users
 	result := ur.database.WithContext(ctx).Where("email = ?", email).First(&user)
 	if result.Error != nil {
@@ -40,7 +47,10 @@ func (ur *userGRPCRepository) GetByEmail(ctx context.Context, email string) (*mo
 	return &user, nil
 }
 
-func (ur *userGRPCRepository) GetByEmailIsActive(ctx context.Context, email string) (*models.Users, error) {
+func (ur *userRepository) GetByEmailIsActive(
+	ctx context.Context,
+	email string,
+) (*models.Users, error) {
 	var user models.Users
 	result := ur.database.WithContext(ctx).Where("email = ? AND is_active = ?", email, true).First(&user)
 	if result.Error != nil {
@@ -49,7 +59,10 @@ func (ur *userGRPCRepository) GetByEmailIsActive(ctx context.Context, email stri
 	return &user, nil
 }
 
-func (ur *userGRPCRepository) GetByID(ctx context.Context, userID uuid.UUID) (*models.Users, error) {
+func (ur *userRepository) GetByID(
+	ctx context.Context,
+	userID uuid.UUID,
+) (*models.Users, error) {
 	var user models.Users
 	result := ur.database.WithContext(ctx).Where("is_active = ?", true).First(&user, "id = ?", userID)
 	if result.Error != nil {
@@ -58,7 +71,12 @@ func (ur *userGRPCRepository) GetByID(ctx context.Context, userID uuid.UUID) (*m
 	return &user, nil
 }
 
-func (ur *userGRPCRepository) Update(ctx context.Context, userID uuid.UUID, firstName string, lastName string) error {
+func (ur *userRepository) Update(
+	ctx context.Context,
+	userID uuid.UUID,
+	firstName string,
+	lastName string,
+) error {
 	result := ur.database.WithContext(ctx).Model(&models.Users{ID: userID, IsActive: true}).Updates(models.Users{FirstName: &firstName, LastName: &lastName})
 	if result.Error != nil {
 		return result.Error
@@ -66,7 +84,10 @@ func (ur *userGRPCRepository) Update(ctx context.Context, userID uuid.UUID, firs
 	return nil
 }
 
-func (ur *userGRPCRepository) Delete(ctx context.Context, userID uuid.UUID) error {
+func (ur *userRepository) Delete(
+	ctx context.Context,
+	userID uuid.UUID,
+) error {
 	result := ur.database.WithContext(ctx).Model(&models.Users{}).Where("id = ?", userID).Update("is_active", false)
 	if result.Error != nil {
 		return result.Error

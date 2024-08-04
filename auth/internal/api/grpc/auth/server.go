@@ -15,13 +15,13 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type GRPCController struct {
+type AuthController struct {
 	authgrpc.UnimplementedGatewayAuthServer
-	UserGRPCService grpcservice.UserGRPCService
-	Env             *config.Config
+	UserService grpcservice.UserService
+	Env         *config.Config
 }
 
-func (gc *GRPCController) CreateUser(
+func (gc *AuthController) CreateUser(
 	ctx context.Context,
 	authRequest *authgrpc.CreateUserRequest,
 ) (*authgrpc.CreateUserResponse, error) {
@@ -53,7 +53,7 @@ func (gc *GRPCController) CreateUser(
 		metric.WithAttributes(attribute.String("registration", "additional")),
 	)
 
-	userID, err := gc.UserGRPCService.CreateUser(traceCtx, authRequest.GetEmail(), authRequest.GetPassword())
+	userID, err := gc.UserService.CreateUser(traceCtx, authRequest.GetEmail(), authRequest.GetPassword())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -62,7 +62,7 @@ func (gc *GRPCController) CreateUser(
 	}, nil
 }
 
-func (gc *GRPCController) GetUserByID(
+func (gc *AuthController) GetUserByID(
 	ctx context.Context,
 	authRequest *authgrpc.GetUserRequest,
 ) (*authgrpc.GetUserResponse, error) {
@@ -92,7 +92,7 @@ func (gc *GRPCController) GetUserByID(
 		1,
 	)
 
-	user, err := gc.UserGRPCService.GetUserByID(traceCtx, uuid.MustParse(authRequest.GetUserId()))
+	user, err := gc.UserService.GetUserByID(traceCtx, uuid.MustParse(authRequest.GetUserId()))
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -103,7 +103,7 @@ func (gc *GRPCController) GetUserByID(
 	}, nil
 }
 
-func (gc *GRPCController) UpdateUser(
+func (gc *AuthController) UpdateUser(
 	ctx context.Context,
 	authRequest *authgrpc.UpdateUserRequest,
 ) (*authgrpc.UpdateUserResponse, error) {
@@ -142,7 +142,7 @@ func (gc *GRPCController) UpdateUser(
 		1,
 	)
 
-	err = gc.UserGRPCService.UpdateUser(traceCtx, uuid.MustParse(authRequest.GetUserId()), authRequest.GetFirstName(), authRequest.GetLastName())
+	err = gc.UserService.UpdateUser(traceCtx, uuid.MustParse(authRequest.GetUserId()), authRequest.GetFirstName(), authRequest.GetLastName())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -151,7 +151,7 @@ func (gc *GRPCController) UpdateUser(
 	}, nil
 }
 
-func (gc *GRPCController) DeleteUser(
+func (gc *AuthController) DeleteUser(
 	ctx context.Context,
 	authRequest *authgrpc.DeleteUserRequest,
 ) (*authgrpc.DeleteUserResponse, error) {
@@ -183,7 +183,7 @@ func (gc *GRPCController) DeleteUser(
 		1,
 	)
 
-	err = gc.UserGRPCService.DeleteUser(traceCtx, uuid.MustParse(authRequest.GetUserId()))
+	err = gc.UserService.DeleteUser(traceCtx, uuid.MustParse(authRequest.GetUserId()))
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -192,7 +192,7 @@ func (gc *GRPCController) DeleteUser(
 	}, nil
 }
 
-func (gc *GRPCController) GetUserByEmail(
+func (gc *AuthController) GetUserByEmail(
 	ctx context.Context,
 	authRequest *authgrpc.GetUserByEmailRequest,
 ) (*authgrpc.GetUserResponse, error) {
@@ -224,7 +224,7 @@ func (gc *GRPCController) GetUserByEmail(
 		1,
 	)
 
-	user, err := gc.UserGRPCService.GetUserByEmail(traceCtx, authRequest.GetEmail())
+	user, err := gc.UserService.GetUserByEmail(traceCtx, authRequest.GetEmail())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
@@ -236,7 +236,7 @@ func (gc *GRPCController) GetUserByEmail(
 	}, nil
 }
 
-func (gc *GRPCController) GetUserByEmailIsActive(
+func (gc *AuthController) GetUserByEmailIsActive(
 	ctx context.Context,
 	authRequest *authgrpc.GetUserByEmailRequest,
 ) (*authgrpc.GetUserResponse, error) {
@@ -269,7 +269,7 @@ func (gc *GRPCController) GetUserByEmailIsActive(
 		1,
 	)
 
-	user, err := gc.UserGRPCService.GetUserByEmailIsActive(traceCtx, authRequest.GetEmail())
+	user, err := gc.UserService.GetUserByEmailIsActive(traceCtx, authRequest.GetEmail())
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}

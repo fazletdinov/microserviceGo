@@ -27,9 +27,9 @@ func NewGRPC(log *slog.Logger, env *config.Config, db *gorm.DB) *GRPC {
 	gRPCServer := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	authgrpc.RegisterGatewayAuthServer(
 		gRPCServer,
-		&auth.GRPCController{
-			UserGRPCService: grpcservice.NewUserGRPCService(repository.NewUserGRPCRepository(db)),
-			Env:             env,
+		&auth.AuthController{
+			UserService: grpcservice.NewUserService(repository.NewUserRepository(db)),
+			Env:         env,
 		},
 	)
 
