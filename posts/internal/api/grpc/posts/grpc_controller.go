@@ -28,6 +28,8 @@ func (gc *GRPCController) CreatePost(
 	postRequest *postsgrpc.CreatePostRequest,
 ) (*postsgrpc.CreatePostResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if postRequest.GetTitle() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле title обязательно")
 	}
@@ -48,6 +50,14 @@ func (gc *GRPCController) CreatePost(
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для создания Post")
 	defer span.End()
 
+	counter, _ := meter.Int64Counter(
+		"CreatePost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
+
 	postID, err := gc.PostGRPCService.CreatePost(
 		traceCtx,
 		postRequest.GetTitle(),
@@ -67,6 +77,8 @@ func (gc *GRPCController) GetPostByID(
 	postRequest *postsgrpc.GetPostRequest,
 ) (*postsgrpc.PostResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -78,6 +90,14 @@ func (gc *GRPCController) GetPostByID(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Post по ID")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"GetPostByID_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	post, err := gc.PostGRPCService.GetByIDPost(
 		traceCtx,
@@ -109,6 +129,8 @@ func (gc *GRPCController) GetPostByIDAuthorID(
 	postRequest *postsgrpc.GetPostByIDAuthorIDRequest,
 ) (*postsgrpc.PostResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -124,6 +146,14 @@ func (gc *GRPCController) GetPostByIDAuthorID(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Post по ID и AuthorID")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"GetPostByIDAuthorID_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	post, err := gc.PostGRPCService.GetPostByIDAuthorID(
 		traceCtx,
@@ -156,6 +186,7 @@ func (gc *GRPCController) GetPosts(
 	postRequest *postsgrpc.GetPostsRequest,
 ) (*postsgrpc.GetPostsResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
 
 	traceCtx, span := tracer.Start(
 		ctx,
@@ -165,6 +196,14 @@ func (gc *GRPCController) GetPosts(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Posts")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"GetPosts_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	posts, err := gc.PostGRPCService.GetPosts(
 		traceCtx,
@@ -204,6 +243,8 @@ func (gc *GRPCController) UpdatePost(
 	postRequest *postsgrpc.UpdatePostRequest,
 ) (*postsgrpc.UpdatePostResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -228,6 +269,14 @@ func (gc *GRPCController) UpdatePost(
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для обновления Post")
 	defer span.End()
 
+	counter, _ := meter.Int64Counter(
+		"UpdatePost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
+
 	err := gc.PostGRPCService.UpdatePost(
 		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
@@ -248,6 +297,8 @@ func (gc *GRPCController) DeletePost(
 	postRequest *postsgrpc.DeletePostRequest,
 ) (*postsgrpc.DeletePostResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if postRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -263,6 +314,14 @@ func (gc *GRPCController) DeletePost(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для удаления Post")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeletePost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	err := gc.PostGRPCService.DeletePost(
 		traceCtx,
@@ -282,6 +341,8 @@ func (gc *GRPCController) DeletePostsByAuthor(
 	postRequest *postsgrpc.DeletePostsByAuthorRequest,
 ) (*postsgrpc.DeletePostsByAuthorResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if postRequest.GetAuthorId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
 	}
@@ -293,6 +354,14 @@ func (gc *GRPCController) DeletePostsByAuthor(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для удаления Posts автора")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeletePostsByAuthor_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	err := gc.PostGRPCService.DeletePostsByAuthor(
 		traceCtx,
@@ -313,6 +382,8 @@ func (gc *GRPCController) CreateComment(
 	commentRequest *postsgrpc.CreateCommentRequest,
 ) (*postsgrpc.CreateCommentResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if commentRequest.GetText() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле text обязательно")
 	}
@@ -333,6 +404,14 @@ func (gc *GRPCController) CreateComment(
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для создания Comment")
 	defer span.End()
 
+	counter, _ := meter.Int64Counter(
+		"CreateComment_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
+
 	commentID, err := gc.CommentGRPCService.CreateComment(
 		traceCtx,
 		commentRequest.GetText(),
@@ -352,6 +431,8 @@ func (gc *GRPCController) GetPostComments(
 	commentRequest *postsgrpc.GetCommentsRequest,
 ) (*postsgrpc.GetCommentsResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if commentRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -363,6 +444,14 @@ func (gc *GRPCController) GetPostComments(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Comments на Post")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"GetPostComments_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	comments, err := gc.CommentGRPCService.GetPostComments(
 		traceCtx,
@@ -393,6 +482,8 @@ func (gc *GRPCController) GetCommentByID(
 	commentRequest *postsgrpc.GetCommentRequest,
 ) (*postsgrpc.GetCommentResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if commentRequest.GetCommentId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле comment_id обязательно")
 	}
@@ -412,6 +503,14 @@ func (gc *GRPCController) GetCommentByID(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для получения Comment по ID")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"GetCommentByID_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	comment, err := gc.CommentGRPCService.GetCommentByID(
 		traceCtx,
@@ -437,6 +536,7 @@ func (gc *GRPCController) UpdatePostComment(
 	commentRequest *postsgrpc.UpdateCommentRequest,
 ) (*postsgrpc.UpdateCommentResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
 
 	if commentRequest.GetCommentId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле comment_id обязательно")
@@ -462,6 +562,14 @@ func (gc *GRPCController) UpdatePostComment(
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для обновления Comment по ID")
 	defer span.End()
 
+	counter, _ := meter.Int64Counter(
+		"UpdatePostComment_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
+
 	err := gc.CommentGRPCService.UpdateComment(
 		traceCtx,
 		uuid.MustParse(commentRequest.GetCommentId()),
@@ -482,6 +590,7 @@ func (gc *GRPCController) DeletePostComment(
 	commentRequest *postsgrpc.DeleteCommentRequest,
 ) (*postsgrpc.DeleteCommentResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
 
 	if commentRequest.GetCommentId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле comment_id обязательно")
@@ -502,6 +611,14 @@ func (gc *GRPCController) DeletePostComment(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в posts для удаления Comment по ID")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeletePostComment_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	err := gc.CommentGRPCService.DeleteComment(
 		traceCtx,

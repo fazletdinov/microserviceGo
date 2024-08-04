@@ -26,6 +26,8 @@ func (gc *GRPCController) CreateReaction(
 	reactionRequest *likesgrpc.CreateReactionRequest,
 ) (*likesgrpc.CreateReactionResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if reactionRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -35,12 +37,20 @@ func (gc *GRPCController) CreateReaction(
 
 	traceCtx, span := tracer.Start(
 		ctx,
-		" CreateReaction",
+		"CreateReaction",
 		oteltrace.WithAttributes(attribute.String("PostID", reactionRequest.PostId)),
 		oteltrace.WithAttributes(attribute.String("AuthorID", reactionRequest.AuthorId)),
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в likes для создания Reaction")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"CreateReaction_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	reactionID, err := gc.ReactionGRPCService.CreateReaction(
 		traceCtx,
@@ -60,6 +70,8 @@ func (gc *GRPCController) GetReactionByID(
 	reactionRequest *likesgrpc.GetReactionRequest,
 ) (*likesgrpc.GetReactionResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if reactionRequest.GetReactionId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле reaction_id обязательно")
 	}
@@ -71,6 +83,14 @@ func (gc *GRPCController) GetReactionByID(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в likes для получения Reaction по ID")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"GetReactionByID_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	reaction, err := gc.ReactionGRPCService.GetByID(
 		traceCtx,
@@ -89,6 +109,8 @@ func (gc *GRPCController) GetReactions(
 	reactionRequest *likesgrpc.GetReactionsRequest,
 ) (*likesgrpc.GetReactionsResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
+
 	if reactionRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
 	}
@@ -102,6 +124,14 @@ func (gc *GRPCController) GetReactions(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в likes для получения Reactions")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"GetReactions_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	reactions, err := gc.ReactionGRPCService.GetReactionsPost(
 		traceCtx,
@@ -128,6 +158,7 @@ func (gc *GRPCController) DeleteReaction(
 	reactionRequest *likesgrpc.DeleteReactionRequest,
 ) (*likesgrpc.DeleteReactionResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
 
 	if reactionRequest.GetReactionId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле reaction_id обязательно")
@@ -149,6 +180,14 @@ func (gc *GRPCController) DeleteReaction(
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в likes для удаления Reaction")
 	defer span.End()
 
+	counter, _ := meter.Int64Counter(
+		"DeleteReaction_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
+
 	err := gc.ReactionGRPCService.DeleteReaction(
 		traceCtx,
 		uuid.MustParse(reactionRequest.GetReactionId()),
@@ -168,6 +207,7 @@ func (gc *GRPCController) DeleteReactionsByAuthor(
 	reactionRequest *likesgrpc.DeleteReactionsByAuthorRequest,
 ) (*likesgrpc.DeleteReactionsByAuthorResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
 
 	if reactionRequest.GetAuthorId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле author_id обязательно")
@@ -180,6 +220,14 @@ func (gc *GRPCController) DeleteReactionsByAuthor(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в likes для удаления Reaction автора")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeleteReactionsByAuthor_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	err := gc.ReactionGRPCService.DeleteReactionsByAuthor(
 		traceCtx,
@@ -198,6 +246,7 @@ func (gc *GRPCController) DeleteReactionsByPost(
 	reactionRequest *likesgrpc.DeleteReactionsByPostRequest,
 ) (*likesgrpc.DeleteReactionsByPostResponse, error) {
 	var tracer = otel.Tracer(gc.Env.Jaeger.Application)
+	var meter = otel.Meter(gc.Env.Jaeger.Application)
 
 	if reactionRequest.GetPostId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "поле post_id обязательно")
@@ -210,6 +259,14 @@ func (gc *GRPCController) DeleteReactionsByPost(
 	)
 	span.AddEvent("Пришел gRPC запрос от сервиса api-gateway в likes для удаления Reactions Post")
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeleteReactionsByPost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	err := gc.ReactionGRPCService.DeleteReactionsByPost(
 		traceCtx,

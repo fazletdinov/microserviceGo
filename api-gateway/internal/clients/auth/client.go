@@ -3,14 +3,12 @@ package auth
 import (
 	authgrpc "api-grpc-gateway/protogen/golang/auth"
 	"context"
-	// "fmt"
 
 	"api-grpc-gateway/config"
 	"github.com/google/uuid"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	oteltrace "go.opentelemetry.io/otel/trace"
-	// "google.golang.org/grpc/metadata"
 
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
