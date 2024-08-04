@@ -33,6 +33,8 @@ type UpdatePostController struct {
 // @Router      /post/{post_id} [put]
 func (upc *UpdatePostController) Update(ctx *gin.Context) {
 	var tracer = otel.Tracer(upc.Env.Jaeger.Application)
+	var meter = otel.Meter(upc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
@@ -43,6 +45,14 @@ func (upc *UpdatePostController) Update(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"UpdatePost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err := upc.GRPCClientPosts.GetPostByIDAuthorID(
 		traceCtx,

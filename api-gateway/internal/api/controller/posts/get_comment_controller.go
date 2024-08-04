@@ -37,6 +37,8 @@ type GetCommentController struct {
 // @Router	    /post/{post_id}/comments 			[get]
 func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
 	var tracer = otel.Tracer(gcc.Env.Jaeger.Application)
+	var meter = otel.Meter(gcc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 
 	traceCtx, span := tracer.Start(
@@ -45,6 +47,14 @@ func (gcc *GetCommentController) Fetchs(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("PostID", postID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"FetchsComments_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err := gcc.GRPCClientPosts.GetPostByID(traceCtx, uuid.MustParse(postID))
 	if err != nil {

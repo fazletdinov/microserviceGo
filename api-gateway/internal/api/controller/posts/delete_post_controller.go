@@ -34,6 +34,8 @@ type DeletePostController struct {
 // @Router      /post/{post_id} [delete]
 func (dpc *DeletePostController) Delete(ctx *gin.Context) {
 	var tracer = otel.Tracer(dpc.Env.Jaeger.Application)
+	var meter = otel.Meter(dpc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
@@ -44,6 +46,14 @@ func (dpc *DeletePostController) Delete(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeletePost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err := dpc.GRPCClientPosts.GetPostByIDAuthorID(
 		traceCtx,

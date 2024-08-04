@@ -32,6 +32,8 @@ type UpdateController struct {
 // @Router      /user/update [put]
 func (uc *UpdateController) Update(ctx *gin.Context) {
 	var tracer = otel.Tracer(uc.Env.Jaeger.Application)
+	var meter = otel.Meter(uc.Env.Jaeger.Application)
+
 	userID := ctx.GetString("x-user-id")
 
 	traceCtx, span := tracer.Start(
@@ -40,6 +42,14 @@ func (uc *UpdateController) Update(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("UserID", userID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"UpdateUser_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err := uc.GRPCClientAuth.GetUserByID(
 		traceCtx,

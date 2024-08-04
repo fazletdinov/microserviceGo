@@ -32,6 +32,8 @@ type GetPostController struct {
 // @Router     /post/{post_id}    [get]
 func (pc *GetPostController) Fetch(ctx *gin.Context) {
 	var tracer = otel.Tracer(pc.Env.Jaeger.ServerName)
+	var meter = otel.Meter(pc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 
 	traceCtx, span := tracer.Start(
@@ -40,6 +42,14 @@ func (pc *GetPostController) Fetch(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("PostID", postID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"FetchPost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	post, err := pc.GRPCClientPosts.GetPostByID(
 		traceCtx,
@@ -68,6 +78,8 @@ func (pc *GetPostController) Fetch(ctx *gin.Context) {
 // @Router	    /posts 			[get]
 func (pc *GetPostController) Fetchs(ctx *gin.Context) {
 	var tracer = otel.Tracer(pc.Env.Jaeger.Application)
+	var meter = otel.Meter(pc.Env.Jaeger.Application)
+
 	limit, err := strconv.Atoi(ctx.Query("limit"))
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, schemas.ErrorResponse{Message: "Невалидные данные"})
@@ -86,6 +98,14 @@ func (pc *GetPostController) Fetchs(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.Int("Offset", offset)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"FetchsPosts_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	posts, err := pc.GRPCClientPosts.GetPosts(traceCtx, uint64(limit), uint64(offset))
 	if err != nil {

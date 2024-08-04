@@ -32,6 +32,8 @@ type CreatePostController struct {
 // @Router      /post 		[post]
 func (cp *CreatePostController) Create(ctx *gin.Context) {
 	var tracer = otel.Tracer(cp.Env.Jaeger.Application)
+	var meter = otel.Meter(cp.Env.Jaeger.Application)
+
 	var request schemas.CreatePostRequest
 	userID := ctx.GetString("x-user-id")
 
@@ -49,6 +51,14 @@ func (cp *CreatePostController) Create(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("Content", request.Content)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"CreatePost_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	postID, err := cp.GRPCClientPosts.CreatePost(
 		traceCtx,

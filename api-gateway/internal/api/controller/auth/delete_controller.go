@@ -35,6 +35,8 @@ type DeleteController struct {
 // @Router      /user/delete [delete]
 func (dc *DeleteController) Delete(ctx *gin.Context) {
 	var tracer = otel.Tracer(dc.Env.Jaeger.Application)
+	var meter = otel.Meter(dc.Env.Jaeger.Application)
+
 	userID := ctx.GetString("x-user-id")
 
 	_, err := dc.GRPCClientAuth.GetUserByID(ctx, uuid.MustParse(userID))
@@ -49,6 +51,14 @@ func (dc *DeleteController) Delete(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("UserID", userID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeleteUser_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, errDeleteUser := dc.GRPCClientAuth.DeleteUser(
 		traceCtx,

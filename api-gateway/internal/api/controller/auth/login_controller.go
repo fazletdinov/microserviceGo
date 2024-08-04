@@ -36,6 +36,8 @@ type LoginController struct {
 // @Router      /login [post]
 func (lc *LoginController) Login(ctx *gin.Context) {
 	var tracer = otel.Tracer(lc.Env.Jaeger.Application)
+	var meter = otel.Meter(lc.Env.Jaeger.Application)
+
 	var request schemas.LoginRequest
 
 	err := ctx.ShouldBindJSON(&request)
@@ -50,6 +52,14 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("User", request.Email)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"Login_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	user, err := lc.GRPCClientAuth.GetUserByEmailIsActive(
 		traceCtx,

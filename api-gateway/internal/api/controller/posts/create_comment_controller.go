@@ -33,6 +33,8 @@ type CreateCommentController struct {
 // @Router      /post/{post_id}/comment [post]
 func (ccc *CreateCommentController) Create(ctx *gin.Context) {
 	var tracer = otel.Tracer(ccc.Env.Jaeger.Application)
+	var meter = otel.Meter(ccc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
@@ -43,6 +45,14 @@ func (ccc *CreateCommentController) Create(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"CreateComment_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err := ccc.GRPCClientPosts.GetPostByID(
 		traceCtx,

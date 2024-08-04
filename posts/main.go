@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"posts/internal/app"
+	"posts/pkg/metric"
 	"posts/pkg/tracer"
 	"syscall"
 )
@@ -25,14 +26,14 @@ func main() {
 			panic(err)
 		}
 		defer tp.Shutdown(ctx)
-		// mp, err := metric.SetupMetrics(
-		// 	ctx,
-		// 	env.Jaeger.Application,
-		// )
-		// if err != nil {
-		// 	panic(err)
-		// }
-		// defer mp.Shutdown(ctx)
+		mp, err := metric.SetupMetrics(
+			ctx,
+			env.Jaeger.Application,
+		)
+		if err != nil {
+			panic(err)
+		}
+		defer mp.Shutdown(ctx)
 	}
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, syscall.SIGTERM, syscall.SIGINT)

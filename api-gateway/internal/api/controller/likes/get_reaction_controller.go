@@ -37,6 +37,8 @@ type GetReactionController struct {
 // @Router	    /post/{post_id}/reactions 	[get]
 func (rc *GetReactionController) Fetchs(ctx *gin.Context) {
 	var tracer = otel.Tracer(rc.Env.Jaeger.Application)
+	var meter = otel.Meter(rc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 
 	limit, err := strconv.Atoi(ctx.Query("limit"))
@@ -58,6 +60,14 @@ func (rc *GetReactionController) Fetchs(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.Int("Offset", offset)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"FetchsReaction_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	reactions, err := rc.GRPCClientLikes.GetReactionsPost(
 		traceCtx,

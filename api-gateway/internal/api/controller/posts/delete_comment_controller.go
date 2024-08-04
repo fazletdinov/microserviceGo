@@ -32,6 +32,8 @@ type DeleteCommentController struct {
 // @Router      /post/{post_id}/comment/{comment_id} 	[delete]
 func (dpc *DeleteCommentController) Delete(ctx *gin.Context) {
 	var tracer = otel.Tracer(dpc.Env.Jaeger.Application)
+	var meter = otel.Meter(dpc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 	commentID := ctx.Param("comment_id")
 	authorID := ctx.GetString("x-user-id")
@@ -44,6 +46,14 @@ func (dpc *DeleteCommentController) Delete(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("CommentID", commentID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeleteComment_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err := dpc.GRPCClientPosts.GetPostByID(
 		traceCtx,

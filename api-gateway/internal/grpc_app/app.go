@@ -3,8 +3,9 @@ package grpcapp
 import (
 	"api-grpc-gateway/config"
 	"log"
-	"log/slog"
 	"os"
+
+	"github.com/rs/zerolog"
 )
 
 const (
@@ -15,7 +16,7 @@ const (
 
 type Application struct {
 	Env *config.Config
-	Log *slog.Logger
+	Log *zerolog.Logger
 }
 
 func App() Application {
@@ -30,28 +31,39 @@ func App() Application {
 	return *app
 }
 
-func setupLogger(env string) *slog.Logger {
-	var log *slog.Logger
+func setupLogger(env string) *zerolog.Logger {
+	zerolog.TimeFieldFormat = "02/Jan/2006 - 15:04:05 -0700"
 	switch env {
 	case envLocal:
-		opts := &slog.HandlerOptions{
-			AddSource: true,
-			Level:     slog.LevelDebug,
-		}
-		log = slog.New(slog.NewTextHandler(os.Stdout, opts))
+		logger := zerolog.New(zerolog.ConsoleWriter{
+			Out:        os.Stderr,
+			TimeFormat: "02/Jan/2006 - 15:04:05 -0700",
+		}).
+			Level(zerolog.TraceLevel).
+			With().
+			Timestamp().
+			Caller().
+			Int("pid", os.Getpid()).
+			Logger()
+		return &logger
 	case envDev:
-		opts := &slog.HandlerOptions{
-			AddSource: true,
-			Level:     slog.LevelDebug,
-		}
-		log = slog.New(slog.NewJSONHandler(os.Stdout, opts))
+		logger := zerolog.New(os.Stdout).
+			Level(zerolog.DebugLevel).
+			With().
+			Timestamp().
+			Caller().
+			Int("pid", os.Getpid()).
+			Logger()
+		return &logger
 	case envProd:
-		opts := &slog.HandlerOptions{
-			AddSource: true,
-			Level:     slog.LevelInfo,
-		}
-		log = slog.New(slog.NewJSONHandler(os.Stdout, opts))
+		logger := zerolog.New(os.Stdout).
+			Level(zerolog.InfoLevel).
+			With().
+			Timestamp().
+			Caller().
+			Int("pid", os.Getpid()).
+			Logger()
+		return &logger
 	}
-	slog.SetDefault(log)
-	return log
+	return nil
 }

@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 
 	"api-grpc-gateway/config"
@@ -32,7 +31,8 @@ type ProfileController struct {
 // @Router      /user/me     [get]
 func (pc *ProfileController) Fetch(ctx *gin.Context) {
 	var tracer = otel.Tracer(pc.Env.Jaeger.Application)
-	fmt.Printf("tracer ===================== %v\n", tracer)
+	var meter = otel.Meter(pc.Env.Jaeger.Application)
+
 	userID := ctx.GetString("x-user-id")
 
 	traceCtx, span := tracer.Start(
@@ -40,8 +40,15 @@ func (pc *ProfileController) Fetch(ctx *gin.Context) {
 		"Fetch",
 		oteltrace.WithAttributes(attribute.String("UserID", userID)),
 	)
-	fmt.Printf("tracer ===================== %v\n", traceCtx)
-	fmt.Printf("span ===================== %v\n", span)
+	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"Profile_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	profile, err := pc.GRPCClientAuth.GetUserByID(
 		traceCtx,
@@ -51,8 +58,6 @@ func (pc *ProfileController) Fetch(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
 		return
 	}
-
-	defer span.End()
 
 	ctx.JSON(http.StatusOK, profile)
 }

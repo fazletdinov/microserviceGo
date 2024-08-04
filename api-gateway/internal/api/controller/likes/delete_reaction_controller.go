@@ -31,6 +31,8 @@ type DeleteReactionController struct {
 // @Router      /post/{post_id}/reaction [delete]
 func (drc *DeleteReactionController) Delete(ctx *gin.Context) {
 	var tracer = otel.Tracer(drc.Env.Jaeger.Application)
+	var meter = otel.Meter(drc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
@@ -41,6 +43,14 @@ func (drc *DeleteReactionController) Delete(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"DeleteReaction_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err := drc.GRPCClientLikes.GetReactionByID(
 		traceCtx,

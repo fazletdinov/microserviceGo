@@ -9,9 +9,9 @@ import (
 	likesgrpc "api-grpc-gateway/internal/clients/likes"
 	postsgrpc "api-grpc-gateway/internal/clients/posts"
 	grpcapp "api-grpc-gateway/internal/grpc_app"
-	"api-grpc-gateway/pkg/tracer"
-	// "api-grpc-gateway/pkg/logger"
+	"api-grpc-gateway/pkg/logger"
 	"api-grpc-gateway/pkg/metric"
+	"api-grpc-gateway/pkg/tracer"
 	"context"
 	"github.com/technologize/otel-go-contrib/otelginmetrics"
 
@@ -38,7 +38,7 @@ func main() {
 	app := grpcapp.App()
 
 	env := app.Env
-	// log := app.Log
+	log := app.Log
 
 	ctx := context.Background()
 	{
@@ -62,7 +62,7 @@ func main() {
 	}
 
 	gin := gin.Default()
-	// gin.Use(logger.LoggingMiddleware(log, env.Jaeger.Application))
+	gin.Use(logger.Logger(log))
 	gin.Use(otelgin.Middleware(env.Jaeger.ServerName))
 	gin.Use(otelginmetrics.Middleware(env.Jaeger.ServerName))
 

@@ -1,61 +1,114 @@
 package logger
 
 import (
-	"log/slog"
+	"math"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog"
 )
 
-func LoggingMiddleware(logger *slog.Logger, appName string) gin.HandlerFunc {
+type ginHands struct {
+	Hostname   string
+	StatusCode int
+	Latency    int // time to process
+	ClientIP   string
+	UserAgent  string
+	Method     string
+	Path       string
+	Referer    string
+	DataLength int
+	MsgStr     string
+}
+
+func ErrorLogger() gin.HandlerFunc {
+	return ErrorLoggerT(gin.ErrorTypeAny)
+}
+
+func ErrorLoggerT(typ gin.ErrorType) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+
+		if !c.Writer.Written() {
+			json := c.Errors.ByType(typ).JSON()
+			if json != nil {
+				c.JSON(-1, json)
+			}
+		}
+	}
+}
+
+func Logger(logger *zerolog.Logger) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		// Start timer
 		start := time.Now()
 		path := ctx.Request.URL.Path
 		raw := ctx.Request.URL.RawQuery
 
-		// Process request
 		ctx.Next()
-
-		param := gin.LogFormatterParams{
-			Request: ctx.Request,
-			Keys:    ctx.Keys,
-		}
-
-		param.TimeStamp = time.Now()
-		param.Latency = param.TimeStamp.Sub(start)
-		param.ClientIP = ctx.ClientIP()
-		param.Method = ctx.Request.Method
-		param.StatusCode = ctx.Writer.Status()
-		param.ErrorMessage = ctx.Errors.ByType(gin.ErrorTypePrivate).String()
-		param.BodySize = ctx.Writer.Size()
 
 		if raw != "" {
 			path = path + "?" + raw
 		}
+		msg := ctx.Errors.String()
+		if msg == "" {
+			msg = "Request"
+		}
+		stop := time.Since(start)
 
-		param.Path = path
-		event := slog.LevelInfo
-
-		if param.StatusCode >= 400 && param.StatusCode < 500 {
-			event = slog.LevelWarn
+		cData := &ginHands{
+			Hostname:   ctx.Request.Host,
+			StatusCode: ctx.Writer.Status(),
+			Latency:    int(math.Ceil(float64(stop.Nanoseconds()) / 1000000.0)),
+			ClientIP:   ctx.ClientIP(),
+			UserAgent:  ctx.Request.UserAgent(),
+			Method:     ctx.Request.Method,
+			Path:       path,
+			Referer:    ctx.Request.Referer(),
+			DataLength: ctx.Writer.Size(),
+			MsgStr:     msg,
 		}
 
-		if param.StatusCode >= 500 {
-			event = slog.LevelError
+		logSwitch(logger, cData)
+	}
+}
+func logSwitch(log *zerolog.Logger, data *ginHands) {
+	switch {
+	case data.StatusCode >= 400 && data.StatusCode < 500:
+		{
+			log.Warn().
+				Str("hostname", data.Hostname).
+				Int("status", data.StatusCode).
+				Int("latency", data.Latency).
+				Str("client_ip", data.ClientIP).
+				Str("method", data.Method).
+				Str("path", data.Path).
+				Str("referer", data.Referer).
+				Int("data_length", data.DataLength).
+				Msg(data.MsgStr)
 		}
-
-		slog.LogAttrs(
-			ctx.Request.Context(),
-			event,
-			param.ErrorMessage,
-			slog.String("module", "gin"),
-			slog.String("path", param.Path),
-			slog.Int("status_code", param.StatusCode),
-			slog.Float64("latency", float64(param.Latency)/float64(time.Millisecond)),
-			slog.String("client_ip", param.ClientIP),
-			slog.String("method", param.Method),
-			slog.Int("body_size", param.BodySize),
-		)
+	case data.StatusCode >= 500:
+		{
+			log.Error().
+				Str("hostname", data.Hostname).
+				Int("status", data.StatusCode).
+				Int("latency", data.Latency).
+				Str("client_ip", data.ClientIP).
+				Str("method", data.Method).
+				Str("path", data.Path).
+				Str("referer", data.Referer).
+				Int("data_length", data.DataLength).
+				Msg(data.MsgStr)
+		}
+	default:
+		log.Info().
+			Str("hostname", data.Hostname).
+			Int("status", data.StatusCode).
+			Int("latency", data.Latency).
+			Str("client_ip", data.ClientIP).
+			Str("method", data.Method).
+			Str("path", data.Path).
+			Str("referer", data.Referer).
+			Int("data_length", data.DataLength).
+			Msg(data.MsgStr)
 	}
 }

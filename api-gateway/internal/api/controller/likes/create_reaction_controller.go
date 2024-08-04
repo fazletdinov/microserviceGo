@@ -32,6 +32,8 @@ type CreateReactionController struct {
 // @Router      /post/{post_id}/reaction  [post]
 func (rc *CreateReactionController) Create(ctx *gin.Context) {
 	var tracer = otel.Tracer(rc.Env.Jaeger.Application)
+	var meter = otel.Meter(rc.Env.Jaeger.Application)
+
 	postID := ctx.Param("post_id")
 	authorID := ctx.GetString("x-user-id")
 
@@ -42,6 +44,14 @@ func (rc *CreateReactionController) Create(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("AuthorID", authorID)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"CreateReaction_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	reactionID, err := rc.GRPCClientLikes.CreateReaction(
 		traceCtx,

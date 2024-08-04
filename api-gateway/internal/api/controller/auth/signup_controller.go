@@ -35,6 +35,8 @@ type SignupController struct {
 // @Router      /user/signup [post]
 func (sc *SignupController) Signup(ctx *gin.Context) {
 	var tracer = otel.Tracer(sc.Env.Jaeger.Application)
+	var meter = otel.Meter(sc.Env.Jaeger.Application)
+
 	var request schemas.SignupUserRequest
 
 	err := ctx.ShouldBindJSON(&request)
@@ -49,6 +51,14 @@ func (sc *SignupController) Signup(ctx *gin.Context) {
 		oteltrace.WithAttributes(attribute.String("Email", request.Email)),
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"Signup_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err = sc.GRPCClientAuth.GetUserByEmail(
 		traceCtx,

@@ -28,6 +28,8 @@ type RefreshTokenController struct {
 // @Router      /refresh 	[get]
 func (rtc *RefreshTokenController) RefreshToken(ctx *gin.Context) {
 	var tracer = otel.Tracer(rtc.Env.Jaeger.Application)
+	var meter = otel.Meter(rtc.Env.Jaeger.Application)
+
 	token, errCookie := ctx.Cookie(rtc.Env.JWTConfig.SessionCookieName)
 	if errCookie != nil {
 		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Пользователь не авторизован"})
@@ -48,6 +50,14 @@ func (rtc *RefreshTokenController) RefreshToken(ctx *gin.Context) {
 		"RefreshToken",
 	)
 	defer span.End()
+
+	counter, _ := meter.Int64Counter(
+		"RefreshToken_counter",
+	)
+	counter.Add(
+		ctx,
+		1,
+	)
 
 	_, err = rtc.GRPCClientAuth.GetUserByID(
 		traceCtx,
