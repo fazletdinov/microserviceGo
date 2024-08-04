@@ -8,17 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type commentGRPCRepository struct {
+type commentRepository struct {
 	database *gorm.DB
 }
 
-func NewCommentGRPCRepository(db *gorm.DB) CommentGRPCRepository {
-	return &commentGRPCRepository{
+func NewCommentRepository(db *gorm.DB) CommentRepository {
+	return &commentRepository{
 		database: db,
 	}
 }
 
-func (cr *commentGRPCRepository) CreateComment(
+func (cr *commentRepository) CreateComment(
 	ctx context.Context,
 	text string,
 	postID uuid.UUID,
@@ -35,7 +35,7 @@ func (cr *commentGRPCRepository) CreateComment(
 	return comment.ID, nil
 }
 
-func (cr *commentGRPCRepository) GetByIDComment(
+func (cr *commentRepository) GetByIDComment(
 	ctx context.Context,
 	commentID uuid.UUID,
 	postID uuid.UUID,
@@ -49,7 +49,7 @@ func (cr *commentGRPCRepository) GetByIDComment(
 	return &comment, nil
 }
 
-func (cr *commentGRPCRepository) GetComments(
+func (cr *commentRepository) GetComments(
 	ctx context.Context,
 	postID uuid.UUID,
 	limit int,
@@ -63,7 +63,7 @@ func (cr *commentGRPCRepository) GetComments(
 	return &comments, nil
 }
 
-func (cr *commentGRPCRepository) UpdateComment(
+func (cr *commentRepository) UpdateComment(
 	ctx context.Context,
 	commentID uuid.UUID,
 	postID uuid.UUID,
@@ -77,7 +77,7 @@ func (cr *commentGRPCRepository) UpdateComment(
 	return nil
 }
 
-func (cr *commentGRPCRepository) DeleteComment(
+func (cr *commentRepository) DeleteComment(
 	ctx context.Context,
 	commentID uuid.UUID,
 	postID uuid.UUID,

@@ -8,17 +8,17 @@ import (
 	"gorm.io/gorm"
 )
 
-type postGRPCRepository struct {
+type postRepository struct {
 	database *gorm.DB
 }
 
-func NewPostGRPCRepository(db *gorm.DB) PostGRPCRepository {
-	return &postGRPCRepository{
+func NewPostRepository(db *gorm.DB) PostRepository {
+	return &postRepository{
 		database: db,
 	}
 }
 
-func (pr *postGRPCRepository) Create(
+func (pr *postRepository) Create(
 	ctx context.Context,
 	title string,
 	content string,
@@ -36,7 +36,7 @@ func (pr *postGRPCRepository) Create(
 	return post.ID, nil
 }
 
-func (pr *postGRPCRepository) GetByIDPost(
+func (pr *postRepository) GetByIDPost(
 	ctx context.Context,
 	postID uuid.UUID,
 ) (*models.Post, error) {
@@ -48,7 +48,7 @@ func (pr *postGRPCRepository) GetByIDPost(
 	return &post, nil
 }
 
-func (pr *postGRPCRepository) GetPostByIDAuthorID(
+func (pr *postRepository) GetPostByIDAuthorID(
 	ctx context.Context,
 	postID uuid.UUID,
 	authorID uuid.UUID,
@@ -61,7 +61,7 @@ func (pr *postGRPCRepository) GetPostByIDAuthorID(
 	return &post, nil
 }
 
-func (pr *postGRPCRepository) GetPosts(
+func (pr *postRepository) GetPosts(
 	ctx context.Context,
 	limit int,
 	offset int,
@@ -74,7 +74,7 @@ func (pr *postGRPCRepository) GetPosts(
 	return &posts, nil
 }
 
-func (pr *postGRPCRepository) UpdatePost(
+func (pr *postRepository) UpdatePost(
 	ctx context.Context,
 	postID uuid.UUID,
 	authorID uuid.UUID,
@@ -88,7 +88,7 @@ func (pr *postGRPCRepository) UpdatePost(
 	return nil
 }
 
-func (pr *postGRPCRepository) DeletePost(
+func (pr *postRepository) DeletePost(
 	ctx context.Context,
 	postID uuid.UUID,
 	authorID uuid.UUID,
@@ -100,7 +100,7 @@ func (pr *postGRPCRepository) DeletePost(
 	return nil
 }
 
-func (pr *postGRPCRepository) DeletePostsByAuthor(
+func (pr *postRepository) DeletePostsByAuthor(
 	ctx context.Context,
 	authorID uuid.UUID,
 ) error {

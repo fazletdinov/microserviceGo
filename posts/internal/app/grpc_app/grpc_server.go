@@ -29,10 +29,10 @@ func NewGRPC(log *slog.Logger, env *config.Config, db *gorm.DB) *GRPC {
 	gRPCServer := grpc.NewServer(grpc.StatsHandler(otelgrpc.NewServerHandler()))
 	postsgrpc.RegisterGatewayPostsServer(
 		gRPCServer,
-		&posts.GRPCController{
-			PostGRPCService:    postService.NewPostGRPCService(repositoryPost.NewPostGRPCRepository(db)),
-			CommentGRPCService: commentService.NewCommentGRPCService(repositoryComment.NewCommentGRPCRepository(db)),
-			Env:                env,
+		&posts.PostsController{
+			PostService:    postService.NewPostService(repositoryPost.NewPostRepository(db)),
+			CommentService: commentService.NewCommentService(repositoryComment.NewCommentRepository(db)),
+			Env:            env,
 		},
 	)
 

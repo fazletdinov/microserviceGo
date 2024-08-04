@@ -16,14 +16,14 @@ import (
 	postService "posts/internal/domain/service/post"
 )
 
-type GRPCController struct {
+type PostsController struct {
 	postsgrpc.UnimplementedGatewayPostsServer
-	PostGRPCService    postService.PostGRPCService
-	CommentGRPCService commentService.CommentGRPCServcie
-	Env                *config.Config
+	PostService    postService.PostService
+	CommentService commentService.CommentServcie
+	Env            *config.Config
 }
 
-func (gc *GRPCController) CreatePost(
+func (gc *PostsController) CreatePost(
 	ctx context.Context,
 	postRequest *postsgrpc.CreatePostRequest,
 ) (*postsgrpc.CreatePostResponse, error) {
@@ -58,7 +58,7 @@ func (gc *GRPCController) CreatePost(
 		1,
 	)
 
-	postID, err := gc.PostGRPCService.CreatePost(
+	postID, err := gc.PostService.CreatePost(
 		traceCtx,
 		postRequest.GetTitle(),
 		postRequest.GetContent(),
@@ -72,7 +72,7 @@ func (gc *GRPCController) CreatePost(
 	}, nil
 }
 
-func (gc *GRPCController) GetPostByID(
+func (gc *PostsController) GetPostByID(
 	ctx context.Context,
 	postRequest *postsgrpc.GetPostRequest,
 ) (*postsgrpc.PostResponse, error) {
@@ -99,7 +99,7 @@ func (gc *GRPCController) GetPostByID(
 		1,
 	)
 
-	post, err := gc.PostGRPCService.GetByIDPost(
+	post, err := gc.PostService.GetByIDPost(
 		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 	)
@@ -124,7 +124,7 @@ func (gc *GRPCController) GetPostByID(
 	}, nil
 }
 
-func (gc *GRPCController) GetPostByIDAuthorID(
+func (gc *PostsController) GetPostByIDAuthorID(
 	ctx context.Context,
 	postRequest *postsgrpc.GetPostByIDAuthorIDRequest,
 ) (*postsgrpc.PostResponse, error) {
@@ -155,7 +155,7 @@ func (gc *GRPCController) GetPostByIDAuthorID(
 		1,
 	)
 
-	post, err := gc.PostGRPCService.GetPostByIDAuthorID(
+	post, err := gc.PostService.GetPostByIDAuthorID(
 		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 		uuid.MustParse(postRequest.GetAuthorId()),
@@ -181,7 +181,7 @@ func (gc *GRPCController) GetPostByIDAuthorID(
 	}, nil
 }
 
-func (gc *GRPCController) GetPosts(
+func (gc *PostsController) GetPosts(
 	ctx context.Context,
 	postRequest *postsgrpc.GetPostsRequest,
 ) (*postsgrpc.GetPostsResponse, error) {
@@ -205,7 +205,7 @@ func (gc *GRPCController) GetPosts(
 		1,
 	)
 
-	posts, err := gc.PostGRPCService.GetPosts(
+	posts, err := gc.PostService.GetPosts(
 		traceCtx,
 		postRequest.GetLimit(),
 		postRequest.GetOffset(),
@@ -238,7 +238,7 @@ func (gc *GRPCController) GetPosts(
 	}, nil
 }
 
-func (gc *GRPCController) UpdatePost(
+func (gc *PostsController) UpdatePost(
 	ctx context.Context,
 	postRequest *postsgrpc.UpdatePostRequest,
 ) (*postsgrpc.UpdatePostResponse, error) {
@@ -277,7 +277,7 @@ func (gc *GRPCController) UpdatePost(
 		1,
 	)
 
-	err := gc.PostGRPCService.UpdatePost(
+	err := gc.PostService.UpdatePost(
 		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 		uuid.MustParse(postRequest.GetAuthorId()),
@@ -292,7 +292,7 @@ func (gc *GRPCController) UpdatePost(
 	}, nil
 }
 
-func (gc *GRPCController) DeletePost(
+func (gc *PostsController) DeletePost(
 	ctx context.Context,
 	postRequest *postsgrpc.DeletePostRequest,
 ) (*postsgrpc.DeletePostResponse, error) {
@@ -323,7 +323,7 @@ func (gc *GRPCController) DeletePost(
 		1,
 	)
 
-	err := gc.PostGRPCService.DeletePost(
+	err := gc.PostService.DeletePost(
 		traceCtx,
 		uuid.MustParse(postRequest.GetPostId()),
 		uuid.MustParse(postRequest.GetAuthorId()),
@@ -336,7 +336,7 @@ func (gc *GRPCController) DeletePost(
 	}, nil
 }
 
-func (gc *GRPCController) DeletePostsByAuthor(
+func (gc *PostsController) DeletePostsByAuthor(
 	ctx context.Context,
 	postRequest *postsgrpc.DeletePostsByAuthorRequest,
 ) (*postsgrpc.DeletePostsByAuthorResponse, error) {
@@ -363,7 +363,7 @@ func (gc *GRPCController) DeletePostsByAuthor(
 		1,
 	)
 
-	err := gc.PostGRPCService.DeletePostsByAuthor(
+	err := gc.PostService.DeletePostsByAuthor(
 		traceCtx,
 		uuid.MustParse(postRequest.GetAuthorId()),
 	)
@@ -377,7 +377,7 @@ func (gc *GRPCController) DeletePostsByAuthor(
 
 // реализация контроллера для комментариев
 
-func (gc *GRPCController) CreateComment(
+func (gc *PostsController) CreateComment(
 	ctx context.Context,
 	commentRequest *postsgrpc.CreateCommentRequest,
 ) (*postsgrpc.CreateCommentResponse, error) {
@@ -412,7 +412,7 @@ func (gc *GRPCController) CreateComment(
 		1,
 	)
 
-	commentID, err := gc.CommentGRPCService.CreateComment(
+	commentID, err := gc.CommentService.CreateComment(
 		traceCtx,
 		commentRequest.GetText(),
 		uuid.MustParse(commentRequest.GetPostId()),
@@ -426,7 +426,7 @@ func (gc *GRPCController) CreateComment(
 	}, nil
 }
 
-func (gc *GRPCController) GetPostComments(
+func (gc *PostsController) GetPostComments(
 	ctx context.Context,
 	commentRequest *postsgrpc.GetCommentsRequest,
 ) (*postsgrpc.GetCommentsResponse, error) {
@@ -453,7 +453,7 @@ func (gc *GRPCController) GetPostComments(
 		1,
 	)
 
-	comments, err := gc.CommentGRPCService.GetPostComments(
+	comments, err := gc.CommentService.GetPostComments(
 		traceCtx,
 		uuid.MustParse(commentRequest.GetPostId()),
 		commentRequest.GetLimit(),
@@ -477,7 +477,7 @@ func (gc *GRPCController) GetPostComments(
 	}, nil
 }
 
-func (gc *GRPCController) GetCommentByID(
+func (gc *PostsController) GetCommentByID(
 	ctx context.Context,
 	commentRequest *postsgrpc.GetCommentRequest,
 ) (*postsgrpc.GetCommentResponse, error) {
@@ -512,7 +512,7 @@ func (gc *GRPCController) GetCommentByID(
 		1,
 	)
 
-	comment, err := gc.CommentGRPCService.GetCommentByID(
+	comment, err := gc.CommentService.GetCommentByID(
 		traceCtx,
 		uuid.MustParse(commentRequest.GetCommentId()),
 		uuid.MustParse(commentRequest.GetPostId()),
@@ -531,7 +531,7 @@ func (gc *GRPCController) GetCommentByID(
 	}, nil
 }
 
-func (gc *GRPCController) UpdatePostComment(
+func (gc *PostsController) UpdatePostComment(
 	ctx context.Context,
 	commentRequest *postsgrpc.UpdateCommentRequest,
 ) (*postsgrpc.UpdateCommentResponse, error) {
@@ -570,7 +570,7 @@ func (gc *GRPCController) UpdatePostComment(
 		1,
 	)
 
-	err := gc.CommentGRPCService.UpdateComment(
+	err := gc.CommentService.UpdateComment(
 		traceCtx,
 		uuid.MustParse(commentRequest.GetCommentId()),
 		uuid.MustParse(commentRequest.GetPostId()),
@@ -585,7 +585,7 @@ func (gc *GRPCController) UpdatePostComment(
 	}, nil
 }
 
-func (gc *GRPCController) DeletePostComment(
+func (gc *PostsController) DeletePostComment(
 	ctx context.Context,
 	commentRequest *postsgrpc.DeleteCommentRequest,
 ) (*postsgrpc.DeleteCommentResponse, error) {
@@ -620,7 +620,7 @@ func (gc *GRPCController) DeletePostComment(
 		1,
 	)
 
-	err := gc.CommentGRPCService.DeleteComment(
+	err := gc.CommentService.DeleteComment(
 		traceCtx,
 		uuid.MustParse(commentRequest.GetCommentId()),
 		uuid.MustParse(commentRequest.GetPostId()),

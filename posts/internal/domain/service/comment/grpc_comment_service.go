@@ -8,58 +8,58 @@ import (
 	"github.com/google/uuid"
 )
 
-type commentGRPCService struct {
-	commentGRPCRepository comment.CommentGRPCRepository
+type commentService struct {
+	commentRepository comment.CommentRepository
 }
 
-func NewCommentGRPCService(commentGRPCRepository comment.CommentGRPCRepository) CommentGRPCServcie {
-	return &commentGRPCService{
-		commentGRPCRepository: commentGRPCRepository,
+func NewCommentService(commentRepository comment.CommentRepository) CommentServcie {
+	return &commentService{
+		commentRepository: commentRepository,
 	}
 }
 
-func (cs *commentGRPCService) CreateComment(
+func (cs *commentService) CreateComment(
 	ctx context.Context,
 	text string,
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) (uuid.UUID, error) {
-	return cs.commentGRPCRepository.CreateComment(ctx, text, postID, authorID)
+	return cs.commentRepository.CreateComment(ctx, text, postID, authorID)
 }
 
-func (cs *commentGRPCService) GetPostComments(
+func (cs *commentService) GetPostComments(
 	ctx context.Context,
 	postID uuid.UUID,
 	limit uint64,
 	offset uint64,
 ) (*[]models.Comment, error) {
-	return cs.commentGRPCRepository.GetComments(ctx, postID, int(limit), int(offset))
+	return cs.commentRepository.GetComments(ctx, postID, int(limit), int(offset))
 }
 
-func (cs *commentGRPCService) GetCommentByID(
+func (cs *commentService) GetCommentByID(
 	ctx context.Context,
 	commentID uuid.UUID,
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) (*models.Comment, error) {
-	return cs.commentGRPCRepository.GetByIDComment(ctx, commentID, postID, authorID)
+	return cs.commentRepository.GetByIDComment(ctx, commentID, postID, authorID)
 }
 
-func (cs *commentGRPCService) UpdateComment(
+func (cs *commentService) UpdateComment(
 	ctx context.Context,
 	commentID uuid.UUID,
 	postID uuid.UUID,
 	authorID uuid.UUID,
 	text string,
 ) error {
-	return cs.commentGRPCRepository.UpdateComment(ctx, commentID, postID, authorID, text)
+	return cs.commentRepository.UpdateComment(ctx, commentID, postID, authorID, text)
 }
 
-func (cs *commentGRPCService) DeleteComment(
+func (cs *commentService) DeleteComment(
 	ctx context.Context,
 	commentID uuid.UUID,
 	postID uuid.UUID,
 	authorID uuid.UUID,
 ) error {
-	return cs.commentGRPCRepository.DeleteComment(ctx, commentID, postID, authorID)
+	return cs.commentRepository.DeleteComment(ctx, commentID, postID, authorID)
 }

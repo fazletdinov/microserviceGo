@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type CommentGRPCServcie interface {
+type CommentServcie interface {
 	CreateComment(ctx context.Context, text string, postID uuid.UUID, authorID uuid.UUID) (uuid.UUID, error)
 	GetPostComments(ctx context.Context, postID uuid.UUID, limit uint64, offset uint64) (*[]models.Comment, error)
 	GetCommentByID(ctx context.Context, commentID uuid.UUID, postID uuid.UUID, authorID uuid.UUID) (*models.Comment, error)

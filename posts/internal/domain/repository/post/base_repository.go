@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type PostGRPCRepository interface {
+type PostRepository interface {
 	Create(ctx context.Context, title string, content string, authorID uuid.UUID) (uuid.UUID, error)
 	GetByIDPost(ctx context.Context, postID uuid.UUID) (*models.Post, error)
 	GetPostByIDAuthorID(ctx context.Context, postID uuid.UUID, authorID uuid.UUID) (*models.Post, error)
