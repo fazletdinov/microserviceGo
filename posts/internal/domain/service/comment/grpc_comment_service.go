@@ -3,7 +3,7 @@ package comment
 import (
 	"context"
 	"posts/internal/domain/repository/comment"
-	"posts/internal/models"
+	"posts/internal/dto"
 
 	"github.com/google/uuid"
 )
@@ -32,8 +32,23 @@ func (cs *commentService) GetPostComments(
 	postID uuid.UUID,
 	limit uint64,
 	offset uint64,
-) (*[]models.Comment, error) {
-	return cs.commentRepository.GetComments(ctx, postID, int(limit), int(offset))
+) (*[]dto.CommentResponse, error) {
+	commentsResponse, err := cs.commentRepository.GetComments(ctx, postID, int(limit), int(offset))
+	if err != nil {
+		return nil, err
+	}
+	comments := make([]dto.CommentResponse, 0, limit)
+	for _, comment := range *commentsResponse {
+		comments = append(comments, dto.CommentResponse{
+			ID:        comment.ID,
+			Text:      comment.Text,
+			AuthorID:  comment.AuthorID,
+			CreatedAt: comment.CreatedAt,
+		})
+	}
+
+	return &comments, nil
+
 }
 
 func (cs *commentService) GetCommentByID(
@@ -41,8 +56,17 @@ func (cs *commentService) GetCommentByID(
 	commentID uuid.UUID,
 	postID uuid.UUID,
 	authorID uuid.UUID,
-) (*models.Comment, error) {
-	return cs.commentRepository.GetByIDComment(ctx, commentID, postID, authorID)
+) (*dto.CommentResponse, error) {
+	commentResponse, err := cs.commentRepository.GetByIDComment(ctx, commentID, postID, authorID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.CommentResponse{
+		ID:        commentResponse.ID,
+		Text:      commentResponse.Text,
+		AuthorID:  commentResponse.AuthorID,
+		CreatedAt: commentResponse.CreatedAt,
+	}, nil
 }
 
 func (cs *commentService) UpdateComment(

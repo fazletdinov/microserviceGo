@@ -107,7 +107,7 @@ func (gc *PostsController) GetPostByID(
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 	arrayComment := make([]*postsgrpc.Comment, 0, 10)
-	for _, comment := range post.Comments {
+	for _, comment := range *post.Comments {
 		arrayComment = append(arrayComment, &postsgrpc.Comment{
 			Text:      comment.Text,
 			AuthorId:  comment.AuthorID.String(),
@@ -164,7 +164,7 @@ func (gc *PostsController) GetPostByIDAuthorID(
 		return nil, status.Error(codes.Internal, "internal error")
 	}
 	arrayComment := make([]*postsgrpc.Comment, 0, 10)
-	for _, comment := range post.Comments {
+	for _, comment := range *post.Comments {
 		arrayComment = append(arrayComment, &postsgrpc.Comment{
 			Text:      comment.Text,
 			AuthorId:  comment.AuthorID.String(),
@@ -216,7 +216,7 @@ func (gc *PostsController) GetPosts(
 	arrayPost := make([]*postsgrpc.PostResponse, 0, postRequest.GetLimit())
 	for _, post := range *posts {
 		arrayComment := make([]*postsgrpc.Comment, 0, 10)
-		for _, comment := range post.Comments {
+		for _, comment := range *post.Comments {
 			arrayComment = append(arrayComment, &postsgrpc.Comment{
 				CommentId: comment.ID.String(),
 				Text:      comment.Text,

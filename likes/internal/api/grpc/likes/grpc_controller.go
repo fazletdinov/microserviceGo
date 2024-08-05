@@ -101,6 +101,7 @@ func (gc *ReactionController) GetReactionByID(
 	}
 	return &likesgrpc.GetReactionResponse{
 		ReactionId: reaction.ID.String(),
+		AuthorId:   reaction.AuthorID.String(),
 	}, nil
 }
 
@@ -146,6 +147,7 @@ func (gc *ReactionController) GetReactions(
 	for _, reaction := range *reactions {
 		arrayReaction = append(arrayReaction, &likesgrpc.Reaction{
 			ReactionId: reaction.ID.String(),
+			AuthorId:   reaction.AuthorID.String(),
 		})
 	}
 	return &likesgrpc.GetReactionsResponse{

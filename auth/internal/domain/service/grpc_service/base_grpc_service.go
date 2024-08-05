@@ -1,7 +1,7 @@
 package grpcservice
 
 import (
-	"auth/internal/models"
+	"auth/internal/dto"
 	"context"
 
 	"github.com/google/uuid"
@@ -9,9 +9,9 @@ import (
 
 type UserService interface {
 	CreateUser(ctx context.Context, email string, password string) (uuid.UUID, error)
-	GetUserByID(ctx context.Context, userID uuid.UUID) (*models.Users, error)
+	GetUserByID(ctx context.Context, userID uuid.UUID) (*dto.UserResponse, error)
 	UpdateUser(ctx context.Context, userID uuid.UUID, firstName string, lastName string) error
-	GetUserByEmail(ctx context.Context, email string) (*models.Users, error)
-	GetUserByEmailIsActive(ctx context.Context, email string) (*models.Users, error)
+	GetUserByEmail(ctx context.Context, email string) (*dto.UserResponse, error)
+	GetUserByEmailIsActive(ctx context.Context, email string) (*dto.UserResponse, error)
 	DeleteUser(ctx context.Context, userID uuid.UUID) error
 }

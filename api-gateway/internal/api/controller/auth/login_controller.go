@@ -74,7 +74,7 @@ func (lc *LoginController) Login(ctx *gin.Context) {
 		[]byte(user.Password),
 		[]byte(request.Password),
 	); err != nil {
-		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: "Неверные учетные данные"})
+		ctx.JSON(http.StatusUnauthorized, schemas.ErrorResponse{Message: fmt.Sprintf("Неверные учетные данные %v", err)})
 		return
 	}
 

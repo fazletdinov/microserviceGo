@@ -1,10 +1,26 @@
 version: '3.9'
 
+x-def-logging: &default-logging
+  logging:
+    # Указываем, какой драйвер использовать
+    driver: "loki"
+    options:
+      # Адрес Loki, куда складывать логи
+      # Обратите внимание, что здесь используется не имя сервиса loki, а локальный хост, на который проброшен порт Loki,
+      # это сделано потому, что логи будет писать docker engine, котрый расположен на хостовой машине,
+      # и он не знает имени хоста контейнера Loki, которое ему присвоил compose во внутренней сети проекта.
+      loki-url: "http://localhost:3100/loki/api/v1/push"
+      loki-batch-size: "100"
+      loki-retries: 2
+      loki-max-backoff: 1000ms
+      loki-timeout: 1s
+
 services:
 
   postgres_likes_db:
     container_name: postgres_likes_db
     image: postgres:15-alpine
+    <<: *default-logging
     volumes:
       - pg-likes-data:/var/lib/postgresql/data
     networks:
@@ -24,6 +40,7 @@ services:
   likes:
     container_name: likes
     build: ./
+    <<: *default-logging
     networks:
       - dev-network
     expose:

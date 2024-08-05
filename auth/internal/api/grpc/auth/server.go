@@ -4,12 +4,14 @@ import (
 	"auth/config"
 	authgrpc "auth/protogen/auth"
 	"context"
+
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 	oteltrace "go.opentelemetry.io/otel/trace"
 
 	"auth/internal/domain/service/grpc_service"
+
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -273,6 +275,7 @@ func (gc *AuthController) GetUserByEmailIsActive(
 	if err != nil {
 		return nil, status.Error(codes.Internal, "internal error")
 	}
+
 	return &authgrpc.GetUserResponse{
 		UserId:    user.ID.String(),
 		Email:     user.Email,

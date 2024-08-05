@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"likes/internal/domain/repository"
-	"likes/internal/models"
+	"likes/internal/dto"
 
 	"github.com/google/uuid"
 )
@@ -31,8 +31,16 @@ func (rs *reactionService) CreateReaction(
 func (rs *reactionService) GetByID(
 	ctx context.Context,
 	reactionID uuid.UUID,
-) (*models.Reaction, error) {
-	return rs.reactionRepository.GetByIDReaction(ctx, reactionID)
+) (*dto.ReactionResponse, error) {
+	reactionResponse, err := rs.reactionRepository.GetByIDReaction(ctx, reactionID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.ReactionResponse{
+		ID:       reactionResponse.ID,
+		AuthorID: reactionResponse.AuthorID,
+		PostID:   reactionResponse.PostID,
+	}, nil
 }
 
 func (rs *reactionService) GetReactionsPost(
@@ -40,8 +48,21 @@ func (rs *reactionService) GetReactionsPost(
 	postID uuid.UUID,
 	limit uint64,
 	offset uint64,
-) (*[]models.Reaction, error) {
-	return rs.reactionRepository.GetReactionsPost(ctx, postID, limit, offset)
+) (*[]dto.ReactionResponse, error) {
+	reactionsResponse, err := rs.reactionRepository.GetReactionsPost(ctx, postID, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+
+	reactions := make([]dto.ReactionResponse, 0, limit)
+	for _, reaction := range *reactionsResponse {
+		reactions = append(reactions, dto.ReactionResponse{
+			ID:       reaction.ID,
+			AuthorID: reaction.AuthorID,
+			PostID:   reaction.PostID,
+		})
+	}
+	return &reactions, nil
 }
 
 func (rs *reactionService) DeleteReaction(

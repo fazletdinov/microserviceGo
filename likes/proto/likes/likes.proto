@@ -25,6 +25,7 @@ message GetReactionsResponse {
 
 message Reaction {
     string reaction_id = 1;
+    string author_id = 2;
 }
 
 message DeleteReactionRequest {
@@ -44,6 +45,7 @@ message GetReactionRequest {
 
 message GetReactionResponse {
     string reaction_id = 1;
+    string author_id = 2;
 }
 
 message DeleteReactionsByAuthorRequest {

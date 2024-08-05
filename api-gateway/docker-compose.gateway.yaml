@@ -1,9 +1,26 @@
 version: '3.9'
 
+x-def-logging: &default-logging
+  logging:
+    # Указываем, какой драйвер использовать
+    driver: "loki"
+    options:
+      # Адрес Loki, куда складывать логи
+      # Обратите внимание, что здесь используется не имя сервиса loki, а локальный хост, на который проброшен порт Loki,
+      # это сделано потому, что логи будет писать docker engine, котрый расположен на хостовой машине,
+      # и он не знает имени хоста контейнера Loki, которое ему присвоил compose во внутренней сети проекта.
+      loki-url: "http://localhost:3100/loki/api/v1/push"
+      loki-batch-size: "100"
+      loki-retries: 2
+      loki-max-backoff: 1000ms
+      loki-timeout: 1s
+
 services:
   api-gateway:
     container_name: api-gateway
+    restart: unless-stopped
     build: ./
+    <<: *default-logging
     networks:
       - dev-network
     ports:
@@ -16,7 +33,9 @@ services:
   otel_collector:
     container_name: collector
     image: otel/opentelemetry-collector-contrib:latest
+    restart: unless-stopped
     command: --config=/etc/otel-collector-config.yaml
+    <<: *default-logging
     volumes:
         - ./config/otel-collector-config.yaml:/etc/otel-collector-config.yaml
     ports:
@@ -35,6 +54,8 @@ services:
   jaeger:
     container_name: jaeger
     image: jaegertracing/all-in-one:latest
+    restart: unless-stopped
+    <<: *default-logging
     ports:
       - "16686:16686"
       - "14268"
@@ -46,18 +67,43 @@ services:
     networks:
         - dev-network
 
-  # grafana:
-  #   image: grafana/grafana:latest
-  #   container_name: grafana
-  #   volumes:
-  #     - ./grafana/grafana.ini:/etc/grafana/grafana.ini
-  #     - ./grafana/provisioning/:/etc/grafana/provisioning/
-  #   ports:
-  #     - "3000:3000"
+  loki:
+    hostname: loki
+    image: grafana/loki:latest
+    restart: unless-stopped
+    environment:
+      TZ: ${SYSTEM_TIMEZONE:-Europe/Moscow}
+      # Мы пробросили конфигурацию в файловую систему контейнера
+    volumes:
+      - ./grafana/loki/retention-config.yaml:/etc/loki/retention-config.yaml
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/retention-config.yaml
+    networks:
+      - dev-network
+
+  grafana:
+    hostname: grafana
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      # Включим доступ без авторизации
+      - GF_AUTH_ANONYMOUS_ENABLED=true # Не используйте **ANONYMOUS** настройки в проде
+      # Дадим права администратора при анонимном входе
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - TZ=${SYSTEM_TIMEZONE:-Europe/Moscow}
+    volumes:
+    - ./grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+    ports:
+      - "3000:3000"
+    networks:
+      - dev-network
 
   prometheus:
     container_name: prometheus
     image: prom/prometheus:latest
+    restart: unless-stopped
     command:
         - --config.file=/etc/prometheus/prometheus-config.yaml
     volumes:

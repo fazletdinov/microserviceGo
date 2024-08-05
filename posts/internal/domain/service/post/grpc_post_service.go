@@ -3,7 +3,7 @@ package post
 import (
 	"context"
 	"posts/internal/domain/repository/post"
-	"posts/internal/models"
+	"posts/internal/dto"
 
 	"github.com/google/uuid"
 )
@@ -30,24 +30,62 @@ func (ps *postService) CreatePost(
 func (ps *postService) GetByIDPost(
 	ctx context.Context,
 	postID uuid.UUID,
-) (*models.Post, error) {
-	return ps.postRepository.GetByIDPost(ctx, postID)
+) (*dto.PostResponse, error) {
+	postResponse, err := ps.postRepository.GetByIDPost(ctx, postID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.PostResponse{
+		ID:        postResponse.ID,
+		Title:     postResponse.Title,
+		Content:   postResponse.Content,
+		AuthorID:  postResponse.AuthorID,
+		CreatedAt: postResponse.CreatedAt,
+		Comments:  &postResponse.Comments,
+	}, nil
 }
 
 func (ps *postService) GetPostByIDAuthorID(
 	ctx context.Context,
 	postID uuid.UUID,
 	authorID uuid.UUID,
-) (*models.Post, error) {
-	return ps.postRepository.GetPostByIDAuthorID(ctx, postID, authorID)
+) (*dto.PostResponse, error) {
+	postResponse, err := ps.postRepository.GetPostByIDAuthorID(ctx, postID, authorID)
+	if err != nil {
+		return nil, err
+	}
+	return &dto.PostResponse{
+		ID:        postResponse.ID,
+		Title:     postResponse.Title,
+		Content:   postResponse.Content,
+		AuthorID:  postResponse.AuthorID,
+		CreatedAt: postResponse.CreatedAt,
+		Comments:  &postResponse.Comments,
+	}, nil
 }
 
 func (ps *postService) GetPosts(
 	ctx context.Context,
 	limit uint64,
 	offset uint64,
-) (*[]models.Post, error) {
-	return ps.postRepository.GetPosts(ctx, int(limit), int(offset))
+) (*[]dto.PostResponse, error) {
+	postsResponse, err := ps.postRepository.GetPosts(ctx, int(limit), int(offset))
+	if err != nil {
+		return nil, err
+	}
+	posts := make([]dto.PostResponse, 0, limit)
+	for _, post := range *postsResponse {
+		posts = append(posts, dto.PostResponse{
+			ID:        post.ID,
+			Title:     post.Title,
+			Content:   post.Content,
+			AuthorID:  post.AuthorID,
+			CreatedAt: post.CreatedAt,
+			Comments:  &post.Comments,
+		})
+	}
+
+	return &posts, nil
 }
 
 func (ps *postService) UpdatePost(
