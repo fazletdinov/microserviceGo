@@ -99,6 +99,14 @@ services:
       - "3000:3000"
     networks:
       - dev-network
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        order: stop-first
+      resources:
+        limits:
+          memory: 1024M
 
   prometheus:
     container_name: prometheus
@@ -112,6 +120,38 @@ services:
         - "9090:9090"
     networks:
        - dev-network
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        order: stop-first
+      resources:
+        limits:
+          memory: 1024M
+  
+  # promtail:
+  #   container_name: promtail
+  #   image: grafana/promtail:latest
+  #   volumes:
+  #     # touch /mnt/common_volume/swarm/grafana/config/promtail.yaml;
+  #     # mkdir -p /mnt/common_volume/grafana/promtail-data;
+  #     - ./config/promtail.yaml:/etc/promtail/promtail.yaml:ro
+  #     - /mnt/common_volume/grafana/promtail-data:/var/promtail
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     - /var/log:/var/log:ro
+  #   environment:
+  #     HOST_HOSTNAME: "{{.Node.Hostname}}"
+  #   command:
+  #     - "--config.file=/etc/promtail/promtail.yaml"
+  #     - "--config.expand-env=true"
+  #   deploy:
+  #     mode: global
+  #     update_config:
+  #       order: stop-first
+  #     resources:
+  #       limits:
+  #         memory: 512M
+
 
 networks:
   dev-network:
