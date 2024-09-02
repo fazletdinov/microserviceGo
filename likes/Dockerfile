@@ -5,7 +5,7 @@ LABEL stage=gobuilder
 ENV CGO_ENABLED 0
 
 RUN apk update --no-cache && apk add --no-cache tzdata
-RUN apk update --no-cache && apk add --no-cache ca-certificates
+# RUN apk update --no-cache && apk add --no-cache ca-certificates
 RUN go install github.com/pressly/goose/v3/cmd/goose@latest
 
 WORKDIR /build
@@ -19,7 +19,7 @@ RUN go build -ldflags="-s -w" -o main .
 
 FROM golang:1.22-alpine
 
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
+# COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 COPY --from=builder /usr/share/zoneinfo/Asia/Shanghai /usr/share/zoneinfo/Asia/Shanghai
 ENV TZ Asia/Shanghai
 
